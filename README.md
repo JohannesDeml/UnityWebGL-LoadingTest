@@ -1,5 +1,7 @@
 # Introduction
 
+![Preview](./preview.png)
+
 Simple test for how good unity is at handling WebGL.  
 
 Version | Size | Link
