@@ -1,0 +1,6 @@
+<IfModule mod_mime.c>
+  AddEncoding br .unityweb
+  AddType application/wasm .wasm
+  AddEncoding br .wasm
+  AddOutputFilterByType DEFLATE application/wasm
+</IfModule>
