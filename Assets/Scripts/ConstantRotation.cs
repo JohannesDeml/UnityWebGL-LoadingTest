@@ -1,10 +1,10 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ConstantRotation.cs" company="Supyrb">
-//   Copyright (c) 2017 Supyrb. All rights reserved.
+//   Copyright (c) 2019 Supyrb. All rights reserved.
 // </copyright>
 // <author>
 //   Johannes Deml
-//   send@johannesdeml.com
+//   public@deml.io
 // </author>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -107,7 +107,7 @@ namespace Supyrb
 		void OnDrawGizmosSelected()
 		{
 			Gizmos.color = Color.yellow;
-			Gizmos.DrawRay(transform.position, (space == Space.Self) ? transform.rotation * rotationAxis.normalized : rotationAxis.normalized);
+			Gizmos.DrawRay(transform.position, space == Space.Self ? transform.rotation * rotationAxis.normalized : rotationAxis.normalized);
 		}
 		#endif
 	}

@@ -1,10 +1,10 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ObjectSpawner.cs" company="Supyrb">
-//   Copyright (c) 2018 Supyrb. All rights reserved.
+//   Copyright (c) 2019 Supyrb. All rights reserved.
 // </copyright>
 // <author>
 //   Johannes Deml
-//   send@johannesdeml.com
+//   public@deml.io
 // </author>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -21,7 +21,7 @@ public class ObjectSpawner : MonoBehaviour
 
 	[SerializeField]
 	private int maxInstances = 200;
-	
+
 	private int counter = 0;
 	private int instances = 0;
 	private Queue<GameObject> spawnedObjects = null;
@@ -30,7 +30,7 @@ public class ObjectSpawner : MonoBehaviour
 	{
 		spawnedObjects = new Queue<GameObject>(maxInstances + 5);
 	}
-	
+
 	void Update()
 	{
 		counter++;
@@ -51,12 +51,12 @@ public class ObjectSpawner : MonoBehaviour
 			spawnedObjects.Enqueue(recycleGo);
 			return;
 		}
-		
+
 		var newGo = Instantiate(prefab, transform.position, transform.rotation);
 		spawnedObjects.Enqueue(newGo);
 		instances++;
 	}
-	
+
 	#if UNITY_EDITOR
 	private void OnDrawGizmos()
 	{
