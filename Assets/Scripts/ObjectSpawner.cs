@@ -17,27 +17,27 @@ public class ObjectSpawner : MonoBehaviour
 	private GameObject prefab = null;
 
 	[SerializeField]
-	private int spawnCooldownFrames = 15;
+	private float spawnCooldownSeconds = 0.5f;
 
 	[SerializeField]
 	private int maxInstances = 200;
-
-	private int counter = 0;
+	
 	private int instances = 0;
 	private Queue<GameObject> spawnedObjects = null;
+	private float lastSpawnTime;
 
 	void Awake()
 	{
 		spawnedObjects = new Queue<GameObject>(maxInstances + 5);
+		lastSpawnTime = Time.time;
 	}
 
 	void Update()
 	{
-		counter++;
-		if (counter >= spawnCooldownFrames)
+		if (lastSpawnTime + spawnCooldownSeconds <= Time.time)
 		{
 			SpawnObject();
-			counter = 0;
+			lastSpawnTime = Time.time;
 		}
 	}
 
