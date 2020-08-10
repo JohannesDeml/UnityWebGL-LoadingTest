@@ -10,10 +10,10 @@ QualitySettings:
     name: Low
     pixelLightCount: 0
     shadows: 1
-    shadowResolution: 2
+    shadowResolution: 1
     shadowProjection: 0
     shadowCascades: 1
-    shadowDistance: 25
+    shadowDistance: 18
     shadowNearPlaneOffset: 3
     shadowCascade2Split: 0.33333334
     shadowCascade4Split: {x: 0.06666667, y: 0.2, z: 0.46666667}
