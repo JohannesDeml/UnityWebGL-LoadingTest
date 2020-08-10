@@ -1,0 +1,29 @@
+# From https://github.com/JohannesDeml/UnityWebGL-LoadingTest
+# Unity WebGL Configuration for Unity 2019 and older
+# Supports Brotli, Gzip and no Compression
+
+Header set Content-Security-Policy "worker-src 'self' blob:;"
+
+<IfModule mod_mime.c>  
+  # The following lines are required for builds without decompression fallback, compressed with gzip
+  RemoveType .gz
+  AddEncoding gzip .gz
+  AddType application/octet-stream .data.gz
+  AddType application/wasm .wasm.gz
+  AddType application/javascript .js.gz
+  AddType application/octet-stream .symbols.json.gz
+ 
+  # The following lines are required for builds without decompression fallback, compressed with brotli
+  RemoveType .br
+  RemoveLanguage .br
+  AddEncoding br .br
+  AddType application/octet-stream .data.br
+  AddType application/wasm .wasm.br
+  AddType application/javascript .js.br
+  AddType application/octet-stream .symbols.json.br
+  
+  AddEncoding br .unityweb
+  AddType application/wasm .wasm
+  AddEncoding br .wasm
+  AddOutputFilterByType DEFLATE application/wasm
+</IfModule>
