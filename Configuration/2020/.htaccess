@@ -1,27 +1,43 @@
 # From https://github.com/JohannesDeml/UnityWebGL-LoadingTest
 # Unity WebGL Configuration for Unity 2020+
-# Supports Brotli and no Compression
+# Supports Brotli and no Compression, Gzip seems to have a problem.
 
 Header set Content-Security-Policy "worker-src 'self' blob:;"
 
 <IfModule mod_mime.c>
   # No compression
   AddType application/wasm .wasm
-  AddOutputFilterByType DEFLATE application/wasm 
- 
+  AddOutputFilterByType DEFLATE application/wasm
+
+  # Gzip support
+  <Files *.js.gz>
+    AddType "text/javascript" .gz
+    AddEncoding gzip .gz
+  </Files>
+
+  <Files *.wasm.gz>
+    AddType "application/wasm" .gz
+    AddEncoding gzip .gz
+  </Files>
+
+  <Files *.data.gz>
+    AddType "application/octet-stream" data.gz
+    AddEncoding gzip .gz
+  </Files>
+
   # brotli support
   <Files *.js.br>
-	AddType "text/javascript" .br
-	AddEncoding br .br
+    AddType "text/javascript" .br
+    AddEncoding br .br
   </Files>
-  
+
   <Files *.wasm.br>
-	AddType "application/wasm" .br
-	AddEncoding br .br
+    AddType "application/wasm" .br
+    AddEncoding br .br
   </Files>
-  
+
   <Files *.data.br>
-	AddType "application/octet-stream" data.br
-	AddEncoding br .br
+    AddType "application/octet-stream" data.br
+    AddEncoding br .br
   </Files>
 </IfModule>
