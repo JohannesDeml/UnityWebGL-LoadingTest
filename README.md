@@ -14,10 +14,10 @@ Version | Size | Link
 
 | Platform   | Chrome | Firefox | Safari | Edge | Internet Explorer |
 | ---------- | :----: | :-----: | :----: | :--: | :---------------: |
-| Windows 10 |   ✅    |    ✅    |   ➖    |  ✅   |         ❌         |
-| Mac        |   ✅    |    ✅    |   ✅    |  ➖   |         ➖         |
-| Android    |   ✅    |    ❌    |   ➖    |  ➖   |         ➖         |
-| iOS        |   ✅    |    ✅    |   ✅    |  ➖   |         ➖         |
+| Windows 10 |   ✔️    |    ✔️    |   ➖    |  ✔️   |         ❌         |
+| Mac        |   ✔️    |    ✔️    |   ✔️    |  ➖   |         ➖         |
+| Android    |   ✔️    |    ❌    |   ➖    |  ➖   |         ➖         |
+| iOS        |   ✔️    |    ✔️    |   ✔️    |  ➖   |         ➖         |
 
 ## Features
 
