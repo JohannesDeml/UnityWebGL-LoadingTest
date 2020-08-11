@@ -12,12 +12,12 @@ Version | Size | Link
 
 ## Platforms
 
-Platform | Tested
---- | ---
-Android | ✅
-iOS | ✅
-Mac | ✅
-Windows 10 | ✅
+| Platform   | Chrome | Firefox | Safari | Edge | Internet Explorer |
+| ---------- | :----: | :-----: | :----: | :--: | :---------------: |
+| Windows 10 |   ✅    |    ✅    |   ➖    |  ✅   |         ❌         |
+| Mac        |   ✅    |    ✅    |   ✅    |  ➖   |         ➖         |
+| Android    |   ✅    |    ❌    |   ➖    |  ➖   |         ➖         |
+| iOS        |   ✅    |    ✅    |   ✅    |  ➖   |         ➖         |
 
 ## Features
 
