@@ -1,4 +1,4 @@
-# Introduction
+# Unity WebGL Loadin Test
 
 ![Preview](./preview.png)
 
@@ -15,9 +15,9 @@ Version | Size | Link
 | Platform   | Chrome | Firefox | Safari | Edge | Internet Explorer |
 | ---------- | :----: | :-----: | :----: | :--: | :---------------: |
 | Windows 10 |   ✔️    |    ✔️    |   ➖    |  ✔️   |         ❌         |
-| Mac        |   ✔️    |    ✔️    |   ✔️    |  ➖   |         ➖         |
-| Android    |   ✔️    |    ❌    |   ➖    |  ➖   |         ➖         |
-| iOS        |   ✔️    |    ✔️    |   ✔️    |  ➖   |         ➖         |
+| Mac        |   ✔️    |    ✔️    |   ✔️    |  ✔️   |         ➖         |
+| Android    |   ✔️    |    ❌    |   ➖    |  ❌   |         ➖         |
+| iOS        |   ✔️    |    ✔️    |   ✔️    |  ✔️   |         ➖         |
 
 ## Features
 
