@@ -1,4 +1,4 @@
-# Unity WebGL Loadin Test
+# Unity WebGL Loading Test
 
 ![Preview](./preview.png)
 
