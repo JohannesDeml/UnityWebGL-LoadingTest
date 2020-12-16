@@ -40,5 +40,6 @@ Version | Size | Link
 * If you want to have the smallest file size possible, take a look at [Project Tiny](https://forum.unity.com/forums/project-tiny.151/) or web-specific libraries like [Three.js](https://threejs.org/).
 * URP adds additional 2.5 MB file size compared to the builtin render pipeline.
 * Removing the default skybox will save ~30kb.
+* Internet Explorer does not work for Unity WebGL builds, since it does not support wasm.
 
 For further information check out the [forum-thread](https://forum.unity.com/threads/webgl-builds-for-mobile.545877/).
