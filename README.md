@@ -11,6 +11,7 @@ Version | Size | Link
 2020.0.1f1 | 2.86 MB | https://deml.io/experiments/unity-webgl/2020.1.0f1/
 2020.2.0b11 | 2.82 MB | https://deml.io/experiments/unity-webgl/2020.2.0b11/ 
 2020.2.0b11 URP | 5.25 MB | https://deml.io/experiments/unity-webgl/2020.2.0b11-urp/ 
+2020.2.0f1 | 2.82 MB | https://deml.io/experiments/unity-webgl/2020.2.0f1/ 
 
 ## Platforms
 
