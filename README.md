@@ -22,7 +22,7 @@ Version | Size | Link
 | Android    |   ✔️    |    ⚠️    |   ➖    |  ✔️   |         ➖         |
 | iOS        |   ✔️    |    ✔️    |   ✔️    |  ✔️   |         ➖         |
 
-✔️*: Supported* | ⚠️*: Supported, but runs poorly* | ❌*: not supported* | ➖*: Not applicable*
+✔️ *: Supported* | ⚠️ *: Supported, but runs poorly* | ❌ *: not supported* | ➖ *: Not applicable*
 
 ## Features
 
