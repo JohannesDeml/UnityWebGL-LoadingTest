@@ -17,8 +17,9 @@ Version | Size | Link
 | Platform   | Chrome | Firefox | Safari | Edge | Internet Explorer |
 | ---------- | :----: | :-----: | :----: | :--: | :---------------: |
 | Windows 10 |   ✔️    |    ✔️    |   ➖    |  ✔️   |         ❌         |
+| Linux      |   ✔️    |    ✔️    |   ➖    |  ✔️   |         ➖         |
 | Mac        |   ✔️    |    ✔️    |   ✔️    |  ✔️   |         ➖         |
-| Android    |   ✔️    |    ⚠️    |   ➖    |  ✔️   |         ➖         |
+| Android    |   ✔️    |    ✔️    |   ➖    |  ✔️   |         ➖         |
 | iOS        |   ✔️    |    ✔️    |   ✔️    |  ✔️   |         ➖         |
 
 ✔️ *: Supported* | ⚠️ *: Supported, but runs poorly* | ❌ *: not supported* | ➖ *: Not applicable*
@@ -41,5 +42,6 @@ Version | Size | Link
 * Removing the default skybox will save ~30kb.
 * In general the performance for URP seems to be better compared to builtin, but it has a larger build size.
 * Internet Explorer does not work for Unity WebGL builds, since it does not support wasm.
+* Previous versions of Firefox on Android had some performance problems, they seemed to have fixed those. In general performance on mobile is by far not as good as a native app build, but should be enough for simple games.
 
 For further information check out the [forum-thread](https://forum.unity.com/threads/webgl-builds-for-mobile.545877/).
