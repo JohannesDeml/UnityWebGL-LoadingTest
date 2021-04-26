@@ -8,6 +8,7 @@
 // </author>
 // --------------------------------------------------------------------------------------------------------------------
 
+#if !UNITY_2020_1_OR_NEWER //Not needed anymore in 2020 and above
 using System.IO;
 using UnityEditor;
 using UnityEditor.Callbacks;
@@ -21,7 +22,6 @@ namespace Supyrb
 	/// </summary>
 	public class RemoveMobileSupportWarningWebBuild
 	{
-		#if !UNITY_2020_1_OR_NEWER //Not needed anymore in 2020 and above
 		[PostProcessBuild]
 		public static void OnPostProcessBuild(BuildTarget target, string targetPath)
 		{
@@ -44,6 +44,6 @@ namespace Supyrb
 				File.WriteAllText(filePath, text);
 			}
 		}
-		#endif
 	}
 }
+#endif
