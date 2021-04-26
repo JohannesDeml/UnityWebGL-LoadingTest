@@ -1,0 +1,70 @@
+/* Debug console styling */
+#debugConsole {
+    position: absolute;
+    width: 100%;
+    min-height: 5px;
+    max-height: 50vh;
+    overflow-y: scroll;
+    z-index: 100;
+    text-align: left;
+    font-family: "Lucida Console", "Courier New", monospace;
+}
+
+#debugConsole p {
+    padding: 8px 4px;
+    color: rgb(41, 41, 41);
+    background-color: rgba(201, 201, 201, 0.5);
+}
+
+#debugConsole p.warn {
+    background-color: rgba(216, 182, 30, 0.5);
+    color: rgb(138, 120, 17);
+}
+
+#debugConsole .error {
+    background-color: rgba(214, 32, 32, 0.5);
+    color: rgb(146, 36, 28);
+}
+
+/* Debug console toggle button */
+.debugToggleMenu {
+    z-index: 101;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    display: block;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    border-radius: 50%;
+    box-shadow: 0px 1px 3px 2px #CDD9ED;
+    background: #fff;
+    transition: all .3s ease;
+}
+
+.debugToggleMenu .icon {
+    position: absolute;
+    top: 25%;
+    left: 25%;
+    width: 50%;
+    height: 50%;
+    background:rgb(128, 128, 128);
+    border-radius: 50%;
+    display: none;
+}
+
+#debugToggle {
+    display: none;
+}
+
+#debugToggle:checked ~ #debugConsole {
+    display: block;
+}
+
+#debugToggle:checked ~ .debugToggleMenu .icon {
+    display: block;
+}
+
+#debugToggle:not(:checked) ~ #debugConsole {
+    display: none;
+}
