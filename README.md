@@ -30,7 +30,7 @@ Version | Size | Link
 | Android    |   ✔️    |    ✔️    |  ✔️   |   ➖    |         ➖         |
 | iOS        |   ✔️    |    ⚠️    |  ✔️   |   ✔️    |         ➖         |
 
-✔️ *: Supported* | ⚠️ *: Warning , see compatibility*| ❌ *: not supported* | ➖ *: Not applicable*
+✔️ *: Supported* | ⚠️ *: Warning , see compatibility* | ❌ *: not supported* | ➖ *: Not applicable*
 
 ## Features
 
