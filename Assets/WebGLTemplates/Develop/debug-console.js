@@ -45,5 +45,24 @@ function initializeToggleButton(startActive) {
     labelDiv.appendChild(iconDiv);
 }
 
+var pageStartTime = performance.now();
+
+// Called by Unity
+function unityLoadingFinished(unityRealTimeSiceStartup) {
+    var timeDiv = document.getElementById('startupTime');
+
+    if(timeDiv == null || timeDiv == 'undefined') {
+        timeDiv = document.createElement('div');
+        timeDiv.id = 'startupTime';
+        document.body.appendChild(timeDiv);
+    }
+
+    var currentTime = performance.now();
+    var startupTimeSeconds = ((currentTime - pageStartTime) / 1000.0).toFixed(2);
+
+    timeDiv.innerHTML = `<h3>Startup time</h3><br /><dl><dt>Page</dt> <dd>${startupTimeSeconds}s</dd><br /><dt>Unity</dt> <dd>${unityRealTimeSiceStartup}s</dd></dl>`;
+    console.info(`Startup finished - Page time: ${startupTimeSeconds}s, Unity real time since startup: ${unityRealTimeSiceStartup}s`);
+}
+
 initializeToggleButton(false);
 initialzeDebugConsole();

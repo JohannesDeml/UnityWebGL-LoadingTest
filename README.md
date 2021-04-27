@@ -6,6 +6,16 @@
 
 *Testing Unity's WebGL capabilities for different versions and platforms*
 
+
+## Features
+
+* Physics
+* GPU Instancing for materials
+* Shadows
+* Brotli Compression
+* Togglable In-DOM Debug console ([Example](https://deml.io/experiments/unity-webgl/2021.1.4f1/))
+* Responsive template layout for maximum mobile compatibility
+
 ## Live Demos
 
 Version | Size | Link
@@ -20,7 +30,7 @@ Version | Size | Link
 2021.1.0f1 | 2.85 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1/ 
 2021.1.0f1 URP | 5.47 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1-urp/ 
 
-## Platforms
+## Platform Compatibility
 
 | Platform   | Chrome | Firefox | Edge | Safari | Internet Explorer |
 | ---------- | :----: | :-----: | :--: | :----: | :---------------: |
@@ -30,16 +40,7 @@ Version | Size | Link
 | Android    |   ✔️    |    ✔️    |  ✔️   |   ➖    |         ➖         |
 | iOS        |   ✔️    |    ⚠️    |  ✔️   |   ✔️    |         ➖         |
 
-✔️ *: Supported* | ⚠️ *: Warning , see compatibility* | ❌ *: not supported* | ➖ *: Not applicable*
-
-## Features
-
-* Physics
-* GPU Instancing for materials
-* Shadows
-* Brotli Compression
-
-## Compatibility
+✔️ *: Supported* | ⚠️ *: Warning , see below* | ❌ *: not supported* | ➖ *: Not applicable*
 
 * For Unity 2019 builds throw an error on **iOS Firefox** (Does not happen for iOS Safari or iOS Chrome): `An error occured running the Unity content on this page. See you browser JavaScript console for more info. The error: Script error.`
 * Internet Explorer does not work for Unity WebGL builds, since it does not support wasm.

@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ConstantRotation.cs" company="Supyrb">
-//   Copyright (c) 2019 Supyrb. All rights reserved.
+// <copyright file="ConstantRotation.cs">
+//   Copyright (c) 2020 Johannes Deml. All rights reserved.
 // </copyright>
 // <author>
 //   Johannes Deml
@@ -24,7 +24,7 @@ namespace Supyrb
 		}
 
 		[Tooltip("Rotating absolute in world space or relative to the axes of the object\n" +
-				"For root objects use self, same effect but more performant.")]
+		         "For root objects use self, same effect but more performant.")]
 		[SerializeField]
 		private Space space = Space.World;
 
