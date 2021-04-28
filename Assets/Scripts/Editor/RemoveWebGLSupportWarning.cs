@@ -1,5 +1,5 @@
-// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="RemoveMobileSupportWarningWebBuild.cs">
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="RemoveWebGLSupportWarning.cs">
 //   Copyright (c) 2021 Johannes Deml. All rights reserved.
 // </copyright>
 // <author>
@@ -17,10 +17,9 @@ using UnityEngine;
 namespace Supyrb
 {
 	/// <summary>
-	/// removes a warning popup for mobile builds, that this platform might not be supported:
-	/// "Please note that Unity WebGL is not currently supported on mobiles. Press OK if you wish to continue anyway."
+	/// removes all warning popups for webgl builds
 	/// </summary>
-	public class RemoveMobileSupportWarningWebBuild
+	public class RemoveWebGLSupportWarning
 	{
 		[PostProcessBuild]
 		public static void OnPostProcessBuild(BuildTarget target, string targetPath)
@@ -38,9 +37,9 @@ namespace Supyrb
 				var file = files[i];
 				var filePath = file.FullName;
 				var text = File.ReadAllText(filePath);
-				text = text.Replace("UnityLoader.SystemInfo.mobile", "false");
+				text = text.Replace("UnityLoader.SystemInfo.hasWebGL?UnityLoader.SystemInfo.mobile?e.popup(\"Please note that Unity WebGL is not currently supported on mobiles. Press OK if you wish to continue anyway.\",[{text:\"OK\",callback:t}]):[\"Edge\",\"Firefox\",\"Chrome\",\"Safari\"].indexOf(UnityLoader.SystemInfo.browser)==-1?e.popup(\"Please note that your browser is not currently supported for this Unity WebGL content. Press OK if you wish to continue anyway.\",[{text:\"OK\",callback:t}]):t():e.popup(\"Your browser does not support WebGL\",[{text:\"OK\",callback:r}])", "t()");
 
-				Debug.Log("Removing mobile warning from " + filePath);
+				Debug.Log("Removing all webgl compatibility warnings from " + filePath);
 				File.WriteAllText(filePath, text);
 			}
 		}
