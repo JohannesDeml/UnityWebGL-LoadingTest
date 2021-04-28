@@ -6,11 +6,22 @@
 
 *Testing Unity's WebGL capabilities for different versions and platforms*
 
+
+## Features
+
+* Physics
+* GPU Instancing for materials
+* Shadows
+* Brotli Compression
+* Togglable In-DOM Debug console ([Example](https://deml.io/experiments/unity-webgl/2021.1.4f1/))
+* Responsive template layout for maximum mobile compatibility
+
 ## Live Demos
 
 Version | Size | Link
 --- | --- | ---
 2019.3.0f6 | 3.28 MB | https://deml.io/experiments/unity-webgl/2019.3.0f6/
+2019.4.25f1 | 2.96 MB | https://deml.io/experiments/unity-webgl/2019.4.25f1/ 
 2020.1.0f1 | 2.86 MB | https://deml.io/experiments/unity-webgl/2020.1.0f1/
 2020.2.0f1 | 2.82 MB | https://deml.io/experiments/unity-webgl/2020.2.0f1/ 
 2020.2.0f1 URP | 5.27 MB | https://deml.io/experiments/unity-webgl/2020.2.0f1-urp/ 
@@ -19,7 +30,7 @@ Version | Size | Link
 2021.1.0f1 | 2.85 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1/ 
 2021.1.0f1 URP | 5.47 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1-urp/ 
 
-## Platforms
+## Platform Compatibility
 
 | Platform   | Chrome | Firefox | Edge | Safari | Internet Explorer |
 | ---------- | :----: | :-----: | :--: | :----: | :---------------: |
@@ -27,16 +38,13 @@ Version | Size | Link
 | Linux      |   ✔️    |    ✔️    |  ✔️   |   ➖    |         ➖         |
 | Mac        |   ✔️    |    ✔️    |  ✔️   |   ✔️    |         ➖         |
 | Android    |   ✔️    |    ✔️    |  ✔️   |   ➖    |         ➖         |
-| iOS        |   ✔️    |    ✔️    |  ✔️   |   ✔️    |         ➖         |
+| iOS        |   ✔️    |    ⚠️    |  ✔️   |   ✔️    |         ➖         |
 
-✔️ *: Supported* | ⚠️ *: Supported, but runs poorly* | ❌ *: not supported* | ➖ *: Not applicable*
+✔️ *: Supported* | ⚠️ *: Warning , see below* | ❌ *: not supported* | ➖ *: Not applicable*
 
-## Features
-
-* Physics
-* GPU Instancing for materials
-* Shadows
-* Brotli Compression
+* For Unity 2019 builds throw an error on **iOS Firefox** (Does not happen for iOS Safari or iOS Chrome): `An error occured running the Unity content on this page. See you browser JavaScript console for more info. The error: Script error.`
+* Internet Explorer does not work for Unity WebGL builds, since it does not support wasm.
+* Previous versions of Firefox on Android had some performance problems, they seemed to have fixed those. In general performance on mobile is by far not as good as a native app build, but should be enough for simple games.
 
 ## Notes
 
@@ -49,7 +57,5 @@ Version | Size | Link
 * URP adds additional ~2.5 MB file size compared to the builtin render pipeline.
 * Removing the default skybox will save ~30kb.
 * In general the performance for URP seems to be better compared to builtin, but it has a larger build size.
-* Internet Explorer does not work for Unity WebGL builds, since it does not support wasm.
-* Previous versions of Firefox on Android had some performance problems, they seemed to have fixed those. In general performance on mobile is by far not as good as a native app build, but should be enough for simple games.
 
 For further information check out the [forum-thread](https://forum.unity.com/threads/webgl-builds-for-mobile.545877/).
