@@ -2,7 +2,7 @@
     LogStartTime: function (str) {
         var startTimeText = Pointer_stringify(str);
 
-        if(unityLoadingFinished !== 'undefined') {
+        if(typeof unityLoadingFinished !== 'undefined') {
             unityLoadingFinished(startTimeText);
         }
         else {
