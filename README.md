@@ -4,7 +4,8 @@
 
 [![](https://img.shields.io/github/release-date/JohannesDeml/UnityWebGL-LoadingTest.svg)](https://github.com/JohannesDeml/UnityWebGL-LoadingTest/releases) [![Tested up to Unity 2020.2](https://img.shields.io/badge/tested%20up%20to%20unity-2021.1-green.svg?logo=unity&cacheSeconds=2592000)](https://unity3d.com/get-unity/download/archive)
 
-*Testing Unity's WebGL capabilities for different versions and platforms*
+*Testing Unity's WebGL size and loading time for different versions and platforms*  
+[Unity Forum Thread](https://forum.unity.com/threads/webgl-builds-for-mobile.545877/).
 
 
 ## Features
@@ -31,6 +32,7 @@ Version | Size | Link
 2021.1.0f1 | 2.85 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1/ 
 2021.1.0f1 URP | 5.47 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1-urp/ 
 2021.2.0a19 | 2.95 MB | https://deml.io/experiments/unity-webgl/2021.2.0a19/ 
+2021.2.0a19 Min | 2.43 MB | https://deml.io/experiments/unity-webgl/2021.2.0a19-minsize/ 
 
 ## Platform Compatibility
 
@@ -60,4 +62,7 @@ Version | Size | Link
 * Removing the default skybox will save ~30kb.
 * In general the performance for URP seems to be better compared to builtin, but it has a larger build size.
 
-For further information check out the [forum-thread](https://forum.unity.com/threads/webgl-builds-for-mobile.545877/).
+### Min Size builds
+* Built with Code Optimization: `Size` and IL2CPP Code Generation: `Faster (smaller) builds`
+* Enable Exceptions: `None`
+* C++ Compiler Configuration: `Master` 
