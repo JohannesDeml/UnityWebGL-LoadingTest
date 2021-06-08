@@ -63,6 +63,7 @@ Version | Size | Link
 * In general the performance for URP seems to be better compared to builtin, but it has a larger build size.
 
 ### Min Size builds
+* Built from branch [minsize](../../tree/minsize)
 * Built with Code Optimization: `Size` and IL2CPP Code Generation: `Faster (smaller) builds`
 * Enable Exceptions: `None`
 * C++ Compiler Configuration: `Master` 
