@@ -14,6 +14,7 @@
 * Shadows
 * Brotli Compression
 * Togglable In-DOM Debug console ([Example](https://deml.io/experiments/unity-webgl/2021.1.4f1/))
+* Handy debug functions for times and memory consumption
 * Responsive template layout for maximum mobile compatibility
 
 ## Live Demos
@@ -29,6 +30,7 @@ Version | Size | Link
 2020.3.0f1 URP | 5.27 MB | https://deml.io/experiments/unity-webgl/2020.3.0f1-urp/ 
 2021.1.0f1 | 2.85 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1/ 
 2021.1.0f1 URP | 5.47 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1-urp/ 
+2021.2.0a19 | 2.95 MB | https://deml.io/experiments/unity-webgl/2021.2.0a19/ 
 
 ## Platform Compatibility
 
