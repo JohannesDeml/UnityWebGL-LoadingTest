@@ -8,24 +8,28 @@
 // </author>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System.Runtime.InteropServices;
 using UnityEngine;
 
 namespace Supyrb
 {
-	public class LoadingTime : MonoBehaviour
+	public class WebGlLogger : MonoBehaviour
 	{
-		[DllImport("__Internal")]
-		private static extern void LogStartTime(string text);
-		
 		[SerializeField]
 		private bool logStartTime = true;
+
+		[SerializeField]
+		private bool logMemory = true;
 
 		private void Start()
 		{
 			if (logStartTime)
 			{
-				LogStartTime(Time.realtimeSinceStartup.ToString("0.00"));
+				WebGlPlugins.LogStartTime();
+			}
+
+			if (logMemory)
+			{
+				WebGlPlugins.LogMemory();
 			}
 		}
 	}
