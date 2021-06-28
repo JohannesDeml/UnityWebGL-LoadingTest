@@ -20,21 +20,29 @@
 
 ## Live Demos
 
+### Default
 Version | Size | Link
 --- | --- | ---
-2019.3.0f6 | 3.28 MB | https://deml.io/experiments/unity-webgl/2019.3.0f6/
 2019.4.25f1 | 2.96 MB | https://deml.io/experiments/unity-webgl/2019.4.25f1/ 
 2020.1.0f1 | 2.86 MB | https://deml.io/experiments/unity-webgl/2020.1.0f1/
 2020.2.0f1 | 2.82 MB | https://deml.io/experiments/unity-webgl/2020.2.0f1/ 
-2020.2.0f1 URP | 5.27 MB | https://deml.io/experiments/unity-webgl/2020.2.0f1-urp/ 
-2020.3.0f1 | 2.83 MB | https://deml.io/experiments/unity-webgl/2020.3.0f1/ 
-2020.3.0f1 URP | 5.27 MB | https://deml.io/experiments/unity-webgl/2020.3.0f1-urp/ 
+2020.3.12f1 | 2.86 MB | https://deml.io/experiments/unity-webgl/2020.3.12f1/ 
 2021.1.0f1 | 2.85 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1/ 
-2021.1.0f1 Min | 2.45 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1-minsize/ 
-2021.1.0f1 URP | 5.47 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1-urp/ 
 2021.2.0a19 | 2.95 MB | https://deml.io/experiments/unity-webgl/2021.2.0a19/ 
-2021.2.0a19 Min | 2.43 MB | https://deml.io/experiments/unity-webgl/2021.2.0a19-minsize/ 
 2021.2.0b1 | 2.66 MB | https://deml.io/experiments/unity-webgl/2021.2.0b1/ 
+
+### Size
+Version | Size | Link
+--- | --- | ---
+2021.1.0f1 Min | 2.45 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1-minsize/ 
+2021.2.0b1 Min | 2.66 MB | https://deml.io/experiments/unity-webgl/2021.2.0b1-minsize/ 
+
+### URP
+Version | Size | Link
+--- | --- | ---
+2020.2.0f1 URP | 5.27 MB | https://deml.io/experiments/unity-webgl/2020.2.0f1-urp/ 
+2020.3.0f1 URP | 5.27 MB | https://deml.io/experiments/unity-webgl/2020.3.0f1-urp/ 
+2021.1.0f1 URP | 5.47 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1-urp/ 
 
 ## Platform Compatibility
 
@@ -72,3 +80,9 @@ Version | Size | Link
 * Built with Code Optimization: `Size` and IL2CPP Code Generation: `Faster (smaller) builds`
 * Enable Exceptions: `None`
 * C++ Compiler Configuration: `Master` 
+
+## Older versions
+Version | Size | Link
+--- | --- | ---
+2018.2.3f1 | 2.97 MB | https://deml.io/experiments/unity-webgl/2018.2.3f1/ 
+2019.3.0f6 | 3.28 MB | https://deml.io/experiments/unity-webgl/2019.3.0f6/
