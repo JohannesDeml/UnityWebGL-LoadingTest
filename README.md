@@ -34,6 +34,7 @@ Version | Size | Link
 2021.1.0f1 URP | 5.47 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1-urp/ 
 2021.2.0a19 | 2.95 MB | https://deml.io/experiments/unity-webgl/2021.2.0a19/ 
 2021.2.0a19 Min | 2.43 MB | https://deml.io/experiments/unity-webgl/2021.2.0a19-minsize/ 
+2021.2.0b1 | 2.66 MB | https://deml.io/experiments/unity-webgl/2021.2.0b1/ 
 
 ## Platform Compatibility
 
@@ -59,6 +60,7 @@ Version | Size | Link
 * This is a very small example. When building larger WebGL applications, you might run into problems with memory or compile errors. I recommend to build from the start and very often, to catch the changes that create those problems.
 * If you want to have the smallest file size possible, take a look at [Project Tiny](https://forum.unity.com/forums/project-tiny.151/) or web-specific libraries like [Three.js](https://threejs.org/).
 * Removing the default skybox will save ~30kb.
+* With 2021.2 Unity added the possibility to use different texture formats. The builds use the default DXT format, but since no texture is used this settings does not make any difference in this project.
 
 ### URP
 * URP adds additional ~2.5 MB file size compared to the builtin render pipeline.
