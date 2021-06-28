@@ -1,6 +1,6 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="RemoveMobileSupportWarningWebBuild.cs" company="Supyrb">
-//   Copyright (c) 2020 Supyrb. All rights reserved.
+// <copyright file="RemoveMobileSupportWarningWebBuild.cs">
+//   Copyright (c) 2021 Johannes Deml. All rights reserved.
 // </copyright>
 // <author>
 //   Johannes Deml
@@ -8,6 +8,7 @@
 // </author>
 // --------------------------------------------------------------------------------------------------------------------
 
+#if !UNITY_2020_1_OR_NEWER //Not needed anymore in 2020 and above
 using System.IO;
 using UnityEditor;
 using UnityEditor.Callbacks;
@@ -15,6 +16,10 @@ using UnityEngine;
 
 namespace Supyrb
 {
+	/// <summary>
+	/// removes a warning popup for mobile builds, that this platform might not be supported:
+	/// "Please note that Unity WebGL is not currently supported on mobiles. Press OK if you wish to continue anyway."
+	/// </summary>
 	public class RemoveMobileSupportWarningWebBuild
 	{
 		[PostProcessBuild]
@@ -35,9 +40,10 @@ namespace Supyrb
 				var text = File.ReadAllText(filePath);
 				text = text.Replace("UnityLoader.SystemInfo.mobile", "false");
 
-				Debug.Log("Removing iOS warning from " + filePath);
+				Debug.Log("Removing mobile warning from " + filePath);
 				File.WriteAllText(filePath, text);
 			}
 		}
 	}
 }
+#endif

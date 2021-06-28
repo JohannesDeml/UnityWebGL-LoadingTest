@@ -1,0 +1,96 @@
+/* Debug console styling */
+#debugConsole {
+    position: absolute;
+    width: 100%;
+    min-height: 5px;
+    max-height: 50vh;
+    overflow-y: scroll;
+    z-index: 100;
+    text-align: left;
+    font-family: "Lucida Console", "Courier New", monospace;
+}
+
+#debugConsole p {
+    padding: 8px 4px;
+    color: rgb(41, 41, 41);
+    background-color: rgba(230, 230, 230, 0.9);
+}
+
+#debugConsole p.info {
+    color: rgb(41, 50, 60);
+    background-color: rgba(172, 204, 224, 0.9);
+}
+
+#debugConsole p.warn {
+    color: rgb(82, 70, 3);
+    background-color: rgba(231, 196, 41, 0.9);
+}
+
+#debugConsole .error {
+    color: rgb(97, 15, 9);
+    background-color: rgba(221, 46, 46, 0.9);
+}
+
+/* Debug console toggle button */
+.debugToggleMenu {
+    z-index: 101;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: block;
+    width: 2rem;
+    height: 2rem;
+    cursor: pointer;
+    border-radius: 50%;
+    box-shadow: 0px 1px 3px 2px #CDD9ED;
+    background: #fff;
+    transition: all .3s ease;
+}
+
+.debugToggleMenu .icon {
+    position: absolute;
+    top: 25%;
+    left: 25%;
+    width: 50%;
+    height: 50%;
+    background:rgb(128, 128, 128);
+    border-radius: 50%;
+    display: none;
+}
+
+#debugToggle {
+    display: none;
+}
+
+#debugToggle:checked ~ #debugConsole {
+    display: block;
+}
+
+#debugToggle:checked ~ .debugToggleMenu .icon {
+    display: block;
+}
+
+#debugToggle:not(:checked) ~ #debugConsole {
+    display: none;
+}
+
+/* Startup Time interface */
+#startupTime {
+    z-index: 10;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 8px;
+    font-family: "Lucida Console", "Courier New", monospace;
+    text-align: left;
+    color: black;
+    background: rgba(255, 255, 255, 0.4);
+}
+
+#startupTime dt, #startupTime dd {
+    display: inline-block;
+}
+
+#startupTime dt:after{
+    content: ':';
+}
