@@ -1,9 +1,15 @@
-# Supyrb .gitignore standalone v0.1.6
+# Unity .gitignore - Deml v2021.2.0
+# Source https://github.com/JohannesDeml/UnityTemplate/
 
-# Unity generated
+## Unity generated
+/.gradle/**
 /Temp/**
 /Library/**
 /obj/**
+/UserSettings/**
+/Packages/*/**
+/Packages/*.meta
+/Logs/**
 
 # Visual Studio / Rider / MonoDevelop generated
 /ExportedObj/**
@@ -27,10 +33,11 @@
 *.orig
 *.orig.*
 *sln*
-
 .idea/**
 /Assets/Plugins/Editor/Jetbrains/*
 /Assets/Plugins/Editor/Jetbrains.meta
+
+*.blend1
 
 # OS generated
 .DS_Store
@@ -42,24 +49,12 @@ ehthumbs.db
 Thumbs.db
 report.xml
 
-# FMOD
-/Assets/FMODStudioCache.asset
-/Assets/FMODStudioCache.asset.meta
-fmod.log
-fmod_editor.log
-
-# FMOD studio (In folder FMOD)
-/FMOD/**.user
-/FMOD/**.unsaved
-/FMOD/**.cache
-/FMOD/**.restore
-
 # Custom
 /Builds/**
 /Data/**
-/SHFB/Help/**
-/Assets/99_Preferences/Editor/Credentials/**
-/Assets/99_Preferences/Editor/Credentials.meta
+/Recordings/**
+/Assets/_Project/Preferences/Editor/Credentials/**
+/Assets/_Project/Preferences/Editor/Credentials.meta
 /Assets/Temp/**
 /Assets/Temp.meta
-Logs
+/.sonarqube
