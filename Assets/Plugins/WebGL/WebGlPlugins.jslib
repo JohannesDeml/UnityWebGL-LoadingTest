@@ -18,7 +18,7 @@ var WebGlPlugins =
             unityLoadingFinished(startTimeText, unityVersionText);
         }
         else {
-            console.info(`Unity ${unityVersionText} real time since startup: ${startTimeText}`);
+            console.info("Unity " + unityVersionText + " real time since startup: " + startTimeText);
         }
     },
     
@@ -28,7 +28,7 @@ var WebGlPlugins =
             return TOTAL_MEMORY;
         }
 
-        console.warn(`Problem with retrieving unity value. TOTAL_MEMORY: ${typeof TOTAL_MEMORY}`);
+        console.warn("Problem with retrieving unity value. TOTAL_MEMORY: " + typeof TOTAL_MEMORY);
         return -1;
     },
 
@@ -38,7 +38,7 @@ var WebGlPlugins =
             return TOTAL_STACK;
         }
 
-        console.warn(`Problem with retrieving unity value. TOTAL_STACK: ${typeof TOTAL_STACK}`);
+        console.warn("Problem with retrieving unity value. TOTAL_STACK: " + typeof TOTAL_STACK);
         return -1;
     },
 
@@ -48,7 +48,7 @@ var WebGlPlugins =
             return STATICTOP - STATIC_BASE;
         }
 
-        console.warn(`Problem with retrieving unity value. STATICTOP: ${typeof STATICTOP}, STATIC_BASE: ${typeof STATIC_BASE}`);
+        console.warn("Problem with retrieving unity value. STATICTOP: " + typeof STATICTOP + ", STATIC_BASE: " + typeof STATIC_BASE);
         return -1;
     },
 
@@ -58,7 +58,7 @@ var WebGlPlugins =
             return HEAP32[DYNAMICTOP_PTR >> 2] - DYNAMIC_BASE;
         }
 
-        console.warn(`Problem with retrieving unity value. HEAP32: ${typeof HEAP32}, DYNAMICTOP_PTR: ${typeof DYNAMICTOP_PTR}, DYNAMIC_BASE: ${typeof DYNAMIC_BASE}`);
+        console.warn("Problem with retrieving unity value. HEAP32: " + typeof HEAP32 + ", DYNAMICTOP_PTR: " + typeof DYNAMICTOP_PTR + ", DYNAMIC_BASE: " + typeof DYNAMIC_BASE);
         return -1;
     }
 };
