@@ -28,21 +28,21 @@ Version | Size | Link
 2020.2.0f1 | 2.82 MB | https://deml.io/experiments/unity-webgl/2020.2.0f1/ 
 2020.3.12f1 | 2.86 MB | https://deml.io/experiments/unity-webgl/2020.3.12f1/ 
 2021.1.0f1 | 2.85 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1/ 
-2021.2.0a19 | 2.95 MB | https://deml.io/experiments/unity-webgl/2021.2.0a19/ 
 2021.2.0b1 | 2.66 MB | https://deml.io/experiments/unity-webgl/2021.2.0b1/ 
 
-### Size
+### Minimum size
 Version | Size | Link
 --- | --- | ---
+2020.3.12f1 Min | 2.43 MB | https://deml.io/experiments/unity-webgl/2020.3.12f1-minsize/ 
 2021.1.0f1 Min | 2.45 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1-minsize/ 
-2021.2.0b1 Min | 2.66 MB | https://deml.io/experiments/unity-webgl/2021.2.0b1-minsize/ 
 
 ### URP
 Version | Size | Link
 --- | --- | ---
 2020.2.0f1 URP | 5.27 MB | https://deml.io/experiments/unity-webgl/2020.2.0f1-urp/ 
-2020.3.0f1 URP | 5.27 MB | https://deml.io/experiments/unity-webgl/2020.3.0f1-urp/ 
+2020.3.12f1 URP | 5.33 MB | https://deml.io/experiments/unity-webgl/2020.3.12f1-urp/ 
 2021.1.0f1 URP | 5.47 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1-urp/ 
+2021.2.0b1 URP | 4.73 MB | https://deml.io/experiments/unity-webgl/2021.2.0b1-urp/ 
 
 ## Platform Compatibility
 

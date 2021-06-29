@@ -48,7 +48,7 @@ function initializeToggleButton(startActive) {
 var pageStartTime = performance.now();
 
 // Called by Unity
-function unityLoadingFinished(unityRealTimeSiceStartup) {
+function unityLoadingFinished(unityRealTimeSiceStartup, unityVersion) {
     var timeDiv = document.getElementById('startupTime');
 
     if(timeDiv == null || timeDiv == 'undefined') {
@@ -60,7 +60,7 @@ function unityLoadingFinished(unityRealTimeSiceStartup) {
     var currentTime = performance.now();
     var startupTimeSeconds = ((currentTime - pageStartTime) / 1000.0).toFixed(2);
 
-    timeDiv.innerHTML = `<h3>Startup time</h3><br /><dl><dt>Page</dt> <dd>${startupTimeSeconds}s</dd><br /><dt>Unity</dt> <dd>${unityRealTimeSiceStartup}s</dd></dl>`;
+    timeDiv.innerHTML = `<h3>Startup time Unity ${unityVersion}</h3><br /><dl><dt>Page</dt> <dd>${startupTimeSeconds}s</dd><br /><dt>Unity</dt> <dd>${unityRealTimeSiceStartup}s</dd></dl>`;
     console.info(`Startup finished - Page time: ${startupTimeSeconds}s, Unity real time since startup: ${unityRealTimeSiceStartup}s`);
 }
 
