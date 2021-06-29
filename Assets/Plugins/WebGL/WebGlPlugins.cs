@@ -17,7 +17,7 @@ namespace Supyrb
 	public static class WebGlPlugins
 	{
 		[DllImport("__Internal")]
-		private static extern void _LogStartTime(string text);
+		private static extern void _LogStartTime(string startupTime, string unityVersion);
 
 		[DllImport("__Internal")]
 		private static extern void _LogMemoryInfo(uint native, uint managed, uint total);
@@ -38,7 +38,7 @@ namespace Supyrb
 		public static void LogStartTime()
 		{
 			#if UNITY_WEBGL && !UNITY_EDITOR
-			_LogStartTime(Time.realtimeSinceStartup.ToString("0.00"));
+			_LogStartTime(Time.realtimeSinceStartup.ToString("0.00"), Application.unityVersion);
 			#else
 			Debug.Log("Not supported on this platform");
 			#endif
