@@ -17,30 +17,31 @@
 * Togglable In-DOM Debug console ([Example](https://deml.io/experiments/unity-webgl/2021.1.4f1/))
 * Handy debug functions for times and memory consumption
 * Responsive template layout for maximum mobile compatibility
+* Works with [Unity WebGL Publisher](https://play.unity.com/discover/all-showcases) (Use  [2020.3-lts](https://github.com/JohannesDeml/UnityWebGL-LoadingTest/tree/2020-lts) or [2020.3-lts-urp](https://github.com/JohannesDeml/UnityWebGL-LoadingTest/tree/2020-lts-urp) branch)
+* Branches for different Unity versions
 
 ## Live Demos
 
 ### Default
 Version | Size | Link
 --- | --- | ---
-2019.4.25f1 | 2.96 MB | https://deml.io/experiments/unity-webgl/2019.4.25f1/ 
-2020.1.0f1 | 2.86 MB | https://deml.io/experiments/unity-webgl/2020.1.0f1/
-2020.2.0f1 | 2.82 MB | https://deml.io/experiments/unity-webgl/2020.2.0f1/ 
-2020.3.12f1 | 2.86 MB | https://deml.io/experiments/unity-webgl/2020.3.12f1/ 
+2019.4.28f1 | 2.97 MB | https://deml.io/experiments/unity-webgl/2019.4.28f1/ 
+2020.3.12f1 | 2.87 MB | https://deml.io/experiments/unity-webgl/2020.3.12f1/ 
 2021.1.0f1 | 2.85 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1/ 
-2021.2.0b1 | 2.66 MB | https://deml.io/experiments/unity-webgl/2021.2.0b1/ 
+2021.2.0b1 | 2.67 MB | https://deml.io/experiments/unity-webgl/2021.2.0b1/ 
 
 ### Minimum size
 Version | Size | Link
 --- | --- | ---
+2019.4.28f1 Min | 2.94 MB | https://deml.io/experiments/unity-webgl/2019.4.28f1-minsize/ 
 2020.3.12f1 Min | 2.43 MB | https://deml.io/experiments/unity-webgl/2020.3.12f1-minsize/ 
 2021.1.0f1 Min | 2.45 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1-minsize/ 
 
 ### URP
 Version | Size | Link
 --- | --- | ---
-2020.2.0f1 URP | 5.27 MB | https://deml.io/experiments/unity-webgl/2020.2.0f1-urp/ 
-2020.3.12f1 URP | 5.33 MB | https://deml.io/experiments/unity-webgl/2020.3.12f1-urp/ 
+2019.4.28f1 URP | 5.48 MB | https://deml.io/experiments/unity-webgl/2019.4.28f1-urp/ 
+2020.3.12f1 URP | 5.34 MB | https://deml.io/experiments/unity-webgl/2020.3.12f1-urp/ 
 2021.1.0f1 URP | 5.47 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1-urp/ 
 2021.2.0b1 URP | 4.73 MB | https://deml.io/experiments/unity-webgl/2021.2.0b1-urp/ 
 
@@ -62,6 +63,7 @@ Version | Size | Link
 
 ## Notes
 
+* If you want to use this project as a basis for your project, be sure to select the release/branch for your unity version. Beta versions oftentimes have problems, therefore I would recommend to use the latest LTS version to run your project.
 * The server is configured to support wasm streaming and brotli compression, see [.htaccess 2020](./Configuration/2020/.htaccess)  [.htaccess 2019](./Configuration/2019/.htaccess)
 * In order to get rid of the warning on android/iOS it is removed in a post process build step ([File](./Assets/Scripts/Editor/RemoveMobileSupportWarningWebBuild.cs))
 * You might need to reload the page on android/iOS when running the first time
@@ -86,3 +88,5 @@ Version | Size | Link
 --- | --- | ---
 2018.2.3f1 | 2.97 MB | https://deml.io/experiments/unity-webgl/2018.2.3f1/ 
 2019.3.0f6 | 3.28 MB | https://deml.io/experiments/unity-webgl/2019.3.0f6/
+2020.1.0f1 | 2.86 MB | https://deml.io/experiments/unity-webgl/2020.1.0f1/
+2020.2.0f1 | 2.82 MB | https://deml.io/experiments/unity-webgl/2020.2.0f1/ 
