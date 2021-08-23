@@ -23,24 +23,23 @@
 ### Default
 Version | Size | Link
 --- | --- | ---
-2019.4.25f1 | 2.96 MB | https://deml.io/experiments/unity-webgl/2019.4.25f1/ 
-2020.1.0f1 | 2.86 MB | https://deml.io/experiments/unity-webgl/2020.1.0f1/
-2020.2.0f1 | 2.82 MB | https://deml.io/experiments/unity-webgl/2020.2.0f1/ 
-2020.3.12f1 | 2.86 MB | https://deml.io/experiments/unity-webgl/2020.3.12f1/ 
+2019.4.28f1 | 2.97 MB | https://deml.io/experiments/unity-webgl/2019.4.28f1/ 
+2020.3.12f1 | 2.87 MB | https://deml.io/experiments/unity-webgl/2020.3.12f1/ 
 2021.1.0f1 | 2.85 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1/ 
-2021.2.0b1 | 2.66 MB | https://deml.io/experiments/unity-webgl/2021.2.0b1/ 
+2021.2.0b1 | 2.67 MB | https://deml.io/experiments/unity-webgl/2021.2.0b1/ 
 
 ### Minimum size
 Version | Size | Link
 --- | --- | ---
+2019.4.28f1 Min | 2.94 MB | https://deml.io/experiments/unity-webgl/2019.4.28f1-minsize/ 
 2020.3.12f1 Min | 2.43 MB | https://deml.io/experiments/unity-webgl/2020.3.12f1-minsize/ 
 2021.1.0f1 Min | 2.45 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1-minsize/ 
 
 ### URP
 Version | Size | Link
 --- | --- | ---
-2020.2.0f1 URP | 5.27 MB | https://deml.io/experiments/unity-webgl/2020.2.0f1-urp/ 
-2020.3.12f1 URP | 5.33 MB | https://deml.io/experiments/unity-webgl/2020.3.12f1-urp/ 
+2019.4.28f1 URP | 5.48 MB | https://deml.io/experiments/unity-webgl/2019.4.28f1-urp/ 
+2020.3.12f1 URP | 5.34 MB | https://deml.io/experiments/unity-webgl/2020.3.12f1-urp/ 
 2021.1.0f1 URP | 5.47 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1-urp/ 
 2021.2.0b1 URP | 4.73 MB | https://deml.io/experiments/unity-webgl/2021.2.0b1-urp/ 
 
@@ -86,3 +85,5 @@ Version | Size | Link
 --- | --- | ---
 2018.2.3f1 | 2.97 MB | https://deml.io/experiments/unity-webgl/2018.2.3f1/ 
 2019.3.0f6 | 3.28 MB | https://deml.io/experiments/unity-webgl/2019.3.0f6/
+2020.1.0f1 | 2.86 MB | https://deml.io/experiments/unity-webgl/2020.1.0f1/
+2020.2.0f1 | 2.82 MB | https://deml.io/experiments/unity-webgl/2020.2.0f1/ 
