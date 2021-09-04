@@ -5,11 +5,31 @@ function initialzeDebugConsole() {
     document.body.appendChild(consoleDiv);
 
     divLog = (message, className) => {
-        var entry = document.createElement('p');
-        entry.className = className;
-        entry.innerHTML = message;
+        var entry = document.createElement('div');
+        entry.classList.add('entry', className);
         consoleDiv.appendChild(entry);
         consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        
+        var text = document.createElement('p');
+        text.innerHTML = message;
+        entry.appendChild(text);
+        
+        var copyButton = document.createElement('button');
+        copyButton.className = 'copy-button';
+        copyButton.title = 'copy to clipboard';
+        entry.appendChild(copyButton);
+        
+        var copyIcon = document.createElement('div');
+        copyIcon.classList.add('icon', 'gg-copy');
+        copyButton.appendChild(copyIcon);
+        copyButton.addEventListener('click', function () {
+            navigator.clipboard.writeText(message);
+
+            copyButton.classList.add('active');
+            setTimeout(function () {
+                copyButton.classList.remove('active');
+            }, 1500);
+        });
     };
 
     defaultConsoleLog = console.log;
