@@ -28,7 +28,7 @@ Version | Size | Link
 2019.4.28f1 | 2.97 MB | https://deml.io/experiments/unity-webgl/2019.4.28f1/ 
 2020.3.12f1 | 2.87 MB | https://deml.io/experiments/unity-webgl/2020.3.12f1/ 
 2021.1.0f1 | 2.85 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1/ 
-2021.2.0b1 | 2.67 MB | https://deml.io/experiments/unity-webgl/2021.2.0b1/ 
+2021.2.0f1 | 2.69 MB | https://deml.io/experiments/unity-webgl/2021.2.0f1/ 
 
 ### Minimum size
 Version | Size | Link
@@ -36,6 +36,7 @@ Version | Size | Link
 2019.4.28f1 Min | 2.94 MB | https://deml.io/experiments/unity-webgl/2019.4.28f1-minsize/ 
 2020.3.12f1 Min | 2.43 MB | https://deml.io/experiments/unity-webgl/2020.3.12f1-minsize/ 
 2021.1.0f1 Min | 2.45 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1-minsize/ 
+2021.2.0f1 Min | 2.43 MB | https://deml.io/experiments/unity-webgl/2021.2.0f1-minsize/ 
 
 ### URP
 Version | Size | Link
@@ -43,7 +44,7 @@ Version | Size | Link
 2019.4.28f1 URP | 5.48 MB | https://deml.io/experiments/unity-webgl/2019.4.28f1-urp/ 
 2020.3.12f1 URP | 5.34 MB | https://deml.io/experiments/unity-webgl/2020.3.12f1-urp/ 
 2021.1.0f1 URP | 5.47 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1-urp/ 
-2021.2.0b1 URP | 4.73 MB | https://deml.io/experiments/unity-webgl/2021.2.0b1-urp/ 
+2021.2.0f1 URP | --- | https://issuetracker.unity3d.com/product/unity/issues/guid/1360175 
 
 ## Platform Compatibility
 
@@ -74,8 +75,17 @@ Version | Size | Link
 
 ### URP
 * URP adds additional ~2.5 MB file size compared to the builtin render pipeline.
+
 * In general the performance for URP seems to be better compared to builtin, but it has a larger build size.
 
+* With Unity 2021.2 there is currently a problem with shader compilation and therefore builds fail:
+
+  ```
+  Shader error in 'Hidden/Universal/CoreBlit': invalid subscript 'positionCS' at 
+  UnityWebGL-LoadingTest/Library/PackageCache/com.unity.render-pipelines.core@12.1.0/Runtime/Utilities/Blit.hlsl(92) (on gles)
+  Compiling Vertex program with DISABLE_TEXTURE2D_X_ARRAY
+  Platform defines: SHADER_API_DESKTOP UNITY_COLORSPACE_GAMMA UNITY_ENABLE_DETAIL_NORMALMAP UNITY_LIGHTMAP_RGBM_ENCODING UNITY_PBS_USE_BRDF1 UNITY_SPECCUBE_BLENDING UNITY_SPECCUBE_BOX_PROJECTION UNITY_USE_DITHER_MASK_FOR_ALPHABLENDED_SHADOWS
+  Disabled keywords: BLIT_SINGLE_SLICE SHADER_API_GLES30 UNITY_ASTC_NORMALMAP_ENCODING UNITY_ENABLE_NATIVE_SHADOW_LOOKUPS UNITY_ENABLE_REFLECTION_BUFFERS UNITY_FRAMEBUFFER_FETCH_AVAILABLE UNITY_HALF_PRECISION_FRAGMENT_SHADER_REGISTERS UNITY_HARDWARE_TIER1 UNITY_HARDWARE_TIER2 UNITY_HARDWARE_TIER3 UNITY_LIGHTMAP_DLDR_ENCODING UNITY_LIGHTMAP_FULL_HDR UNITY_LIGHT_PROBE_PROXY_VOLUME UNITY_METAL_SHADOWS_USE_POINT_FILTERING UNITY_NO_DXT5nm UNITY_NO_FULL_STANDARD_SHADER UNITY_NO_SCREENSPACE_SHADOWS UNITY_PBS_USE_BRDF2 UNITY_PBS_USE_BRDF3 UNITY_PRETRANSFORM_TO_DISPLAY_ORIENTATION UNITY_UNIFIED_SHADER_PRECISION_MODEL UNITY_VIRTUAL_TEXTURING
 
 ### Min Size builds
 * Built from branch [minsize](../../tree/minsize)
@@ -84,9 +94,9 @@ Version | Size | Link
 * C++ Compiler Configuration: `Master` 
 
 ## Older versions
-Version | Size | Link
---- | --- | ---
-2018.2.3f1 | 2.97 MB | https://deml.io/experiments/unity-webgl/2018.2.3f1/ 
-2019.3.0f6 | 3.28 MB | https://deml.io/experiments/unity-webgl/2019.3.0f6/
-2020.1.0f1 | 2.86 MB | https://deml.io/experiments/unity-webgl/2020.1.0f1/
-2020.2.0f1 | 2.82 MB | https://deml.io/experiments/unity-webgl/2020.2.0f1/ 
+| Version    | Size    | Link                                                |
+| ---------- | ------- | --------------------------------------------------- |
+| 2018.2.3f1 | 2.97 MB | https://deml.io/experiments/unity-webgl/2018.2.3f1/ |
+| 2019.3.0f6 | 3.28 MB | https://deml.io/experiments/unity-webgl/2019.3.0f6/ |
+| 2020.1.0f1 | 2.86 MB | https://deml.io/experiments/unity-webgl/2020.1.0f1/ |
+| 2020.2.0f1 | 2.82 MB | https://deml.io/experiments/unity-webgl/2020.2.0f1/ |
