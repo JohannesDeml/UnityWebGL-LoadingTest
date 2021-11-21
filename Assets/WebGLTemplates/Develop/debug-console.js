@@ -67,20 +67,40 @@ function initializeToggleButton(startActive) {
 
 var pageStartTime = performance.now();
 
-// Called by Unity
-function unityLoadingFinished(unityRealTimeSiceStartup, unityVersion) {
-    var timeDiv = document.getElementById('startupTime');
+// Handy panel in the top right corner to log stuff
+function getInfoPanel() {
+    var infoPanel = document.getElementById('infoPanel');
 
-    if(timeDiv == null || timeDiv == 'undefined') {
-        timeDiv = document.createElement('div');
-        timeDiv.id = 'startupTime';
-        document.body.appendChild(timeDiv);
+    if(infoPanel == null || infoPanel == 'undefined') {
+        infoPanel = document.createElement('div');
+        infoPanel.id = 'infoPanel';
+        document.body.appendChild(infoPanel);
     }
+    
+    return infoPanel;
+}
 
-    var currentTime = performance.now();
-    var startupTimeSeconds = ((currentTime - pageStartTime) / 1000.0).toFixed(2);
+function getOrCreateInfoEntry(id) {
+    const infoPanel = getInfoPanel();
+    var entry = infoPanel.querySelector(':scope > #' + id);
+    
+    if(entry == null || entry == 'undefined') {
+        entry = document.createElement('div');
+        entry.id = id;
+        infoPanel.appendChild(entry);
+    }
+    
+    return entry;
+}
 
-    timeDiv.innerHTML = `<h3>Startup time Unity ${unityVersion}</h3><br /><dl><dt>Page</dt> <dd>${startupTimeSeconds}s</dd><br /><dt>Unity</dt> <dd>${unityRealTimeSiceStartup}s</dd></dl>`;
+// Called by Unity
+function unityLoadingFinished(unityRealTimeSiceStartup, unityVersion, webGlVersion) {
+    const startupDiv = getOrCreateInfoEntry('startup');
+
+    const currentTime = performance.now();
+    const startupTimeSeconds = ((currentTime - pageStartTime) / 1000.0).toFixed(2);
+
+    startupDiv.innerHTML = `<h3>Startup time Unity ${unityVersion} (${webGlVersion})</h3><br /><dl><dt>Page</dt> <dd>${startupTimeSeconds}s</dd><br /><dt>Unity</dt> <dd>${unityRealTimeSiceStartup}s</dd></dl>`;
     console.info(`Startup finished - Page time: ${startupTimeSeconds}s, Unity real time since startup: ${unityRealTimeSiceStartup}s`);
 }
 

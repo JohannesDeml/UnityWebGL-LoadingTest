@@ -1,24 +1,28 @@
-﻿
-var WebGlPlugins =
+﻿var WebGlPlugins =
 {
-    _LogStartTime: function (startTime, unityVersion) {
-        var startTimeText = "";
-        var unityVersionText = "";
+    _LogStartTime: function (startTime, unityVersion, webGlVersion) {
+        //convert the string from unity to javascript strings
+        function toString(unityString) {
+            if(typeof UTF8ToString !== 'undefined') {
+                return UTF8ToString(unityString);
+            }
 
-        if(typeof UTF8ToString != 'undefined') {
-            startTimeText = UTF8ToString(startTime);
-            unityVersionText = UTF8ToString(unityVersion);
+            if (typeof Pointer_stringify !== 'undefined') {
+                return Pointer_stringify(unityString);
+            }
+
+            return unityString;
         }
-        else if (typeof Pointer_stringify !== 'undefined') {
-            startTimeText = Pointer_stringify(startTime);
-            unityVersionText = Pointer_stringify(unityVersion);
-        }
+
+        var startTimeText = toString(startTime);
+        var unityVersionText = toString(unityVersion);
+        var webGlVersionText = toString(webGlVersion);
         
         if(typeof unityLoadingFinished !== 'undefined') {
-            unityLoadingFinished(startTimeText, unityVersionText);
+            unityLoadingFinished(startTimeText, unityVersionText, webGlVersionText);
         }
         else {
-            console.info("Unity " + unityVersionText + " real time since startup: " + startTimeText);
+            console.info("Unity " + unityVersionText + " (" + webGlVersionText + ") real time since startup: " + startTimeText);
         }
     },
     
