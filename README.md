@@ -14,7 +14,8 @@
 * GPU Instancing for materials
 * Shadows
 * Brotli Compression
-* Togglable In-DOM Debug console ([Example](https://deml.io/experiments/unity-webgl/2021.1.4f1/))
+* Togglable In-DOM Debug console ([Demo](https://deml.io/experiments/unity-webgl/2021.1.4f1/))
+* Easy access to unity functions through the browser console ([Demo](https://deml.io/experiments/unity-webgl/2020.3.23f1/)|[Youtube](https://youtu.be/OjypxsD6XMI))
 * Handy debug functions for times and memory consumption
 * Responsive template layout for maximum mobile compatibility
 * Works with [Unity WebGL Publisher](https://play.unity.com/discover/all-showcases) (Use  [2020.3-lts](https://github.com/JohannesDeml/UnityWebGL-LoadingTest/tree/2020-lts) or [2020.3-lts-urp](https://github.com/JohannesDeml/UnityWebGL-LoadingTest/tree/2020-lts-urp) branch)
@@ -92,6 +93,20 @@ Version | Size | Link
 * Built with Code Optimization: `Size` and IL2CPP Code Generation: `Faster (smaller) builds`
 * Enable Exceptions: `None`
 * C++ Compiler Configuration: `Master` 
+
+## Browser Console commands
+
+*This functionality was added 2021-11-21 and is only supported by releases starting at that date*
+
+The script `WebGlBridge` adds an easy to access gameobject that can be called from the browser console through `unityGame.SendMessage("WebGL", "COMMAND_NAME",PARAMETER)`
+
+Currently the following commands are available:
+
+* `LogMemory()` : logs the current memory consumption
+* `SetApplicationRunInBackground(int runInBackground)` : [Application.runInBackground](https://docs.unity3d.com/ScriptReference/Application-runInBackground.html)
+* `SetApplicationTargetFrameRate(int targetFrameRate)` : [Application.targetFrameRate](https://docs.unity3d.com/ScriptReference/Application-targetFrameRate.html)
+* `SetTimeFixedDeltaTime(float fixedDeltaTime)` : [Time.fixedDeltaTime](https://docs.unity3d.com/ScriptReference/Time-fixedDeltaTime.html)
+* `SetTimeTimeScale(float timeScale)` : [Time.timeScale](https://docs.unity3d.com/ScriptReference/Time-timeScale.html)
 
 ## Older versions
 | Version    | Size    | Link                                                |
