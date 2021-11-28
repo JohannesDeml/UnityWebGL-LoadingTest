@@ -124,11 +124,16 @@
 }
 
 #infoPanel dt, #infoPanel dd {
-    display: inline-block;
+    display: inline;
 }
 
 #infoPanel dt:after{
     content: ':';
+}
+
+#infoPanel dd:after{
+    display: block;
+    content: '';
 }
 
 /* Copy icon from https://css.gg/copy */

@@ -20,7 +20,13 @@ namespace Supyrb
 	public static class WebGlPlugins
 	{
 		[DllImport("__Internal")]
-		private static extern void _LogStartTime(string startupTime, string unityVersion, string webGlVersion);
+		private static extern void _SetStringVariable(string variableName, string variableValue);
+		[DllImport("__Internal")]
+		private static extern void _AddTimeTrackingEvent(string eventName);
+		[DllImport("__Internal")]
+		private static extern void _ShowInfoPanel();
+		[DllImport("__Internal")]
+		private static extern void _HideInfoPanel();
 
 		[DllImport("__Internal")]
 		private static extern void _LogMemoryInfo(uint native, uint managed, uint total);
@@ -34,33 +40,80 @@ namespace Supyrb
 		[DllImport("__Internal")]
 		private static extern uint _GetDynamicMemorySize();
 
+		private static bool _infoPanelVisible = false;
+
 		/// <summary>
-		/// Logs the start time for Unity and the time since the webpage started loading
-		/// By default triggered by <see cref="WebGlLogger"/> in Awake with execution order -100
-		/// Needs the Develop WebGL Template to include the webpage time information
+		/// Sets a global string variable in JavaScript.
+		/// This variable can be accessed by the console and other javascript functions
 		/// </summary>
-		public static void LogStartTime()
+		/// <param name="variableName">Name of the variable</param>
+		/// <param name="value">Value of the variable</param>
+		public static void SetVariable(string variableName, string value)
 		{
 			#if UNITY_WEBGL && !UNITY_EDITOR
-			var graphicsDevice = SystemInfo.graphicsDeviceType;
-			string webGl = string.Empty;
-			switch (graphicsDevice)
-			{
-				case GraphicsDeviceType.OpenGLES2:
-					webGl = "WebGL 1";
-					break;
-				case GraphicsDeviceType.OpenGLES3:
-					webGl = "WebGL 2";
-					break;
-				default:
-					webGl = graphicsDevice.ToString();
-					break;
-			}
-
-			_LogStartTime(Time.realtimeSinceStartup.ToString("0.00"), Application.unityVersion, webGl);
+			_SetStringVariable(variableName, value);
 			#else
-			Debug.Log("Not supported on this platform");
+			Debug.Log($"{nameof(WebGlPlugins)}.{nameof(SetVariable)} called with {variableName}: {value}");
 			#endif
+		}
+		
+		/// <summary>
+		/// Adds a time marker at the call time to the javascript map "unityTimeTrackers"
+		/// The mapped value is performance.now() at the time of the call
+		/// </summary>
+		/// <param name="eventName">Name of the tracking event, e.g. "Awake"</param>
+		public static void AddTimeTrackingEvent(string eventName)
+		{
+			#if UNITY_WEBGL && !UNITY_EDITOR
+			_AddTimeTrackingEvent(eventName);
+			#else
+			Debug.Log($"{nameof(WebGlPlugins)}.{nameof(AddTimeTrackingEvent)} called with {eventName}");
+			#endif
+		}
+		
+		/// <summary>
+		/// Show the info panel in the top right corner
+		/// By default triggered by <see cref="WebGlTimeTracker"/> in Awake
+		/// Needs the Develop WebGL Template to provide the logic
+		/// </summary>
+		public static void ShowInfoPanel()
+		{
+			_infoPanelVisible = true;
+			#if UNITY_WEBGL && !UNITY_EDITOR
+			_ShowInfoPanel();
+			#else
+			Debug.Log($"{nameof(WebGlPlugins)}.{nameof(ShowInfoPanel)} called");
+			#endif
+		}
+		
+		/// <summary>
+		/// Hide the info panel in the top right corner
+		/// By default triggered by <see cref="WebGlTimeTracker"/> in Awake
+		/// Needs the Develop WebGL Template to provide the logic
+		/// </summary>
+		public static void HideInfoPanel()
+		{
+			_infoPanelVisible = false;
+			#if UNITY_WEBGL && !UNITY_EDITOR
+			_HideInfoPanel();
+			#else
+			Debug.Log($"{nameof(WebGlPlugins)}.{nameof(HideInfoPanel)} called");
+			#endif
+		}
+
+		/// <summary>
+		/// Toggle the visibility of the info panel
+		/// </summary>
+		public static void ToggleInfoPanel()
+		{
+			if (_infoPanelVisible)
+			{
+				HideInfoPanel();
+			}
+			else
+			{
+				ShowInfoPanel();
+			}
 		}
 
 		/// <summary>
@@ -74,7 +127,7 @@ namespace Supyrb
 			var total = GetTotalMemorySize();
 			Debug.Log($"Memory stats:\nManaged: {managed:0.00}MB\nNative: {native:0.00}MB\nTotal: {total:0.00}MB");
 			#else
-			Debug.Log("Not supported on this platform");
+			Debug.Log($"{nameof(WebGlPlugins)}.{nameof(LogMemory)} called");
 			#endif
 		}
 
@@ -88,7 +141,7 @@ namespace Supyrb
 			var bytes = _GetTotalMemorySize();
 			return GetMegaBytes(bytes);
 			#else
-			Debug.Log("Not supported on this platform");
+			Debug.Log($"{nameof(WebGlPlugins)}.{nameof(GetTotalMemorySize)} called");
 			return -1f;
 			#endif
 		}
@@ -103,7 +156,7 @@ namespace Supyrb
 			var bytes = _GetStaticMemorySize();
 			return GetMegaBytes(bytes);
 			#else
-			Debug.Log("Not supported on this platform");
+			Debug.Log($"{nameof(WebGlPlugins)}.{nameof(GetStaticMemorySize)} called");
 			return -1f;
 			#endif
 		}
@@ -118,7 +171,7 @@ namespace Supyrb
 			var bytes = _GetStaticMemorySize();
 			return GetMegaBytes(bytes);
 			#else
-			Debug.Log("Not supported on this platform");
+			Debug.Log($"{nameof(WebGlPlugins)}.{nameof(GetDynamicMemorySize)} called");
 			return -1f;
 			#endif
 		}
@@ -132,7 +185,7 @@ namespace Supyrb
 			#if UNITY_WEBGL && !UNITY_EDITOR
 			return GetDynamicMemorySize() + GetStaticMemorySize();
 			#else
-			Debug.Log("Not supported on this platform");
+			Debug.Log($"{nameof(WebGlPlugins)}.{nameof(GetNativeMemorySize)} called");
 			return -1f;
 			#endif
 		}

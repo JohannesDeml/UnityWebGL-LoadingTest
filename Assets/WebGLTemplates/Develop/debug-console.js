@@ -65,19 +65,34 @@ function initializeToggleButton(startActive) {
     labelDiv.appendChild(iconDiv);
 }
 
-var pageStartTime = performance.now();
-
-// Handy panel in the top right corner to log stuff
 function getInfoPanel() {
-    var infoPanel = document.getElementById('infoPanel');
+    let infoPanel = document.getElementById('infoPanel');
 
     if(infoPanel == null || infoPanel == 'undefined') {
         infoPanel = document.createElement('div');
         infoPanel.id = 'infoPanel';
         document.body.appendChild(infoPanel);
+        var infoHeader = document.createElement('h3');
+        if(typeof unityVersion != `undefined` && typeof webGlVersion != `undefined`) {
+            // Set by WebGlBridge in Unity
+            infoHeader.textContent = `Unity ${unityVersion} (${webGlVersion})`;
+        } else {
+            infoHeader.textContent = `Unity InfoPanel`;
+        }
+        infoPanel.appendChild(infoHeader);
     }
     
     return infoPanel;
+}
+
+function setInfoPanelVisible(visible) {
+    const infoPanel = getInfoPanel();
+    if(visible) {
+        infoPanel.style.visibility = 'visible';
+    }
+    else {
+        infoPanel.style.visibility = 'hidden';
+    }
 }
 
 function getOrCreateInfoEntry(id) {
@@ -93,15 +108,18 @@ function getOrCreateInfoEntry(id) {
     return entry;
 }
 
-// Called by Unity
-function unityLoadingFinished(unityRealTimeSiceStartup, unityVersion, webGlVersion) {
-    const startupDiv = getOrCreateInfoEntry('startup');
+function onAddTimeTracker(eventName) {
+    refreshTrackingDiv();
+}
 
-    const currentTime = performance.now();
-    const startupTimeSeconds = ((currentTime - pageStartTime) / 1000.0).toFixed(2);
-
-    startupDiv.innerHTML = `<h3>Startup time Unity ${unityVersion} (${webGlVersion})</h3><br /><dl><dt>Page</dt> <dd>${startupTimeSeconds}s</dd><br /><dt>Unity</dt> <dd>${unityRealTimeSiceStartup}s</dd></dl>`;
-    console.info(`Startup finished - Page time: ${startupTimeSeconds}s, Unity real time since startup: ${unityRealTimeSiceStartup}s`);
+function refreshTrackingDiv() {
+    const trackingDiv = getOrCreateInfoEntry('tracking');
+    let innerHtml = '<dl>';
+    unityTimeTrackers.forEach((value, key, map) => {
+        innerHtml += `<dt>${key}</dt> <dd>${(value/1000.0).toFixed(2)}s</dd>`;
+    });
+    innerHtml += '</dl>';
+    trackingDiv.innerHTML = innerHtml;
 }
 
 initializeToggleButton(false);

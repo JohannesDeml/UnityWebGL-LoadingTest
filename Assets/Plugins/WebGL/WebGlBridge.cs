@@ -10,6 +10,7 @@
 
 using System;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Supyrb
 {
@@ -21,9 +22,30 @@ namespace Supyrb
 		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
 		private static void OnBeforeSceneLoadRuntimeMethod()
 		{
+			SetGlobalVariables();
 			var bridgeInstance = new GameObject("WebGL");
 			DontDestroyOnLoad(bridgeInstance);
 			bridgeInstance.AddComponent<WebGlBridge>();
+		}
+
+		private static void SetGlobalVariables()
+		{
+			var graphicsDevice = SystemInfo.graphicsDeviceType;
+			string webGl = string.Empty;
+			switch (graphicsDevice)
+			{
+				case GraphicsDeviceType.OpenGLES2:
+					webGl = "WebGL 1";
+					break;
+				case GraphicsDeviceType.OpenGLES3:
+					webGl = "WebGL 2";
+					break;
+				default:
+					webGl = graphicsDevice.ToString();
+					break;
+			}
+			WebGlPlugins.SetVariable("webGlVersion", webGl);
+			WebGlPlugins.SetVariable("unityVersion", Application.unityVersion);
 		}
 
 		private void Start()
@@ -39,9 +61,10 @@ namespace Supyrb
 			          "- SetApplicationTargetFrameRate(int targetFrameRate) -> Application.targetFrameRate\n" +
 			          "- SetTimeFixedDeltaTime(float fixedDeltaTime) -> Time.fixedDeltaTime\n" +
 			          "- SetTimeTimeScale(float timeScale) -> Time.timeScale\n" +
+			          "- ToggleInfoPanel() -> Toggle develop ui visibility of InfoPanel\n" +
 			          "\nRun a command through 'unityGame.SendMessage(\"WebGL\", \"COMMAND_NAME\",PARAMETER)'");
 		}
-		
+
 		/// <summary>
 		/// Logs the current memory usage
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL","LogMemory");</code>
@@ -91,6 +114,14 @@ namespace Supyrb
 		public void SetTimeTimeScale(float timeScale)
 		{
 			Time.timeScale = timeScale;
+		}
+		
+		/// <summary>
+		/// Toggle the visibility of the info panel in the top right corner
+		/// </summary>
+		public void ToggleInfoPanel()
+		{
+			WebGlPlugins.ToggleInfoPanel();
 		}
 	}
 }

@@ -1,6 +1,6 @@
 ﻿var WebGlPlugins =
 {
-    _LogStartTime: function (startTime, unityVersion, webGlVersion) {
+    _SetStringVariable: function(variableName, variableValue) {
         //convert the string from unity to javascript strings
         function toString(unityString) {
             if(typeof UTF8ToString !== 'undefined') {
@@ -14,15 +14,49 @@
             return unityString;
         }
 
-        var startTimeText = toString(startTime);
-        var unityVersionText = toString(unityVersion);
-        var webGlVersionText = toString(webGlVersion);
-        
-        if(typeof unityLoadingFinished !== 'undefined') {
-            unityLoadingFinished(startTimeText, unityVersionText, webGlVersionText);
+        const variableNameText = toString(variableName);
+        const variableValueText = toString(variableValue);
+        window[variableNameText] = variableValueText;
+    },
+
+    _AddTimeTrackingEvent: function(eventName) {
+        //convert the string from unity to javascript strings
+        function toString(unityString) {
+            if(typeof UTF8ToString !== 'undefined') {
+                return UTF8ToString(unityString);
+            }
+
+            if (typeof Pointer_stringify !== 'undefined') {
+                return Pointer_stringify(unityString);
+            }
+
+            return unityString;
         }
-        else {
-            console.info("Unity " + unityVersionText + " (" + webGlVersionText + ") real time since startup: " + startTimeText);
+
+        if(typeof unityTimeTrackers == 'undefined') {
+            unityTimeTrackers = new Map();
+        }
+
+        const eventNameText = toString(eventName);
+        const currentTime = performance.now();
+        unityTimeTrackers.set(eventNameText, currentTime);
+
+        if(typeof onAddTimeTracker !== 'undefined') {
+            onAddTimeTracker(eventNameText);
+        }
+        
+        console.log('Time tracker event' +eventNameText +': ' + currentTime);
+    },
+
+    _ShowInfoPanel: function () {
+        if(typeof setInfoPanelVisible !== 'undefined') {
+            setInfoPanelVisible(true);
+        }
+    },
+
+    _HideInfoPanel: function () {
+        if(typeof setInfoPanelVisible !== 'undefined') {
+            setInfoPanelVisible(false);
         }
     },
     
