@@ -11,56 +11,62 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectSpawner : MonoBehaviour
+namespace Supyrb
 {
-	[SerializeField]
-	private GameObject prefab = null;
-
-	[SerializeField]
-	private float spawnCooldownSeconds = 0.5f;
-
-	[SerializeField]
-	private int maxInstances = 200;
-
-	private int instances = 0;
-	private Queue<GameObject> spawnedObjects = null;
-	private float lastSpawnTime;
-
-	void Awake()
+	/// <summary>
+	/// Spawns an object in regular intervals
+	/// </summary>
+	public class ObjectSpawner : MonoBehaviour
 	{
-		spawnedObjects = new Queue<GameObject>(maxInstances + 5);
-		lastSpawnTime = Time.time;
-	}
+		[SerializeField]
+		private GameObject prefab = null;
 
-	void Update()
-	{
-		if (lastSpawnTime + spawnCooldownSeconds <= Time.time)
+		[SerializeField]
+		private float spawnCooldownSeconds = 0.5f;
+
+		[SerializeField]
+		private int maxInstances = 200;
+
+		private int instances = 0;
+		private Queue<GameObject> spawnedObjects = null;
+		private float lastSpawnTime;
+
+		private void Awake()
 		{
-			SpawnObject();
+			spawnedObjects = new Queue<GameObject>(maxInstances + 5);
 			lastSpawnTime = Time.time;
 		}
-	}
 
-	private void SpawnObject()
-	{
-		if (instances >= maxInstances)
+		private void Update()
 		{
-			var recycleGo = spawnedObjects.Dequeue();
-			recycleGo.transform.localPosition = transform.position;
-			recycleGo.transform.localRotation = transform.localRotation;
-			spawnedObjects.Enqueue(recycleGo);
-			return;
+			if (lastSpawnTime + spawnCooldownSeconds <= Time.time)
+			{
+				SpawnObject();
+				lastSpawnTime = Time.time;
+			}
 		}
 
-		var newGo = Instantiate(prefab, transform.position, transform.rotation);
-		spawnedObjects.Enqueue(newGo);
-		instances++;
-	}
+		private void SpawnObject()
+		{
+			if (instances >= maxInstances)
+			{
+				var recycleGo = spawnedObjects.Dequeue();
+				recycleGo.transform.localPosition = transform.position;
+				recycleGo.transform.localRotation = transform.localRotation;
+				spawnedObjects.Enqueue(recycleGo);
+				return;
+			}
 
-	#if UNITY_EDITOR
-	private void OnDrawGizmos()
-	{
-		Gizmos.DrawWireSphere(transform.position, 0.5f);
+			var newGo = Instantiate(prefab, transform.position, transform.rotation);
+			spawnedObjects.Enqueue(newGo);
+			instances++;
+		}
+
+		#if UNITY_EDITOR
+		private void OnDrawGizmos()
+		{
+			Gizmos.DrawWireSphere(transform.position, 0.5f);
+		}
+		#endif
 	}
-	#endif
 }
