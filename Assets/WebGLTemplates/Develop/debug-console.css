@@ -123,15 +123,28 @@
     background: rgba(255, 255, 255, 0.4);
 }
 
-#infoPanel dt, #infoPanel dd {
+dt, dd {
     display: inline;
 }
 
-#infoPanel dt:after{
+dt:after{
     content: ':';
 }
 
-#infoPanel dd:after{
+.tracking-seconds:after{
+    content: 's';
+}
+
+.tracking-milliseconds:after{
+    content: 'ms';
+}
+
+/* Hide Milliseconds value, still useful for CI to get exact values */
+.tracking-milliseconds, .tracking-milliseconds:after {
+    display: none;
+}
+
+dl div:after {
     display: block;
     content: '';
 }
@@ -178,4 +191,4 @@
     left: 2px;
     top: 2px;
     box-shadow: 0 4px 0,0 8px 0
-} 
+}
