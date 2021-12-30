@@ -13,6 +13,9 @@ using UnityEngine;
 
 namespace Supyrb
 {
+	/// <summary>
+	/// Updates the transform with a constant rotation
+	/// </summary>
 	public class ConstantRotation : MonoBehaviour
 	{
 		public enum UpdateType
@@ -60,7 +63,7 @@ namespace Supyrb
 		}
 
 
-		void LateUpdate()
+		private void LateUpdate()
 		{
 			CalculatePerFrameRotation();
 			ApplyRotation();
@@ -78,7 +81,7 @@ namespace Supyrb
 			}
 		}
 
-		public void CalculatePerFrameRotation()
+		private void CalculatePerFrameRotation()
 		{
 			rotationPerUpdate = Quaternion.AngleAxis(degreePerSecond * deltaTime, rotationAxis);
 		}
@@ -104,7 +107,7 @@ namespace Supyrb
 		}
 
 		#if UNITY_EDITOR
-		void OnDrawGizmosSelected()
+		private void OnDrawGizmosSelected()
 		{
 			Gizmos.color = Color.yellow;
 			Gizmos.DrawRay(transform.position, space == Space.Self ? transform.rotation * rotationAxis.normalized : rotationAxis.normalized);
