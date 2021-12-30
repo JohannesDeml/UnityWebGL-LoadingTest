@@ -4,7 +4,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>{{{ PRODUCT_NAME }}}</title>
+  <title>%UNITY_WEB_NAME%</title>
   <style>
     * {
       padding: 0;
@@ -17,7 +17,7 @@
       text-align: center;
     }
 
-    #unity-canvas {
+    #unity-canvas-wrapper, #unity-canvas-wrapper canvas {
       position: absolute;
       left: 0px;
       top: 0px;
@@ -51,59 +51,63 @@
 </head>
 
 <body>
-  <script src="./debug-console.js"></script>
-  <canvas id="unity-canvas"></canvas>
-  <div id="unity-loading-bar">
-    <div id="unity-progress-bar">
-    </div>
-  </div>
-  <script src="Build/{{{ LOADER_FILENAME }}}"></script>
-  <script>
-    const maxPixelRatioMobile = 2.0;
-    const maxPixelRatioDesktop = 1.5;
+<script src="./debug-console.js"></script>
+<div id="unity-canvas-wrapper"></div>
+<div id="unity-loading-bar">
+  <div id="unity-progress-bar"></div>
+</div>
+<script>
+  const maxPixelRatioMobile = 2.0;
+  const maxPixelRatioDesktop = 1.5;
 
-    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    var maxDevicePixelRatio = isMobile? maxPixelRatioMobile: maxPixelRatioDesktop;
-    var pixelRatio = Math.min(window.devicePixelRatio, maxDevicePixelRatio);
+  var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  var maxDevicePixelRatio = isMobile? maxPixelRatioMobile: maxPixelRatioDesktop;
+  var pixelRatio = Math.min(window.devicePixelRatio, maxDevicePixelRatio);
 
-    var buildUrl = "Build";
-    var loaderUrl = buildUrl + "/{{{ LOADER_FILENAME }}}";
-    var config = {
-      dataUrl: buildUrl + "/{{{ DATA_FILENAME }}}",
-      frameworkUrl: buildUrl + "/{{{ FRAMEWORK_FILENAME }}}",
-      codeUrl: buildUrl + "/{{{ CODE_FILENAME }}}",
-#if MEMORY_FILENAME
-        memoryUrl: buildUrl + "/{{{ MEMORY_FILENAME }}}",
-#endif
-#if SYMBOLS_FILENAME
-        symbolsUrl: buildUrl + "/{{{ SYMBOLS_FILENAME }}}",
-#endif
-      streamingAssetsUrl: "StreamingAssets",
-      companyName: "{{{ COMPANY_NAME }}}",
-      productName: "{{{ PRODUCT_NAME }}}",
-      productVersion: "{{{ PRODUCT_VERSION }}}",
-      devicePixelRatio: pixelRatio
-    };
+  var canvasWrapper = document.querySelector("#unity-canvas-wrapper");
+  var canvas = null; // Will hold the reference of the unity canvas once created
+  var loadingBar = document.querySelector("#unity-loading-bar");
+  var progressBar = document.querySelector("#unity-progress-bar");
+  var unityGame; // This can be used to access the application with .SendMessage() commands
 
-    var canvas = document.querySelector("#unity-canvas");
-    var loadingBar = document.querySelector("#unity-loading-bar");
-    var progressBar = document.querySelector("#unity-progress-bar");
+  var script = document.createElement("script");
+  script.src = "%UNITY_WEBGL_LOADER_URL%";
+  script.onload = function() {
+    unityGame = UnityLoader.instantiate(canvasWrapper, "%UNITY_WEBGL_BUILD_URL%", { onProgress: OnUnityProgress });
+  };
 
-    var unityGame; // This can be used to access the application with .SendMessage() commands
-    var script = document.createElement("script");
-    script.src = loaderUrl;
-    script.onload = function() {
-      createUnityInstance(canvas, config, function(progress) {
-        progressBar.style.width = 100 * progress + "%";
-      }).then(function(unityInstance) {
-        unityGame = unityInstance;
-        loadingBar.style.display = "none";
-      }).catch(function(message) {
-        alert(message);
-      });
-    };
-    document.body.appendChild(script);
-  </script>
+  function OnUnityProgress(gameInstance, progress) {
+    if (!gameInstance.Module)
+      return;
+
+    if (!gameInstance.logo) {
+      gameInstance.logo = document.createElement("div");
+      gameInstance.logo.className = "logo " + gameInstance.Module.splashScreenStyle;
+      gameInstance.container.appendChild(gameInstance.logo);
+    }
+    
+    if(canvas == null) {
+      canvas = canvasWrapper.querySelector("canvas");
+      UpdateCanvasResolution();
+    }
+    
+    progressBar.style.width = 100 * progress + "%";
+    if (progress >= 1)
+      loadingBar.style.display = "none";
+  }
+  
+  window.addEventListener("resize", UpdateCanvasResolution);
+  
+  function UpdateCanvasResolution() {
+    if(canvas == null) {
+      return;
+    }
+    canvas.style.width = canvasWrapper.offsetWidth * pixelRatio;
+    canvas.style.height = canvasWrapper.offsetHeight * pixelRatio;
+  }
+
+  document.body.appendChild(script);
+</script>
 </body>
 
 </html>
