@@ -26,6 +26,7 @@
 ### Default
 Version | Size | Link
 --- | --- | ---
+2018.4.36f1 | 2.80 MB | https://deml.io/experiments/unity-webgl/2018.4.36f1/ 
 2019.4.28f1 | 2.97 MB | https://deml.io/experiments/unity-webgl/2019.4.28f1/ 
 2020.3.12f1 | 2.87 MB | https://deml.io/experiments/unity-webgl/2020.3.12f1/ 
 2021.1.0f1 | 2.85 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1/ 
@@ -34,6 +35,7 @@ Version | Size | Link
 ### Minimum size
 Version | Size | Link
 --- | --- | ---
+2018.4.36f1 Min | 2.77 MB | https://deml.io/experiments/unity-webgl/2018.4.36f1-minsize/ 
 2019.4.28f1 Min | 2.94 MB | https://deml.io/experiments/unity-webgl/2019.4.28f1-minsize/ 
 2020.3.12f1 Min | 2.43 MB | https://deml.io/experiments/unity-webgl/2020.3.12f1-minsize/ 
 2021.1.0f1 Min | 2.45 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1-minsize/ 
@@ -42,6 +44,7 @@ Version | Size | Link
 ### URP
 Version | Size | Link
 --- | --- | ---
+2018.4.36f1 LWRP | --- | https://deml.io/experiments/unity-webgl/2018.4.36f1-lwrp/ - Broken ([Notes](https://forum.unity.com/threads/exporting-to-webgl-unity-lwrp.549718/#post-4770827)) 
 2019.4.28f1 URP | 5.48 MB | https://deml.io/experiments/unity-webgl/2019.4.28f1-urp/ 
 2020.3.12f1 URP | 5.34 MB | https://deml.io/experiments/unity-webgl/2020.3.12f1-urp/ 
 2021.1.0f1 URP | 5.47 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1-urp/ 
