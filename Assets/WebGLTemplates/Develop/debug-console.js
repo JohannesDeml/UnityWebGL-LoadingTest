@@ -116,7 +116,11 @@ function refreshTrackingDiv() {
     const trackingDiv = getOrCreateInfoEntry('tracking');
     let innerHtml = '<dl>';
     unityTimeTrackers.forEach((value, key, map) => {
-        innerHtml += `<dt>${key}</dt> <dd>${(value/1000.0).toFixed(2)}s</dd>`;
+        innerHtml += `<div id='tracking-${key}'>
+                        <dt>${key}</dt>
+                        <dd class='tracking-seconds'>${(value/1000.0).toFixed(2)}</dd>
+                        <dd class='tracking-milliseconds'>${value}</dd>
+                      </div>`;
     });
     innerHtml += '</dl>';
     trackingDiv.innerHTML = innerHtml;

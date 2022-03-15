@@ -1,0 +1,142 @@
+name: Build project & release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  variables:
+    name: Define variables 🔗
+    runs-on: ubuntu-latest
+    outputs:
+      UNITY_VERSION: ${{ steps.set_unity_version.outputs.VERSION }}
+      TAG: ${{ steps.set_tag.outputs.VERSION }}
+      TARGET_NAME: ${{ steps.set_target_name.outputs.VERSION }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          lfs: true
+
+      - name: Set unity version
+        id: set_unity_version
+        run: |
+          UNITY_VERSION=$(sed -n 's/^\m_EditorVersion: //p'< ./ProjectSettings/ProjectVersion.txt)
+          echo "::set-output name=VERSION::$UNITY_VERSION"
+
+      - name: Set tag
+        id: set_tag
+        run: echo "::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}"
+
+      - name: Set target name
+        id: set_target_name
+        run: echo "::set-output name=VERSION::${{ steps.set_tag.outputs.VERSION }}"
+
+      - name: Log variables
+        run: |
+          echo "Unity Version is ${{ steps.set_unity_version.outputs.VERSION }}"
+          echo "Tag is ${{ steps.set_tag.outputs.VERSION }}"
+          echo "Target name is ${{ steps.set_target_name.outputs.VERSION }}"
+
+  tagVersionMatchTest:
+    needs: [ variables ]
+    name: Check tag version match ☑
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Log tag and version
+        run: echo "Github tag '${{ needs.variables.outputs.TAG }}' has to start with unity version '${{ needs.variables.outputs.UNITY_VERSION }}'"
+
+      - name: Version match ✔
+        if: startsWith(${{ needs.variables.outputs.TAG }}, {{ needs.variables.outputs.UNITY_VERSION }}
+        run: echo "Versions are matching 🥳"
+
+      - name: Version missmatch ❌
+        if: ${{ !startsWith(needs.variables.outputs.TAG, needs.variables.outputs.UNITY_VERSION) }}
+        uses: actions/github-script@v3
+        with:
+          script: |
+              core.setFailed('Unity version does not match tag version')
+
+  buildProject:
+    name: Create Unity WebGL Build 🏗
+    needs: [ variables ]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          lfs: true
+
+      - uses: actions/cache@v2
+        with:
+          path: Library
+          key: Library-WebGL
+          restore-keys: Library-
+
+      - name: Build project
+        uses: game-ci/unity-builder@v2
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          targetPlatform: WebGL
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: WebGL-${{ needs.variables.outputs.TARGET_NAME }}
+          path: build/WebGL
+
+  createRelease:
+    name: Create Github release 🐙
+    # only run for the main build, the others will be added to the release manually
+    if: ${{ needs.variables.outputs.TAG == needs.variables.outputs.UNITY_VERSION }}
+    needs: [ variables, buildProject ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: WebGL-${{ needs.variables.outputs.TARGET_NAME }}
+
+      - name: Change folder name
+        run: mv WebGL WebGL-LoadingTest-${{ needs.variables.outputs.TARGET_NAME }}
+
+      - name: Zip release
+        run: zip -r WebGL-${{ needs.variables.outputs.TARGET_NAME }}.zip WebGL-LoadingTest-${{ needs.variables.outputs.TARGET_NAME }}
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: WebGL-${{ needs.variables.outputs.TARGET_NAME }}.zip
+
+  deployOnServer:
+    name: Deploy on server 🚀
+    needs: [ variables, buildProject ]
+    # Guarded by username, if you want to do something sinilar remove the next line
+    if: ${{ github.repository_owner == 'JohannesDeml' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: WebGL-${{ needs.variables.outputs.TARGET_NAME }}
+          path: build
+
+      - name: Display structure of root files
+        run: ls -R
+        working-directory: build/WebGL
+
+      - name: Deploy ⤴
+        uses: SamKirkland/FTP-Deploy-Action@4.2.0
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
+          protocol: ftps
+          local-dir: ./build/WebGL/
+          server-dir: ./${{ needs.variables.outputs.TARGET_NAME }}/
