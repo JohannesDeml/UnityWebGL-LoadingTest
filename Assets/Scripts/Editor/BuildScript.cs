@@ -69,6 +69,7 @@ namespace UnityBuilderAction
                         {
                             EditorUserBuildSettings.SetPlatformSettings(BuildPipeline.GetBuildTargetName(BuildTarget.WebGL), "CodeOptimization", "size");
                             PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.None;
+                            PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.WebGL, Il2CppCompilerConfiguration.Master);
                         }
                     }
                     break;

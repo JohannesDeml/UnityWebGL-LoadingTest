@@ -12,9 +12,9 @@ jobs:
     outputs:
       UNITY_VERSION: ${{ steps.set_unity_version.outputs.VERSION }}
       TAG: ${{ steps.set_tag.outputs.VERSION }}
-      TARGET_NAME: ${{ steps.set_target_name.outputs.VERSION }}
+      BUILD_NAME: ${{ steps.set_build_name.outputs.VERSION }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
           lfs: true
@@ -30,14 +30,14 @@ jobs:
         run: echo "::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}"
 
       - name: Set target name
-        id: set_target_name
-        run: echo "::set-output name=VERSION::${{ steps.set_tag.outputs.VERSION }}"
+        id: set_build_name
+        run: echo "::set-output name=VERSION::WebGL-${{ steps.set_tag.outputs.VERSION }}"
 
       - name: Log variables
         run: |
-          echo "Unity Version is ${{ steps.set_unity_version.outputs.VERSION }}"
-          echo "Tag is ${{ steps.set_tag.outputs.VERSION }}"
-          echo "Target name is ${{ steps.set_target_name.outputs.VERSION }}"
+          echo "UNITY_VERSION -> ${{ steps.set_unity_version.outputs.VERSION }}"
+          echo "TAG -> ${{ steps.set_tag.outputs.VERSION }}"
+          echo "BUILD_NAME -> ${{ steps.set_build_name.outputs.VERSION }}"
 
   tagVersionMatchTest:
     needs: [ variables ]
@@ -66,12 +66,12 @@ jobs:
     strategy:
       fail-fast: false
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
           lfs: true
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: Library
           key: Library-WebGL
@@ -85,10 +85,11 @@ jobs:
           buildMethod: UnityBuilderAction.BuildScript.BuildWithCommandlineArgs
           customParameters: -tag ${{ needs.variables.outputs.TAG }}
           targetPlatform: WebGL
+          buildName: ${{ needs.variables.outputs.BUILD_NAME }}
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
-          name: WebGL-${{ needs.variables.outputs.TARGET_NAME }}
+          name: ${{ needs.variables.outputs.BUILD_NAME }}
           path: build/WebGL
 
   createRelease:
@@ -98,20 +99,27 @@ jobs:
     needs: [ variables, buildProject ]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
-          name: WebGL-${{ needs.variables.outputs.TARGET_NAME }}
-
-      - name: Change folder name
-        run: mv WebGL WebGL-LoadingTest-${{ needs.variables.outputs.TARGET_NAME }}
+          name: ${{ needs.variables.outputs.BUILD_NAME }}
 
       - name: Zip release
-        run: zip -r WebGL-${{ needs.variables.outputs.TARGET_NAME }}.zip WebGL-LoadingTest-${{ needs.variables.outputs.TARGET_NAME }}
+        run: zip -r ${{ needs.variables.outputs.BUILD_NAME }}.zip ${{ needs.variables.outputs.BUILD_NAME }}
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          files: WebGL-${{ needs.variables.outputs.TARGET_NAME }}.zip
+          files: ${{ needs.variables.outputs.BUILD_NAME }}.zip
+          body: |
+            # ${{ needs.variables.outputs.TAG }}
+            ## Changes
+            *
+            *
+
+            [${{ needs.variables.outputs.TAG }} Demo](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.TAG }}/)
+            [${{ needs.variables.outputs.TAG }}-minsize Demo](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.TAG }}-minsize/)
+            [${{ needs.variables.outputs.TAG }}-urp Demo](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.TAG }}-urp/)
+
 
   deployOnServer:
     name: Deploy on server 🚀
@@ -121,16 +129,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
-          name: WebGL-${{ needs.variables.outputs.TARGET_NAME }}
+          name: ${{ needs.variables.outputs.BUILD_NAME }}
           path: build
 
       - name: Display structure of root files
         run: ls -R
-        working-directory: build/WebGL
+        working-directory: build/${{ needs.variables.outputs.BUILD_NAME }}
 
       - name: Deploy ⤴
         uses: SamKirkland/FTP-Deploy-Action@4.2.0
@@ -140,5 +148,5 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: 21
           protocol: ftps
-          local-dir: ./build/WebGL/
-          server-dir: ./${{ needs.variables.outputs.TARGET_NAME }}/
+          local-dir: ./build/${{ needs.variables.outputs.BUILD_NAME }}/
+          server-dir: ./${{ needs.variables.outputs.TAG }}/
