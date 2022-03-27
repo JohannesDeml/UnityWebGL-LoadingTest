@@ -82,6 +82,8 @@ jobs:
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
+          buildMethod: UnityBuilderAction.BuildScript.BuildWithCommandlineArgs
+          customParameters: -tag ${{ needs.variables.outputs.TAG }}
           targetPlatform: WebGL
 
       - uses: actions/upload-artifact@v2
