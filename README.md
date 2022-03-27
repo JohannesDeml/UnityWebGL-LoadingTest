@@ -18,8 +18,9 @@
 * Easy access to unity functions through the browser console ([Demo](https://deml.io/experiments/unity-webgl/2020.3.23f1/)|[Youtube](https://youtu.be/OjypxsD6XMI))
 * Handy debug functions for times and memory consumption
 * Responsive template layout for maximum mobile compatibility
+* Github Actions to automatically build the project and deploy it on the server via [Game CI](https://game.ci/)
 * Works with [Unity WebGL Publisher](https://play.unity.com/discover/all-showcases) (Use  [2020.3-lts](https://github.com/JohannesDeml/UnityWebGL-LoadingTest/tree/2020-lts) or [2020.3-lts-urp](https://github.com/JohannesDeml/UnityWebGL-LoadingTest/tree/2020-lts-urp) branch)
-* Branches for different Unity versions
+* Tracking multiple Unity versions starting from 2018.4
 
 ## Live Demos
 
@@ -28,7 +29,7 @@ Version | Size | Link
 --- | --- | ---
 2018.4.36f1 | 2.80 MB | https://deml.io/experiments/unity-webgl/2018.4.36f1/ 
 2019.4.28f1 | 2.97 MB | https://deml.io/experiments/unity-webgl/2019.4.28f1/ 
-2020.3.12f1 | 2.87 MB | https://deml.io/experiments/unity-webgl/2020.3.12f1/ 
+2020.3.30f1 | 2.89 MB | https://deml.io/experiments/unity-webgl/2020.3.30f1/ 
 2021.1.0f1 | 2.85 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1/ 
 2021.2.0f1 | 2.69 MB | https://deml.io/experiments/unity-webgl/2021.2.0f1/ 
 
@@ -37,7 +38,7 @@ Version | Size | Link
 --- | --- | ---
 2018.4.36f1 Min | 2.77 MB | https://deml.io/experiments/unity-webgl/2018.4.36f1-minsize/ 
 2019.4.28f1 Min | 2.94 MB | https://deml.io/experiments/unity-webgl/2019.4.28f1-minsize/ 
-2020.3.12f1 Min | 2.43 MB | https://deml.io/experiments/unity-webgl/2020.3.12f1-minsize/ 
+2020.3.30f1 Min | 2.45 MB | https://deml.io/experiments/unity-webgl/2020.3.30f1-minsize/ 
 2021.1.0f1 Min | 2.45 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1-minsize/ 
 2021.2.0f1 Min | 2.43 MB | https://deml.io/experiments/unity-webgl/2021.2.0f1-minsize/ 
 
@@ -46,7 +47,7 @@ Version | Size | Link
 --- | --- | ---
 2018.4.36f1 LWRP | --- | https://deml.io/experiments/unity-webgl/2018.4.36f1-lwrp/ - Broken ([Notes](https://forum.unity.com/threads/exporting-to-webgl-unity-lwrp.549718/#post-4770827)) 
 2019.4.28f1 URP | 5.48 MB | https://deml.io/experiments/unity-webgl/2019.4.28f1-urp/ 
-2020.3.12f1 URP | 5.34 MB | https://deml.io/experiments/unity-webgl/2020.3.12f1-urp/ 
+2020.3.30f1 URP | 5.36 MB | https://deml.io/experiments/unity-webgl/2020.3.30f1-urp/ 
 2021.1.0f1 URP | 5.47 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1-urp/ 
 2021.2.0f1 URP | --- | https://issuetracker.unity3d.com/product/unity/issues/guid/1360175 
 
@@ -92,8 +93,8 @@ Version | Size | Link
   Disabled keywords: BLIT_SINGLE_SLICE SHADER_API_GLES30 UNITY_ASTC_NORMALMAP_ENCODING UNITY_ENABLE_NATIVE_SHADOW_LOOKUPS UNITY_ENABLE_REFLECTION_BUFFERS UNITY_FRAMEBUFFER_FETCH_AVAILABLE UNITY_HALF_PRECISION_FRAGMENT_SHADER_REGISTERS UNITY_HARDWARE_TIER1 UNITY_HARDWARE_TIER2 UNITY_HARDWARE_TIER3 UNITY_LIGHTMAP_DLDR_ENCODING UNITY_LIGHTMAP_FULL_HDR UNITY_LIGHT_PROBE_PROXY_VOLUME UNITY_METAL_SHADOWS_USE_POINT_FILTERING UNITY_NO_DXT5nm UNITY_NO_FULL_STANDARD_SHADER UNITY_NO_SCREENSPACE_SHADOWS UNITY_PBS_USE_BRDF2 UNITY_PBS_USE_BRDF3 UNITY_PRETRANSFORM_TO_DISPLAY_ORIENTATION UNITY_UNIFIED_SHADER_PRECISION_MODEL UNITY_VIRTUAL_TEXTURING
 
 ### Min Size builds
-* Built from branch [minsize](../../tree/minsize)
-* Built with Code Optimization: `Size` and IL2CPP Code Generation: `Faster (smaller) builds`
+* Built with `Tools/Build WebGL/minsize`
+* Built with Code Optimization: `Size`
 * Enable Exceptions: `None`
 * C++ Compiler Configuration: `Master` 
 
