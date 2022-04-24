@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace UnityBuilderAction
 {
@@ -19,14 +20,14 @@ namespace UnityBuilderAction
         private static readonly string[] Secrets =
             {"androidKeystorePass", "androidKeyaliasName", "androidKeyaliasPass"};
 
-        
+
         [UsedImplicitly]
         public static void BuildWithCommandlineArgs()
         {
             string[] args = Environment.GetCommandLineArgs();
             Build(args);
         }
-        
+
         public static void Build(string[] args)
         {
             // Gather values from args
@@ -65,11 +66,20 @@ namespace UnityBuilderAction
                     if (options.TryGetValue("tag", out string tagVersion) &&
                         !string.IsNullOrEmpty(tagVersion))
                     {
-                        if (tagVersion.EndsWith("minsize"))
+                        string[]tagParameters = tagVersion.Split('-');
+                        if(tagParameters.Contains("minsize"))
                         {
                             EditorUserBuildSettings.SetPlatformSettings(BuildPipeline.GetBuildTargetName(BuildTarget.WebGL), "CodeOptimization", "size");
                             PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.None;
                             PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.WebGL, Il2CppCompilerConfiguration.Master);
+                        }
+                        if(tagParameters.Contains("webgl2"))
+                        {
+                            PlayerSettings.SetGraphicsAPIs(BuildTarget.WebGL, new[] {GraphicsDeviceType.OpenGLES3});
+                        }
+                        if(tagParameters.Contains("webgl1"))
+                        {
+                            PlayerSettings.SetGraphicsAPIs(BuildTarget.WebGL, new[] {GraphicsDeviceType.OpenGLES2});
                         }
                     }
                     break;

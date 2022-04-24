@@ -36,11 +36,9 @@ namespace UnityBuilderAction
 			SetBuildTarget(BuildTarget.WebGL, ref parameters);
 			SetParameterValue("-tag", tag, ref parameters);
 			SetParameterValue("-customBuildPath", $"Builds/WebGL/{tag}", ref parameters);
-			
-			Debug.Log($"Build project with parameters [{string.Join(" ", parameters)}]");
-			BuildScript.Build(parameters.ToArray());
+			BuildWithParameters(parameters);
 		}
-		
+
 		[MenuItem("Tools/Build WebGL/minsize")]
 		public static void BuildWebGLMinSize()
 		{
@@ -49,7 +47,22 @@ namespace UnityBuilderAction
 			SetBuildTarget(BuildTarget.WebGL, ref parameters);
 			SetParameterValue("-tag", tag, ref parameters);
 			SetParameterValue("-customBuildPath", $"Builds/WebGL/{tag}", ref parameters);
-			
+			BuildWithParameters(parameters);
+		}
+		
+		[MenuItem("Tools/Build WebGL/webgl2")]
+		public static void BuildWebGLWebGL2()
+		{
+			var parameters = new List<string>(baseParameters);
+			string tag = $"{Application.unityVersion}-webgl2";
+			SetBuildTarget(BuildTarget.WebGL, ref parameters);
+			SetParameterValue("-tag", tag, ref parameters);
+			SetParameterValue("-customBuildPath", $"Builds/WebGL/{tag}", ref parameters);
+			BuildWithParameters(parameters);
+		}
+		
+		private static void BuildWithParameters(List<string> parameters)
+		{
 			Debug.Log($"Build project with parameters [{string.Join(" ", parameters)}]");
 			BuildScript.Build(parameters.ToArray());
 		}

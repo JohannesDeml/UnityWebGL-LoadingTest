@@ -117,6 +117,7 @@ jobs:
             *
 
             [${{ needs.variables.outputs.TAG }} Demo](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.TAG }}/)
+            [${{ needs.variables.outputs.TAG }}-webgl2](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.TAG }}-webgl2/)
             [${{ needs.variables.outputs.TAG }}-minsize Demo](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.TAG }}-minsize/)
             [${{ needs.variables.outputs.TAG }}-urp Demo](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.TAG }}-urp/)
           draft: true
