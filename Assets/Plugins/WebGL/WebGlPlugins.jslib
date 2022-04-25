@@ -1,24 +1,62 @@
-﻿
-var WebGlPlugins =
+﻿var WebGlPlugins =
 {
-    _LogStartTime: function (startTime, unityVersion) {
-        var startTimeText = "";
-        var unityVersionText = "";
+    _SetStringVariable: function(variableName, variableValue) {
+        //convert the string from unity to javascript strings
+        function toString(unityString) {
+            if(typeof UTF8ToString !== 'undefined') {
+                return UTF8ToString(unityString);
+            }
 
-        if(typeof UTF8ToString != 'undefined') {
-            startTimeText = UTF8ToString(startTime);
-            unityVersionText = UTF8ToString(unityVersion);
+            if (typeof Pointer_stringify !== 'undefined') {
+                return Pointer_stringify(unityString);
+            }
+
+            return unityString;
         }
-        else if (typeof Pointer_stringify !== 'undefined') {
-            startTimeText = Pointer_stringify(startTime);
-            unityVersionText = Pointer_stringify(unityVersion);
+
+        const variableNameText = toString(variableName);
+        const variableValueText = toString(variableValue);
+        window[variableNameText] = variableValueText;
+    },
+
+    _AddTimeTrackingEvent: function(eventName) {
+        //convert the string from unity to javascript strings
+        function toString(unityString) {
+            if(typeof UTF8ToString !== 'undefined') {
+                return UTF8ToString(unityString);
+            }
+
+            if (typeof Pointer_stringify !== 'undefined') {
+                return Pointer_stringify(unityString);
+            }
+
+            return unityString;
+        }
+
+        if(typeof unityTimeTrackers == 'undefined') {
+            unityTimeTrackers = new Map();
+        }
+
+        const eventNameText = toString(eventName);
+        const currentTime = performance.now();
+        unityTimeTrackers.set(eventNameText, currentTime);
+
+        if(typeof onAddTimeTracker !== 'undefined') {
+            onAddTimeTracker(eventNameText);
         }
         
-        if(typeof unityLoadingFinished !== 'undefined') {
-            unityLoadingFinished(startTimeText, unityVersionText);
+        console.log('Time tracker event' +eventNameText +': ' + currentTime);
+    },
+
+    _ShowInfoPanel: function () {
+        if(typeof setInfoPanelVisible !== 'undefined') {
+            setInfoPanelVisible(true);
         }
-        else {
-            console.info("Unity " + unityVersionText + " real time since startup: " + startTimeText);
+    },
+
+    _HideInfoPanel: function () {
+        if(typeof setInfoPanelVisible !== 'undefined') {
+            setInfoPanelVisible(false);
         }
     },
     

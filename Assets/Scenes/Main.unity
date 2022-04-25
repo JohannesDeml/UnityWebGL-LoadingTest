@@ -502,7 +502,7 @@ GameObject:
   - component: {fileID: 1530667642}
   - component: {fileID: 1530667641}
   m_Layer: 0
-  m_Name: LoadingTime
+  m_Name: LoadingTimeTracker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -520,7 +520,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce0fe334fc7f4c8f9c4b6e2d6d29b3d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  logStartTime: 1
+  showInfoPanelByDefault: 1
+  trackAwakeTime: 1
+  trackStartTime: 1
 --- !u!4 &1530667642
 Transform:
   m_ObjectHideFlags: 0

@@ -65,23 +65,65 @@ function initializeToggleButton(startActive) {
     labelDiv.appendChild(iconDiv);
 }
 
-var pageStartTime = performance.now();
+function getInfoPanel() {
+    let infoPanel = document.getElementById('infoPanel');
 
-// Called by Unity
-function unityLoadingFinished(unityRealTimeSiceStartup, unityVersion) {
-    var timeDiv = document.getElementById('startupTime');
-
-    if(timeDiv == null || timeDiv == 'undefined') {
-        timeDiv = document.createElement('div');
-        timeDiv.id = 'startupTime';
-        document.body.appendChild(timeDiv);
+    if(infoPanel == null || infoPanel == 'undefined') {
+        infoPanel = document.createElement('div');
+        infoPanel.id = 'infoPanel';
+        document.body.appendChild(infoPanel);
+        var infoHeader = document.createElement('h3');
+        if(typeof unityVersion != `undefined` && typeof webGlVersion != `undefined`) {
+            // Set by WebGlBridge in Unity
+            infoHeader.textContent = `Unity ${unityVersion} (${webGlVersion})`;
+        } else {
+            infoHeader.textContent = `Unity InfoPanel`;
+        }
+        infoPanel.appendChild(infoHeader);
     }
+    
+    return infoPanel;
+}
 
-    var currentTime = performance.now();
-    var startupTimeSeconds = ((currentTime - pageStartTime) / 1000.0).toFixed(2);
+function setInfoPanelVisible(visible) {
+    const infoPanel = getInfoPanel();
+    if(visible) {
+        infoPanel.style.visibility = 'visible';
+    }
+    else {
+        infoPanel.style.visibility = 'hidden';
+    }
+}
 
-    timeDiv.innerHTML = `<h3>Startup time Unity ${unityVersion}</h3><br /><dl><dt>Page</dt> <dd>${startupTimeSeconds}s</dd><br /><dt>Unity</dt> <dd>${unityRealTimeSiceStartup}s</dd></dl>`;
-    console.info(`Startup finished - Page time: ${startupTimeSeconds}s, Unity real time since startup: ${unityRealTimeSiceStartup}s`);
+function getOrCreateInfoEntry(id) {
+    const infoPanel = getInfoPanel();
+    var entry = infoPanel.querySelector(':scope > #' + id);
+    
+    if(entry == null || entry == 'undefined') {
+        entry = document.createElement('div');
+        entry.id = id;
+        infoPanel.appendChild(entry);
+    }
+    
+    return entry;
+}
+
+function onAddTimeTracker(eventName) {
+    refreshTrackingDiv();
+}
+
+function refreshTrackingDiv() {
+    const trackingDiv = getOrCreateInfoEntry('tracking');
+    let innerHtml = '<dl>';
+    unityTimeTrackers.forEach((value, key, map) => {
+        innerHtml += `<div id='tracking-${key}'>
+                        <dt>${key}</dt>
+                        <dd class='tracking-seconds'>${(value/1000.0).toFixed(2)}</dd>
+                        <dd class='tracking-milliseconds'>${value}</dd>
+                      </div>`;
+    });
+    innerHtml += '</dl>';
+    trackingDiv.innerHTML = innerHtml;
 }
 
 initializeToggleButton(false);

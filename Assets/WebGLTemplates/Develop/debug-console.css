@@ -8,6 +8,7 @@
     z-index: 100;
     text-align: left;
     font-family: "Lucida Console", "Courier New", monospace;
+    font-size: small;
 }
 
 #debugConsole .entry {
@@ -110,7 +111,7 @@
 }
 
 /* Startup Time interface */
-#startupTime {
+#infoPanel {
     z-index: 10;
     position: absolute;
     top: 0;
@@ -122,12 +123,30 @@
     background: rgba(255, 255, 255, 0.4);
 }
 
-#startupTime dt, #startupTime dd {
-    display: inline-block;
+dt, dd {
+    display: inline;
 }
 
-#startupTime dt:after{
+dt:after{
     content: ':';
+}
+
+.tracking-seconds:after{
+    content: 's';
+}
+
+.tracking-milliseconds:after{
+    content: 'ms';
+}
+
+/* Hide Milliseconds value, still useful for CI to get exact values */
+.tracking-milliseconds, .tracking-milliseconds:after {
+    display: none;
+}
+
+dl div:after {
+    display: block;
+    content: '';
 }
 
 /* Copy icon from https://css.gg/copy */
@@ -172,4 +191,4 @@
     left: 2px;
     top: 2px;
     box-shadow: 0 4px 0,0 8px 0
-} 
+}
