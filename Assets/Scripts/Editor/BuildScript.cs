@@ -30,6 +30,8 @@ namespace UnityBuilderAction
 
         public static void Build(string[] args)
         {
+            BuildOptions buildOptions = BuildOptions.None;
+            
             // Gather values from args
             Dictionary<string, string> options = GetValidatedOptions(args);
 
@@ -72,6 +74,18 @@ namespace UnityBuilderAction
                             EditorUserBuildSettings.SetPlatformSettings(BuildPipeline.GetBuildTargetName(BuildTarget.WebGL), "CodeOptimization", "size");
                             PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.None;
                             PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.WebGL, Il2CppCompilerConfiguration.Master);
+                        } 
+                        else if(tagParameters.Contains("debug"))
+                        {
+                            EditorUserBuildSettings.SetPlatformSettings(BuildPipeline.GetBuildTargetName(BuildTarget.WebGL), "CodeOptimization", "size");
+                            PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.FullWithStacktrace;
+                            PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.WebGL, Il2CppCompilerConfiguration.Debug);
+                            PlayerSettings.WebGL.debugSymbolMode = WebGLDebugSymbolMode.Embedded;
+                            buildOptions |= BuildOptions.Development;
+                        }
+                        else
+                        {
+                            EditorUserBuildSettings.SetPlatformSettings(BuildPipeline.GetBuildTargetName(BuildTarget.WebGL), "CodeOptimization", "speed");
                         }
                         if(tagParameters.Contains("webgl2"))
                         {
@@ -86,7 +100,7 @@ namespace UnityBuilderAction
             }
 
             // Custom build
-            Build(buildTarget, options["customBuildPath"]);
+            Build(buildTarget, buildOptions, options["customBuildPath"]);
         }
 
         private static Dictionary<string, string> GetValidatedOptions(string[] args)
@@ -163,7 +177,7 @@ namespace UnityBuilderAction
             }
         }
 
-        private static void Build(BuildTarget buildTarget, string filePath)
+        private static void Build(BuildTarget buildTarget, BuildOptions buildOptions, string filePath)
         {
             string[] scenes = EditorBuildSettings.scenes.Where(scene => scene.enabled).Select(s => s.path).ToArray();
             var buildPlayerOptions = new BuildPlayerOptions
@@ -172,7 +186,7 @@ namespace UnityBuilderAction
                 target = buildTarget,
 //                targetGroup = BuildPipeline.GetBuildTargetGroup(buildTarget),
                 locationPathName = filePath,
-//                options = UnityEditor.BuildOptions.Development
+                options = buildOptions
             };
 
             BuildSummary buildSummary = BuildPipeline.BuildPlayer(buildPlayerOptions).summary;
