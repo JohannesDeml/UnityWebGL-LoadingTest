@@ -11,6 +11,7 @@ function initialzeDebugConsole() {
         consoleDiv.scrollTop = consoleDiv.scrollHeight;
         
         var text = document.createElement('p');
+        message = message.replaceAll("\n", "<br />");
         text.innerHTML = message;
         entry.appendChild(text);
         
