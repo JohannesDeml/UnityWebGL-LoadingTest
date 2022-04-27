@@ -34,6 +34,7 @@ namespace UnityBuilderAction
 			var parameters = new List<string>(baseParameters);
 			string tag = $"{Application.unityVersion}";
 			SetBuildTarget(BuildTarget.WebGL, ref parameters);
+			SetParameterValue("-autorunplayer", "true", ref parameters);
 			SetParameterValue("-tag", tag, ref parameters);
 			SetParameterValue("-customBuildPath", $"Builds/WebGL/{tag}", ref parameters);
 			BuildWithParameters(parameters);
@@ -45,6 +46,7 @@ namespace UnityBuilderAction
 			var parameters = new List<string>(baseParameters);
 			string tag = $"{Application.unityVersion}-minsize";
 			SetBuildTarget(BuildTarget.WebGL, ref parameters);
+			SetParameterValue("-autorunplayer", "true", ref parameters);
 			SetParameterValue("-tag", tag, ref parameters);
 			SetParameterValue("-customBuildPath", $"Builds/WebGL/{tag}", ref parameters);
 			BuildWithParameters(parameters);
@@ -56,6 +58,7 @@ namespace UnityBuilderAction
 			var parameters = new List<string>(baseParameters);
 			string tag = $"{Application.unityVersion}-debug";
 			SetBuildTarget(BuildTarget.WebGL, ref parameters);
+			SetParameterValue("-autorunplayer", "true", ref parameters);
 			SetParameterValue("-tag", tag, ref parameters);
 			SetParameterValue("-customBuildPath", $"Builds/WebGL/{tag}", ref parameters);
 			BuildWithParameters(parameters);
@@ -67,6 +70,7 @@ namespace UnityBuilderAction
 			var parameters = new List<string>(baseParameters);
 			string tag = $"{Application.unityVersion}-webgl2";
 			SetBuildTarget(BuildTarget.WebGL, ref parameters);
+			SetParameterValue("-autorunplayer", "true", ref parameters);
 			SetParameterValue("-tag", tag, ref parameters);
 			SetParameterValue("-customBuildPath", $"Builds/WebGL/{tag}", ref parameters);
 			BuildWithParameters(parameters);

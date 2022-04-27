@@ -20,6 +20,7 @@ namespace UnityBuilderAction
         private static readonly string[] Secrets =
             {"androidKeystorePass", "androidKeyaliasName", "androidKeyaliasPass"};
 
+        private static BuildPlayerOptions buildPlayerOptions;
 
         [UsedImplicitly]
         public static void BuildWithCommandlineArgs()
@@ -30,8 +31,8 @@ namespace UnityBuilderAction
 
         public static void Build(string[] args)
         {
-            BuildOptions buildOptions = BuildOptions.None;
-            
+            buildPlayerOptions = new BuildPlayerOptions();
+
             // Gather values from args
             Dictionary<string, string> options = GetValidatedOptions(args);
 
@@ -81,26 +82,41 @@ namespace UnityBuilderAction
                             PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.FullWithStacktrace;
                             PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.WebGL, Il2CppCompilerConfiguration.Debug);
                             PlayerSettings.WebGL.debugSymbolMode = WebGLDebugSymbolMode.Embedded;
-                            buildOptions |= BuildOptions.Development;
+                            buildPlayerOptions.options |= BuildOptions.Development;
                         }
                         else
                         {
+                            // By default use the speed setting
                             EditorUserBuildSettings.SetPlatformSettings(BuildPipeline.GetBuildTargetName(BuildTarget.WebGL), "CodeOptimization", "speed");
                         }
-                        if(tagParameters.Contains("webgl2"))
+
+                        if(tagParameters.Contains("webgl2") && !tagParameters.Contains("webgl1"))
                         {
                             PlayerSettings.SetGraphicsAPIs(BuildTarget.WebGL, new[] {GraphicsDeviceType.OpenGLES3});
                         }
-                        if(tagParameters.Contains("webgl1"))
+                        if(tagParameters.Contains("webgl1") && !tagParameters.Contains("webgl2"))
                         {
                             PlayerSettings.SetGraphicsAPIs(BuildTarget.WebGL, new[] {GraphicsDeviceType.OpenGLES2});
+                        }
+                        if(tagParameters.Contains("webgl1") && tagParameters.Contains("webgl2"))
+                        {
+                            PlayerSettings.SetGraphicsAPIs(BuildTarget.WebGL, new[] {GraphicsDeviceType.OpenGLES2, GraphicsDeviceType.OpenGLES3});
                         }
                     }
                     break;
             }
 
+            // Additional options for local builds
+            if (!Application.isBatchMode)
+            {
+                if (options.TryGetValue("autorunplayer", out string autorunplayer))
+                {
+                    buildPlayerOptions.options |= BuildOptions.AutoRunPlayer;
+                }
+            }
+
             // Custom build
-            Build(buildTarget, buildOptions, options["customBuildPath"]);
+            Build(buildTarget, options["customBuildPath"]);
         }
 
         private static Dictionary<string, string> GetValidatedOptions(string[] args)
@@ -177,17 +193,12 @@ namespace UnityBuilderAction
             }
         }
 
-        private static void Build(BuildTarget buildTarget, BuildOptions buildOptions, string filePath)
+        private static void Build(BuildTarget buildTarget, string filePath)
         {
             string[] scenes = EditorBuildSettings.scenes.Where(scene => scene.enabled).Select(s => s.path).ToArray();
-            var buildPlayerOptions = new BuildPlayerOptions
-            {
-                scenes = scenes,
-                target = buildTarget,
-//                targetGroup = BuildPipeline.GetBuildTargetGroup(buildTarget),
-                locationPathName = filePath,
-                options = buildOptions
-            };
+            buildPlayerOptions.scenes = scenes;
+            buildPlayerOptions.target = buildTarget;
+            buildPlayerOptions.locationPathName = filePath;
 
             BuildSummary buildSummary = BuildPipeline.BuildPlayer(buildPlayerOptions).summary;
             ReportSummary(buildSummary);
