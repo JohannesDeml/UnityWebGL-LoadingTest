@@ -66,6 +66,9 @@ namespace UnityBuilderAction
                     PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.Mono2x);
                     break;
                 case BuildTarget.WebGL:
+                    // Use ASTC texture compression, since we are also targeting mobile versions - Don't use this for desktop only targets
+                    buildPlayerOptions.subtarget = (int)WebGLTextureSubtarget.ASTC;
+
                     if (options.TryGetValue("tag", out string tagVersion) &&
                         !string.IsNullOrEmpty(tagVersion))
                     {
