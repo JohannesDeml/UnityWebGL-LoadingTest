@@ -6,10 +6,10 @@
 /Temp/**
 /Library/**
 /obj/**
-/UserSettings/**
 /Packages/*/**
 /Packages/*.meta
 /Logs/**
+/UserSettings/**
 
 # Visual Studio / Rider / MonoDevelop generated
 /ExportedObj/**
