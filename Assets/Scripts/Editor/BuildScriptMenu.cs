@@ -28,11 +28,11 @@ namespace UnityBuilderAction
 			"-androidVersionCode", PlayerSettings.Android.bundleVersionCode.ToString(CultureInfo.InvariantCulture)
 		};
 
-		[MenuItem("Tools/Build WebGL/default")]
+		[MenuItem("Tools/Build WebGL/webgl1")]
 		public static void BuildWebGLDefault()
 		{
 			var parameters = new List<string>(baseParameters);
-			string tag = $"{Application.unityVersion}";
+			string tag = $"{Application.unityVersion}-webgl1";
 			SetBuildTarget(BuildTarget.WebGL, ref parameters);
 			SetParameterValue("-autorunplayer", "true", ref parameters);
 			SetParameterValue("-tag", tag, ref parameters);
@@ -44,14 +44,14 @@ namespace UnityBuilderAction
 		public static void BuildWebGLMinSize()
 		{
 			var parameters = new List<string>(baseParameters);
-			string tag = $"{Application.unityVersion}-minsize";
+			string tag = $"{Application.unityVersion}-minsize-webgl1";
 			SetBuildTarget(BuildTarget.WebGL, ref parameters);
 			SetParameterValue("-autorunplayer", "true", ref parameters);
 			SetParameterValue("-tag", tag, ref parameters);
 			SetParameterValue("-customBuildPath", $"Builds/WebGL/{tag}", ref parameters);
 			BuildWithParameters(parameters);
 		}
-		
+
 		[MenuItem("Tools/Build WebGL/debug")]
 		public static void BuildWebGLDebug()
 		{
@@ -63,7 +63,7 @@ namespace UnityBuilderAction
 			SetParameterValue("-customBuildPath", $"Builds/WebGL/{tag}", ref parameters);
 			BuildWithParameters(parameters);
 		}
-		
+
 		[MenuItem("Tools/Build WebGL/webgl2")]
 		public static void BuildWebGLWebGL2()
 		{
@@ -75,7 +75,7 @@ namespace UnityBuilderAction
 			SetParameterValue("-customBuildPath", $"Builds/WebGL/{tag}", ref parameters);
 			BuildWithParameters(parameters);
 		}
-		
+
 		private static void BuildWithParameters(List<string> parameters)
 		{
 			Debug.Log($"Build project with parameters [{string.Join(" ", parameters)}]");

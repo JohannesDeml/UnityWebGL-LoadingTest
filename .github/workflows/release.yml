@@ -111,15 +111,16 @@ jobs:
         with:
           files: ${{ needs.variables.outputs.BUILD_NAME }}.zip
           body: |
-            # ${{ needs.variables.outputs.TAG }}
+            # ${{ needs.variables.outputs.UNITY_VERSION }}
             ## Changes
             *
             *
 
-            [${{ needs.variables.outputs.TAG }} Demo](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.TAG }}/)
-            [${{ needs.variables.outputs.TAG }}-webgl2](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.TAG }}-webgl2/)
-            [${{ needs.variables.outputs.TAG }}-minsize Demo](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.TAG }}-minsize/)
-            [${{ needs.variables.outputs.TAG }}-urp Demo](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.TAG }}-urp/)
+            [${{ needs.variables.outputs.UNITY_VERSION }} Demo](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.UNITY_VERSION }}-webgl1/)
+            [${{ needs.variables.outputs.UNITY_VERSION }}-minsize-webgl1 Demo](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.UNITY_VERSION }}-minsize-webgl1/)
+            [${{ needs.variables.outputs.UNITY_VERSION }}-urp-webgl1 Demo](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.UNITY_VERSION }}-urp-webgl1/)
+            [${{ needs.variables.outputs.UNITY_VERSION }}-webgl2](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.UNITY_VERSION }}-webgl2/)
+            [${{ needs.variables.outputs.UNITY_VERSION }}-urp-webgl2 Demo](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.UNITY_VERSION }}-urp-webgl2/)
           draft: true
 
 
