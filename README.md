@@ -34,6 +34,11 @@ Version | Size | Link
 2021.2.0f1 | 2.69 MB | https://deml.io/experiments/unity-webgl/2021.2.0f1/ 
 2021.3.6f1 | 2.69 MB | https://deml.io/experiments/unity-webgl/2021.3.6f1/ 
 
+### Built-in Renderpipeline WebGL2
+Version | Size | Link
+--- | --- | ---
+2021.3.6f1 | 2.71 MB | https://deml.io/experiments/unity-webgl/2021.3.6f1-webgl2/ 
+
 ### Built-in Renderpipeline WebGL1 Minimum size
 Version | Size | Link
 --- | --- | ---
@@ -52,9 +57,13 @@ Version | Size | Link
 2020.3.30f1 URP | 5.36 MB | https://deml.io/experiments/unity-webgl/2020.3.30f1-urp/ 
 2021.1.0f1 URP | 5.47 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1-urp/ 
 2021.2.0f1 URP | --- | https://issuetracker.unity3d.com/product/unity/issues/guid/1360175 
-2021.3.0f1 URP WebGL 2 | 5.80 MB | https://deml.io/experiments/unity-webgl/2021.3.0f1-urp-webgl2/ 
 2021.3.6f1 URP | 5.98 MB | https://deml.io/experiments/unity-webgl/2021.3.6f1-urp/ 
-2021.3.0f1 URP WebGL 2 | 6.16 MB | https://deml.io/experiments/unity-webgl/2021.3.6f1-urp-webgl2/ 
+
+### URP WebGL2
+Version | Size | Link
+--- | --- | ---
+2021.3.0f1 URP | 5.80 MB | https://deml.io/experiments/unity-webgl/2021.3.0f1-urp-webgl2/ 
+2021.3.0f1 URP | 6.16 MB | https://deml.io/experiments/unity-webgl/2021.3.6f1-urp-webgl2/ 
 
 ## Platform Compatibility
 
