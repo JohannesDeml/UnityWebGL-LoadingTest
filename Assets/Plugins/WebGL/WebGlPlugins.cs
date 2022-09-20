@@ -19,6 +19,7 @@ namespace Supyrb
 {
 	public static class WebGlPlugins
 	{
+#if UNITY_WEBGL
 		[DllImport("__Internal")]
 		private static extern void _SetStringVariable(string variableName, string variableValue);
 		[DllImport("__Internal")]
@@ -27,18 +28,13 @@ namespace Supyrb
 		private static extern void _ShowInfoPanel();
 		[DllImport("__Internal")]
 		private static extern void _HideInfoPanel();
-
-		[DllImport("__Internal")]
-		private static extern void _LogMemoryInfo(uint native, uint managed, uint total);
-
 		[DllImport("__Internal")]
 		private static extern uint _GetTotalMemorySize();
-
 		[DllImport("__Internal")]
 		private static extern uint _GetStaticMemorySize();
-
 		[DllImport("__Internal")]
 		private static extern uint _GetDynamicMemorySize();
+#endif
 
 		private static bool _infoPanelVisible = false;
 
