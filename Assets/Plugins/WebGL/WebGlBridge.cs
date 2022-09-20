@@ -9,6 +9,9 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Reflection;
+using System.Text;
+using Supyrb.Attributes;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -53,22 +56,45 @@ namespace Supyrb
 			Debug.Log("Unity WebGL Bridge ready -> Run 'unityGame.SendMessage(\"WebGL\", \"Help\")' in the browser console to see usage");
 		}
 
+		[ContextMenu("Log all commands")]
+		[WebGlCommand(Description = "Log all available commands")]
 		public void Help()
 		{
-			Debug.Log("Available unity interfaces:\n" +
-			          "- LogMemory() -> logs current memory\n" +
-			          "- SetApplicationRunInBackground(int runInBackground) -> Application.runInBackground\n" +
-			          "- SetApplicationTargetFrameRate(int targetFrameRate) -> Application.targetFrameRate\n" +
-			          "- SetTimeFixedDeltaTime(float fixedDeltaTime) -> Time.fixedDeltaTime\n" +
-			          "- SetTimeTimeScale(float timeScale) -> Time.timeScale\n" +
-			          "- ToggleInfoPanel() -> Toggle develop ui visibility of InfoPanel\n" +
-			          "\nRun a command through 'unityGame.SendMessage(\"WebGL\", \"COMMAND_NAME\",PARAMETER)'");
+			StringBuilder sb = new StringBuilder();
+			MethodInfo[] methods = GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance);
+
+			sb.AppendLine("Available unity interfaces:");
+			for (int i = 0; i < methods.Length; i++)
+			{
+				var method = methods[i];
+				WebGlCommandAttribute commandAttribute = method.GetCustomAttribute<WebGlCommandAttribute>();
+				if (commandAttribute != null)
+				{
+					sb.Append($"- {method.Name}(");
+					ParameterInfo[] parameters = method.GetParameters();
+					for (int j = 0; j < parameters.Length; j++)
+					{
+						var parameter = parameters[j];
+						sb.Append($"{parameter.ParameterType} {parameter.Name}");
+						if (j < parameters.Length - 1)
+						{
+							sb.Append(", ");
+						}
+					}
+
+					sb.AppendLine($") -> {commandAttribute.Description}");
+				}
+			}
+
+			sb.AppendLine("\nRun a command with 'unityGame.SendMessage(\"WebGL\", \"COMMAND_NAME\",PARAMETER)'");
+			Debug.Log(sb.ToString());
 		}
 
 		/// <summary>
 		/// Logs the current memory usage
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL","LogMemory");</code>
 		/// </summary>
+		[WebGlCommand(Description = "Logs the current memory")]
 		public void LogMemory()
 		{
 			WebGlPlugins.LogMemory();
@@ -80,6 +106,7 @@ namespace Supyrb
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL", "SetApplicationRunInBackground", 1);</code>
 		/// </summary>
 		/// <param name="runInBackground">1 if it should run in background</param>
+		[WebGlCommand(Description = "Application.runInBackground")]
 		public void SetApplicationRunInBackground(int runInBackground)
 		{
 			Application.runInBackground = runInBackground == 1;
@@ -90,6 +117,7 @@ namespace Supyrb
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL", "SetApplicationTargetFrameRate", 15);</code>
 		/// </summary>
 		/// <param name="targetFrameRate">frame rate to render in</param>
+		[WebGlCommand(Description = "Application.targetFrameRate")]
 		public void SetApplicationTargetFrameRate(int targetFrameRate)
 		{
 			Application.targetFrameRate = targetFrameRate;
@@ -100,6 +128,7 @@ namespace Supyrb
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL", "SetTimeFixedDeltaTime", 0.02);</code>
 		/// </summary>
 		/// <param name="fixedDeltaTime"></param>
+		[WebGlCommand(Description = "Time.fixedDeltaTime")]
 		public void SetTimeFixedDeltaTime(float fixedDeltaTime)
 		{
 			Time.fixedDeltaTime = fixedDeltaTime;
@@ -111,6 +140,7 @@ namespace Supyrb
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL", "SetTimeTimeScale", 0.2);</code>
 		/// </summary>
 		/// <param name="timeScale">new timescale value</param>
+		[WebGlCommand(Description = "Time.timeScale")]
 		public void SetTimeTimeScale(float timeScale)
 		{
 			Time.timeScale = timeScale;
@@ -119,6 +149,7 @@ namespace Supyrb
 		/// <summary>
 		/// Toggle the visibility of the info panel in the top right corner
 		/// </summary>
+		[WebGlCommand(Description = "Toggle develop ui visibility of InfoPanel")]
 		public void ToggleInfoPanel()
 		{
 			WebGlPlugins.ToggleInfoPanel();
