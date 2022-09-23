@@ -61,6 +61,8 @@ jobs:
 
   buildProject:
     name: Create Unity WebGL Build 🏗
+    # only build with additional parameters, the tag alone should only create a release draft
+    if: ${{ needs.variables.outputs.TAG != needs.variables.outputs.UNITY_VERSION }}
     needs: [ variables ]
     runs-on: ubuntu-latest
     strategy:
@@ -94,17 +96,14 @@ jobs:
 
   createRelease:
     name: Create Github release 🐙
-    # only run for the main build, the others will be added to the release manually
+    # only run for the pure tag without build parameters
     if: ${{ needs.variables.outputs.TAG == needs.variables.outputs.UNITY_VERSION }}
-    needs: [ variables, buildProject ]
+    needs: [ variables ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v3
         with:
           name: ${{ needs.variables.outputs.BUILD_NAME }}
-
-      - name: Zip release
-        run: zip -r ${{ needs.variables.outputs.BUILD_NAME }}.zip ${{ needs.variables.outputs.BUILD_NAME }}
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
@@ -114,13 +113,12 @@ jobs:
             # ${{ needs.variables.outputs.UNITY_VERSION }}
             ## Changes
             *
-            *
 
-            [${{ needs.variables.outputs.UNITY_VERSION }} Demo](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.UNITY_VERSION }}-webgl1/)
-            [${{ needs.variables.outputs.UNITY_VERSION }}-minsize-webgl1 Demo](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.UNITY_VERSION }}-minsize-webgl1/)
-            [${{ needs.variables.outputs.UNITY_VERSION }}-urp-webgl1 Demo](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.UNITY_VERSION }}-urp-webgl1/)
             [${{ needs.variables.outputs.UNITY_VERSION }}-webgl2](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.UNITY_VERSION }}-webgl2/)
+            [${{ needs.variables.outputs.UNITY_VERSION }}-webgl1](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.UNITY_VERSION }}-webgl1/)
             [${{ needs.variables.outputs.UNITY_VERSION }}-urp-webgl2 Demo](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.UNITY_VERSION }}-urp-webgl2/)
+            [${{ needs.variables.outputs.UNITY_VERSION }}-urp-webgl1 Demo](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.UNITY_VERSION }}-urp-webgl1/)
+            [${{ needs.variables.outputs.UNITY_VERSION }}-minsize-webgl1 Demo](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.UNITY_VERSION }}-minsize-webgl1/)
           draft: true
 
 
