@@ -1,5 +1,12 @@
 
 function initialzeDebugConsole() {
+    // Store actual console log functions, since they will be overwritten with new logic
+    defaultConsoleLog = console.log;
+    defaultConsoleInfo = console.info;
+    defaultConsoleDebug = console.debug;
+    defaultConsoleWarn = console.warn;
+    defaultConsoleError = console.error;
+
     var consoleDiv = document.createElement('div');
     consoleDiv.id = 'debugConsole';
     document.body.appendChild(consoleDiv);
@@ -9,17 +16,17 @@ function initialzeDebugConsole() {
         entry.classList.add('entry', className);
         consoleDiv.appendChild(entry);
         consoleDiv.scrollTop = consoleDiv.scrollHeight;
-        
+
         var text = document.createElement('p');
         message = message.replaceAll("\n", "<br />");
         text.innerHTML = message;
         entry.appendChild(text);
-        
+
         var copyButton = document.createElement('button');
         copyButton.className = 'copy-button';
         copyButton.title = 'copy to clipboard';
         entry.appendChild(copyButton);
-        
+
         var copyIcon = document.createElement('div');
         copyIcon.classList.add('icon', 'gg-copy');
         copyButton.appendChild(copyIcon);
@@ -33,20 +40,58 @@ function initialzeDebugConsole() {
         });
     };
 
-    defaultConsoleLog = console.log;
-    console.log = (message) => { divLog(message, 'log'); defaultConsoleLog(message) };
+    parseMessageAndLog = (message, logLevel, consoleLogFunction) => {
+        let index = 0;
+        let consoleArgs = [];
+        let consoleMessage="";
+        let divMessage = "";
+        // parse unity color tags to render them nicely in the console
+        while(index <= message.length) {
+            let startTagStart = message.indexOf("<color=", index);
+            if(startTagStart == -1) {
+                // Parse the reset of the message without styling
+                let remainingMessage = message.substring(index);
+                consoleMessage += `%c${remainingMessage}`;
+                consoleArgs.push("color:inherit");
+                divMessage += remainingMessage;
+                break;
+            }
 
-    defaultConsoleInfo = console.info;
-    console.info = (message) => { divLog(message, 'info'); defaultConsoleInfo(message) };
+            if(startTagStart>index) {
+                let textBeforeTag = message.substring(index, startTagStart);
+                consoleMessage += `%c${textBeforeTag}`;
+                consoleArgs.push("color:inherit");
+                divMessage += textBeforeTag;
+            }
 
-    defaultConsoleDebug = console.debug;
-    console.debug = (message) => { divLog(message, 'debug'); defaultConsoleDebug(message) };
+            let startTagEnd = message.indexOf(">", startTagStart);
+            let closingTag = message.indexOf("</color>", startTagStart);
+            if(startTagEnd == -1 || closingTag == -1) {
+                // Tag is set up in the wrong way, abort parsing
+                defaultConsoleError({error: "Could not parse color tag, since no end tag was found", startStartIndex: startTagStart, startEndIndex: startTagEnd, closingIndex: closingTag});
+                let remainingMessage = message.substring(index);
+                consoleMessage += `%c${remainingMessage}`;
+                consoleArgs.push("color:inherit");
+                divMessage += remainingMessage;
+                break;
+            }
+            let color = message.substring(startTagStart + "<color=".length, startTagEnd);
+            let text = message.substring(startTagEnd + 1, closingTag);
+            consoleMessage += `%c${text}`
+            consoleArgs.push("color:"+color);
+            divMessage += `<span style="color:${color};">${text}</span>`
+            index = closingTag + "</color>".length;
+        }
 
-    defaultConsoleWarn = console.warn;
-    console.warn = (message) => { divLog('⚠️ ' + message, 'warn'); defaultConsoleWarn(message) };
+        divLog(divMessage, logLevel);
+        consoleLogFunction(consoleMessage, ...consoleArgs);
+    };
 
-    defaultConsoleError = console.error;
-    console.error = (message) => { divLog('🔴 ' + message, 'error'); defaultConsoleError(message) };
+    console.log = (message) => { parseMessageAndLog(message, 'log', defaultConsoleLog) };
+    console.info = (message) => { parseMessageAndLog(message, 'info', defaultConsoleInfo) };
+    console.debug = (message) => { parseMessageAndLog(message, 'debug', defaultConsoleDebug) };
+    console.warn = (message) => { parseMessageAndLog(message, 'warn', defaultConsoleWarn) };
+    console.error = (message) => { parseMessageAndLog(message, 'error', defaultConsoleError) };
 }
 
 function initializeToggleButton(startActive) {
@@ -82,7 +127,7 @@ function getInfoPanel() {
         }
         infoPanel.appendChild(infoHeader);
     }
-    
+
     return infoPanel;
 }
 
@@ -99,13 +144,13 @@ function setInfoPanelVisible(visible) {
 function getOrCreateInfoEntry(id) {
     const infoPanel = getInfoPanel();
     var entry = infoPanel.querySelector(':scope > #' + id);
-    
+
     if(entry == null || entry == 'undefined') {
         entry = document.createElement('div');
         entry.id = id;
         infoPanel.appendChild(entry);
     }
-    
+
     return entry;
 }
 
