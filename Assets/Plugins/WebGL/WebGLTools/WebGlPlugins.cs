@@ -48,9 +48,8 @@ namespace Supyrb
 		{
 			#if UNITY_WEBGL && !UNITY_EDITOR
 			_SetStringVariable(variableName, value);
-			#else
-			Debug.Log($"{nameof(WebGlPlugins)}.{nameof(SetVariable)} called with {variableName}: {value}");
 			#endif
+			Debug.Log($"<color=#00CCCC>{nameof(WebGlPlugins)}.{nameof(SetVariable)} set {variableName}: {value}</color>");
 		}
 		
 		/// <summary>
@@ -113,21 +112,6 @@ namespace Supyrb
 		}
 
 		/// <summary>
-		/// Log all current memory data in MB
-		/// </summary>
-		public static void LogMemory()
-		{
-			#if UNITY_WEBGL && !UNITY_EDITOR
-			var managed = GetManagedMemorySize();
-			var native = GetNativeMemorySize();
-			var total = GetTotalMemorySize();
-			Debug.Log($"Memory stats:\nManaged: {managed:0.00}MB\nNative: {native:0.00}MB\nTotal: {total:0.00}MB");
-			#else
-			Debug.Log($"{nameof(WebGlPlugins)}.{nameof(LogMemory)} called");
-			#endif
-		}
-
-		/// <summary>
 		/// Get the total memory size used by the application in MB
 		/// </summary>
 		/// <returns>Size in MB</returns>
@@ -140,6 +124,21 @@ namespace Supyrb
 			Debug.Log($"{nameof(WebGlPlugins)}.{nameof(GetTotalMemorySize)} called");
 			return -1f;
 			#endif
+		}
+
+		/// <summary>
+		/// Log all current memory data in MB
+		/// </summary>
+		public static void LogMemory()
+		{
+#if UNITY_WEBGL && !UNITY_EDITOR
+			var managed = GetManagedMemorySize();
+			var native = GetNativeMemorySize();
+			var total = GetTotalMemorySize();
+			Debug.Log($"Memory stats:\nManaged: {managed:0.00}MB\nNative: {native:0.00}MB\nTotal: {total:0.00}MB");
+#else
+			Debug.Log($"{nameof(WebGlPlugins)}.{nameof(LogMemory)} called");
+#endif
 		}
 
 		/// <summary>

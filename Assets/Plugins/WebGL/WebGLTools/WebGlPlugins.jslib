@@ -45,7 +45,7 @@
             onAddTimeTracker(eventNameText);
         }
         
-        console.log('Time tracker event' +eventNameText +': ' + currentTime);
+        console.log(`Time tracker event ${eventNameText}: ${currentTime}ms`);
     },
 
     _ShowInfoPanel: function () {
