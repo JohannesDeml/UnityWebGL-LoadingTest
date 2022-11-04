@@ -80,5 +80,24 @@ namespace Supyrb
 		{
 			WebGlPlugins.ToggleInfoPanel();
 		}
+		
+		/// <summary>
+		/// Log an example message to see if it is rendered correctly, and to see the stacktrace
+		/// </summary>
+		[WebGlCommand(Description = "Log an example debug message")]
+		public void LogDebugMessage()
+		{
+			Debug.Log("This is an <color=#ff0000>example</color> message, showing off <color=#ff00ff>rich text</color> support!");
+		}
+		
+		/// <summary>
+		/// Log a custom message to test Debug.Log in general
+		/// </summary>
+		/// <param name="message">Message that will be logged</param>
+		[WebGlCommand(Description = "Log a custom debug message")]
+		public void LogDebugMessage(string message)
+		{
+			Debug.Log(message);
+		}
 	} 
 }
