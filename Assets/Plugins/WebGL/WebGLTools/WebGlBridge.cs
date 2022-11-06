@@ -18,6 +18,7 @@ namespace Supyrb
 {
 	/// <summary>
 	/// Bridge to Unity to access unity logic through the browser console
+	/// You can extend your commands by creating a partial class for WebGLBridge, see WebGLBridge.Commands as an example
 	/// </summary>
 	public partial class WebGlBridge : MonoBehaviour
 	{
@@ -50,6 +51,9 @@ namespace Supyrb
 			}
 			WebGlPlugins.SetVariable("webGlVersion", webGl);
 			WebGlPlugins.SetVariable("unityVersion", Application.unityVersion);
+#if !UNITY_EDITOR && UNITY_WEBGL
+			WebGlPlugins.SetVariable("unityCaptureAllKeyboardInputDefault", WebGLInput.captureAllKeyboardInput?"true":"false");
+#endif
 		}
 
 		private void Start()
@@ -71,15 +75,18 @@ namespace Supyrb
 				WebGlCommandAttribute commandAttribute = method.GetCustomAttribute<WebGlCommandAttribute>();
 				if (commandAttribute != null)
 				{
-					sb.Append($"- {method.Name}(");
+					sb.Append($"unityGame.SendMessage(\"WebGL\", \"{method.Name}\"");
 					ParameterInfo[] parameters = method.GetParameters();
 					for (int j = 0; j < parameters.Length; j++)
 					{
 						var parameter = parameters[j];
-						sb.Append($"{parameter.ParameterType} {parameter.Name}");
-						if (j < parameters.Length - 1)
+						if (parameter.ParameterType == typeof(string))
 						{
-							sb.Append(", ");
+							sb.Append($", \"{parameter.ParameterType} {parameter.Name}\"");
+						}
+						else
+						{
+							sb.Append($", {parameter.ParameterType} {parameter.Name}");
 						}
 					}
 

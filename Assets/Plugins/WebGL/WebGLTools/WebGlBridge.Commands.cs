@@ -16,6 +16,32 @@ namespace Supyrb
 	public partial class WebGlBridge
 	{
 		/// <summary>
+		/// Disable capturing all keyboard input, e.g. for using native html input fields
+		/// Browser Usage: <code>unityGame.SendMessage("WebGL","DisableCaptureAllKeyboardInput");</code>
+		/// </summary>
+		[WebGlCommand(Description = "Disable unity from consuming all keyboard input")]
+		public void DisableCaptureAllKeyboardInput()
+		{
+#if !UNITY_EDITOR && UNITY_WEBGL
+			WebGLInput.captureAllKeyboardInput = false;
+			Debug.Log($"WebGLInput.captureAllKeyboardInput: {WebGLInput.captureAllKeyboardInput}");
+#endif
+		}
+		
+		/// <summary>
+		/// Enable capturing all keyboard input, to make sure the game does not miss any key strokes
+		/// Browser Usage: <code>unityGame.SendMessage("WebGL","EnableCaptureAllKeyboardInput");</code>
+		/// </summary>
+		[WebGlCommand(Description = "Enable unity from consuming all keyboard input")]
+		public void EnableCaptureAllKeyboardInput()
+		{
+#if !UNITY_EDITOR && UNITY_WEBGL
+			WebGLInput.captureAllKeyboardInput = true;
+			Debug.Log($"WebGLInput.captureAllKeyboardInput: {WebGLInput.captureAllKeyboardInput}");
+#endif
+		}
+		
+		/// <summary>
 		/// Logs the current memory usage
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL","LogMemory");</code>
 		/// </summary>
