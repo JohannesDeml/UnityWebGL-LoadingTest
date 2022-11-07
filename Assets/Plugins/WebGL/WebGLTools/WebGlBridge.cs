@@ -90,11 +90,11 @@ namespace Supyrb
 						}
 					}
 
-					sb.AppendLine($") -> {commandAttribute.Description}");
+					sb.AppendLine($"); <color=#555555FF>-> {commandAttribute.Description}</color>");
 				}
 			}
 
-			sb.AppendLine("\nRun a command with 'unityGame.SendMessage(\"WebGL\", \"COMMAND_NAME\",PARAMETER)'");
+			sb.AppendLine("\nRun a command with 'unityGame.SendMessage(\"WebGL\", \"COMMAND_NAME\",PARAMETER);'");
 			Debug.Log(sb.ToString());
 		}
 	}
