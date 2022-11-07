@@ -2,7 +2,7 @@
 
 ![Preview](./preview.png)
 
-[![](https://img.shields.io/github/release-date/JohannesDeml/UnityWebGL-LoadingTest.svg)](https://github.com/JohannesDeml/UnityWebGL-LoadingTest/releases) [![Tested up to Unity 2022.1](https://img.shields.io/badge/tested%20up%20to%20unity-2022.1-green.svg?logo=unity&cacheSeconds=2592000)](https://unity3d.com/get-unity/download/archive)
+[![](https://img.shields.io/github/release-date/JohannesDeml/UnityWebGL-LoadingTest.svg)](https://github.com/JohannesDeml/UnityWebGL-LoadingTest/releases) [![Tested up to Unity 2022.2](https://img.shields.io/badge/tested%20up%20to%20unity-2022.2-green.svg?logo=unity&cacheSeconds=2592000)](https://unity3d.com/get-unity/download/archive)
 
 *Testing Unity's WebGL size and loading time for different versions and platforms*  
 [Unity Forum Thread](https://forum.unity.com/threads/webgl-builds-for-mobile.545877/).
@@ -146,11 +146,19 @@ The script `WebGlBridge` adds an easy to access gameobject that can be called fr
 
 Currently the following commands are available:
 
-* `LogMemory()` : logs the current memory consumption
-* `SetApplicationRunInBackground(int runInBackground)` : [Application.runInBackground](https://docs.unity3d.com/ScriptReference/Application-runInBackground.html)
-* `SetApplicationTargetFrameRate(int targetFrameRate)` : [Application.targetFrameRate](https://docs.unity3d.com/ScriptReference/Application-targetFrameRate.html)
-* `SetTimeFixedDeltaTime(float fixedDeltaTime)` : [Time.fixedDeltaTime](https://docs.unity3d.com/ScriptReference/Time-fixedDeltaTime.html)
-* `SetTimeTimeScale(float timeScale)` : [Time.timeScale](https://docs.unity3d.com/ScriptReference/Time-timeScale.html)
+```javascript
+unityGame.SendMessage("WebGL", "DisableCaptureAllKeyboardInput"); -> Disable unity from consuming all keyboard input
+unityGame.SendMessage("WebGL", "EnableCaptureAllKeyboardInput"); -> Enable unity from consuming all keyboard input
+unityGame.SendMessage("WebGL", "LogMemory"); -> Logs the current memory
+unityGame.SendMessage("WebGL", "SetApplicationRunInBackground", System.Int32 runInBackground); -> Application.runInBackground
+unityGame.SendMessage("WebGL", "SetApplicationTargetFrameRate", System.Int32 targetFrameRate); -> Application.targetFrameRate
+unityGame.SendMessage("WebGL", "SetTimeFixedDeltaTime", System.Single fixedDeltaTime); -> Time.fixedDeltaTime
+unityGame.SendMessage("WebGL", "SetTimeTimeScale", System.Single timeScale); -> Time.timeScale
+unityGame.SendMessage("WebGL", "ToggleInfoPanel"); -> Toggle develop ui visibility of InfoPanel
+unityGame.SendMessage("WebGL", "LogExampleMessage"); -> Log an example debug message
+unityGame.SendMessage("WebGL", "LogMessage", "System.String message"); -> Log a custom message
+unityGame.SendMessage("WebGL", "Help"); -> Log all available commands
+```
 
 ## Older versions
 | Version    | Size    | Link                                                |
