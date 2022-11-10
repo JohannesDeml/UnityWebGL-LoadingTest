@@ -1,69 +1,165 @@
 
+var consoleDiv;
+
 function initialzeDebugConsole() {
-    var consoleDiv = document.createElement('div');
-    consoleDiv.id = 'debugConsole';
-    document.body.appendChild(consoleDiv);
+    let debugConsole = document.createElement('div');
+    debugConsole.id = 'debugConsole';
+    document.body.appendChild(debugConsole);
 
-    divLog = (message, className) => {
-        var entry = document.createElement('div');
-        entry.classList.add('entry', className);
-        consoleDiv.appendChild(entry);
-        consoleDiv.scrollTop = consoleDiv.scrollHeight;
-        
-        var text = document.createElement('p');
-        message = message.replaceAll("\n", "<br />");
-        text.innerHTML = message;
-        entry.appendChild(text);
-        
-        var copyButton = document.createElement('button');
-        copyButton.className = 'copy-button';
-        copyButton.title = 'copy to clipboard';
-        entry.appendChild(copyButton);
-        
-        var copyIcon = document.createElement('div');
-        copyIcon.classList.add('icon', 'gg-copy');
-        copyButton.appendChild(copyIcon);
-        copyButton.addEventListener('click', function () {
-            navigator.clipboard.writeText(message);
+    consoleDiv = document.createElement('div');
+    consoleDiv.className = 'log-entries';
+    debugConsole.appendChild(consoleDiv);
 
-            copyButton.classList.add('active');
-            setTimeout(function () {
-                copyButton.classList.remove('active');
-            }, 1500);
-        });
+    var consoleInput = document.createElement("input");
+    consoleInput.className = 'console-input';
+    consoleInput.type = "text";
+    consoleInput.value = 'unityGame.SendMessage("WebGL", "Help");';
+    debugConsole.appendChild(consoleInput);
+
+    consoleInput.onkeydown = function(e) {
+        if ( ['Enter', 'NumpadEnter'].includes(e.key)) {
+            console.log(`Evaluating ${consoleInput.value}`);
+            eval(consoleInput.value);
+        }
     };
 
-    defaultConsoleLog = console.log;
-    console.log = (message) => { divLog(message, 'log'); defaultConsoleLog(message) };
+    setupConsoleLogPipe();
+}
 
-    defaultConsoleInfo = console.info;
-    console.info = (message) => { divLog(message, 'info'); defaultConsoleInfo(message) };
+function setupConsoleLogPipe() {
+    // Store actual console log functions
+    let defaultConsoleLog = console.log;
+    let defaultConsoleInfo = console.info;
+    let defaultConsoleDebug = console.debug;
+    let defaultConsoleWarn = console.warn;
+    let defaultConsoleError = console.error;
 
-    defaultConsoleDebug = console.debug;
-    console.debug = (message) => { divLog(message, 'debug'); defaultConsoleDebug(message) };
+    // Overwrite log functions to parse and pipe to debug html console
+    console.log = (message) => { parseMessageAndLog(message, 'log', defaultConsoleLog); };
+    console.info = (message) => { parseMessageAndLog(message, 'info', defaultConsoleInfo); };
+    console.debug = (message) => { parseMessageAndLog(message, 'debug', defaultConsoleDebug); };
+    console.warn = (message) => { parseMessageAndLog(message, 'warn', defaultConsoleWarn); };
+    console.error = (message) => { parseMessageAndLog(message, 'error', defaultConsoleError); };
 
-    defaultConsoleWarn = console.warn;
-    console.warn = (message) => { divLog('⚠️ ' + message, 'warn'); defaultConsoleWarn(message) };
 
-    defaultConsoleError = console.error;
-    console.error = (message) => { divLog('🔴 ' + message, 'error'); defaultConsoleError(message) };
+    parseMessageAndLog = (message, logLevel, consoleLogFunction) => {
+        let index = 0;
+        let consoleArgs = [];
+        let consoleMessage = "";
+        let divMessage = "";
+        // parse unity color tags to render them nicely in the console
+        while (index <= message.length) {
+            let startTagStart = message.indexOf("<color=", index);
+            if (startTagStart == -1) {
+                // Parse the reset of the message without styling
+                let remainingMessage = message.substring(index);
+                consoleMessage += `%c${remainingMessage}`;
+                consoleArgs.push("color:inherit");
+                divMessage += remainingMessage;
+                break;
+            }
+
+            if (startTagStart > index) {
+                let textBeforeTag = message.substring(index, startTagStart);
+                consoleMessage += `%c${textBeforeTag}`;
+                consoleArgs.push("color:inherit");
+                divMessage += textBeforeTag;
+            }
+
+            let startTagEnd = message.indexOf(">", startTagStart);
+            let closingTag = message.indexOf("</color>", startTagStart);
+            if (startTagEnd == -1 || closingTag == -1) {
+                // Tag is set up in the wrong way, abort parsing
+                defaultConsoleError({ error: "Could not parse color tag, since no end tag was found", startStartIndex: startTagStart, startEndIndex: startTagEnd, closingIndex: closingTag });
+                let remainingMessage = message.substring(index);
+                consoleMessage += `%c${remainingMessage}`;
+                consoleArgs.push("color:inherit");
+                divMessage += remainingMessage;
+                break;
+            }
+            let color = message.substring(startTagStart + "<color=".length, startTagEnd);
+            let text = message.substring(startTagEnd + 1, closingTag);
+            consoleMessage += `%c${text}`;
+            consoleArgs.push("color:" + color);
+            divMessage += `<span style="color:${color};">${text}</span>`;
+            index = closingTag + "</color>".length;
+        }
+
+        htmlLog(divMessage, logLevel);
+        consoleLogFunction(consoleMessage, ...consoleArgs);
+    };
+}
+
+function htmlLog(message, className) {
+    var entry = document.createElement('div');
+    entry.classList.add('entry', className);
+    consoleDiv.appendChild(entry);
+    consoleDiv.scrollTop = consoleDiv.scrollHeight;
+
+    var text = document.createElement('p');
+    message = message.replaceAll("\n", "<br />");
+    text.innerHTML = message;
+    entry.appendChild(text);
+
+    var copyButton = document.createElement('button');
+    copyButton.className = 'copy-button';
+    copyButton.title = 'copy to clipboard';
+    entry.appendChild(copyButton);
+
+    var copyIcon = document.createElement('div');
+    copyIcon.classList.add('icon', 'gg-copy');
+    copyButton.appendChild(copyIcon);
+
+    copyButton.addEventListener('click', function () {
+        function customCopyCommand(e) {
+            // copy innerHTML as rich text
+            e.clipboardData.setData("text/html", message);
+            e.clipboardData.setData("text/plain", message);
+            e.preventDefault();
+        }
+        document.addEventListener("copy", customCopyCommand);
+        document.execCommand("copy");
+        document.removeEventListener("copy", customCopyCommand);
+
+        // Show copy feedback to the user
+        copyButton.classList.add('active');
+        setTimeout(function () {
+            copyButton.classList.remove('active');
+        }, 1500);
+    });
 }
 
 function initializeToggleButton(startActive) {
-    var inputDiv = document.createElement('input');
-    inputDiv.type = 'checkbox';
-    inputDiv.id = 'debugToggle';
-    inputDiv.name = 'debugToggle';
-    inputDiv.checked = startActive;
-    document.body.appendChild(inputDiv);
+    var debugToggle = document.createElement('input');
+    debugToggle.type = 'checkbox';
+    debugToggle.id = 'debugToggle';
+    debugToggle.name = 'debugToggle';
+    debugToggle.checked = startActive;
+    document.body.appendChild(debugToggle);
 
-    var labelDiv = document.createElement('label');
-    labelDiv.className = 'debugToggleMenu';
-    labelDiv.htmlFor = 'debugToggle';
-    document.body.appendChild(labelDiv);
+    var debugLabel = document.createElement('label');
+    debugLabel.className = 'debugToggleMenu';
+    debugLabel.htmlFor = 'debugToggle';
+    document.body.appendChild(debugLabel);
     var iconDiv = document.createElement('div');
     iconDiv.classList = 'icon';
-    labelDiv.appendChild(iconDiv);
+    debugLabel.appendChild(iconDiv);
+
+    debugToggle.addEventListener('change', (event) => {
+        if(typeof unityGame === 'undefined') {
+            return;
+        }
+        if (event.currentTarget.checked) {
+            unityGame.SendMessage("WebGL","DisableCaptureAllKeyboardInput");
+        } else {
+            if(typeof unityCaptureAllKeyboardInputDefault !== 'undefined' && unityCaptureAllKeyboardInputDefault === 'false') {
+                unityGame.SendMessage("WebGL","DisableCaptureAllKeyboardInput");
+            }
+            else {
+                unityGame.SendMessage("WebGL","EnableCaptureAllKeyboardInput");
+            }
+        }
+    })
 }
 
 function getInfoPanel() {
@@ -82,7 +178,7 @@ function getInfoPanel() {
         }
         infoPanel.appendChild(infoHeader);
     }
-    
+
     return infoPanel;
 }
 
@@ -99,13 +195,13 @@ function setInfoPanelVisible(visible) {
 function getOrCreateInfoEntry(id) {
     const infoPanel = getInfoPanel();
     var entry = infoPanel.querySelector(':scope > #' + id);
-    
+
     if(entry == null || entry == 'undefined') {
         entry = document.createElement('div');
         entry.id = id;
         infoPanel.appendChild(entry);
     }
-    
+
     return entry;
 }
 

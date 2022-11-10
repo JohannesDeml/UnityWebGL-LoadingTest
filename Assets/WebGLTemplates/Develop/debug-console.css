@@ -2,13 +2,22 @@
 #debugConsole {
     position: absolute;
     width: 100%;
-    min-height: 5px;
-    max-height: 50vh;
-    overflow-y: scroll;
+    height: 50vh;
     z-index: 100;
+    flex-direction: column;
     text-align: left;
     font-family: "Lucida Console", "Courier New", monospace;
     font-size: small;
+    word-break: break-all;
+}
+
+#debugConsole .log-entries{
+    overflow-y: scroll;
+}
+
+#debugConsole .console-input{
+    flex-shrink: 0;
+    height: 20px;
 }
 
 #debugConsole .entry {
@@ -99,7 +108,7 @@
 }
 
 #debugToggle:checked ~ #debugConsole {
-    display: block;
+    display: flex;
 }
 
 #debugToggle:checked ~ .debugToggleMenu .icon {
@@ -158,7 +167,7 @@ dl div:after {
     width: 14px;
     height: 18px;
     border: 2px solid;
-    margin-top: -4px
+    margin-top: -4px;
 }
 
 .gg-copy::after,
@@ -166,7 +175,7 @@ dl div:after {
     content: "";
     display: block;
     box-sizing: border-box;
-    position: absolute
+    position: absolute;
 }
 
 .gg-copy::before {
@@ -181,7 +190,7 @@ dl div:after {
     bottom: -6px;
     right: -6px;
     width: 14px;
-    height: 18px
+    height: 18px;
 }
 
 .gg-copy::after {
@@ -190,5 +199,5 @@ dl div:after {
     background: currentColor;
     left: 2px;
     top: 2px;
-    box-shadow: 0 4px 0,0 8px 0
+    box-shadow: 0 4px 0,0 8px 0;
 }
