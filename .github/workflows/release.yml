@@ -101,14 +101,9 @@ jobs:
     needs: [ variables ]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: ${{ needs.variables.outputs.BUILD_NAME }}
-
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          files: ${{ needs.variables.outputs.BUILD_NAME }}.zip
           body: |
             # ${{ needs.variables.outputs.UNITY_VERSION }}
             ## Changes
