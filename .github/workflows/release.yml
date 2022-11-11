@@ -23,15 +23,15 @@ jobs:
         id: set_unity_version
         run: |
           UNITY_VERSION=$(sed -n 's/^\m_EditorVersion: //p'< ./ProjectSettings/ProjectVersion.txt)
-          echo "::set-output name=VERSION::$UNITY_VERSION"
+          echo "VERSION={$UNITY_VERSION}" >> $GITHUB_OUTPUT
 
       - name: Set tag
         id: set_tag
-        run: echo "::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}"
+        run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
 
       - name: Set target name
         id: set_build_name
-        run: echo "::set-output name=VERSION::WebGL-${{ steps.set_tag.outputs.VERSION }}"
+        run: echo "VERSION=WebGL-${{ steps.set_tag.outputs.VERSION }}" >> $GITHUB_OUTPUT
 
       - name: Log variables
         run: |
@@ -105,7 +105,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           body: |
-            # ${{ needs.variables.outputs.UNITY_VERSION }}
             ## Changes
             *
 
