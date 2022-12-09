@@ -1,4 +1,4 @@
-﻿var WebGlPlugins =
+var WebGlPlugins =
 {
     _SetStringVariable: function(variableName, variableValue) {
         //convert the string from unity to javascript strings
@@ -44,8 +44,9 @@
         if(typeof onAddTimeTracker !== 'undefined') {
             onAddTimeTracker(eventNameText);
         }
-        
-        console.log(`Time tracker event ${eventNameText}: ${currentTime}ms`);
+
+        var currentTimeRounded = currentTime.toFixed(2);
+        console.log('Time tracker event ' +eventNameText +': ' + currentTimeRounded + 'ms');
     },
 
     _ShowInfoPanel: function () {

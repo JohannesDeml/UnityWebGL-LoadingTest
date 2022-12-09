@@ -17,9 +17,7 @@ function initialzeDebugConsole() {
     debugConsole.appendChild(consoleInput);
 
     consoleInput.onkeydown = function(e) {
-        var key = e.keyCode || e.which;
-        //On Enter
-        if (key == 13) {
+        if ( ['Enter', 'NumpadEnter'].includes(e.key)) {
             console.log(`Evaluating ${consoleInput.value}`);
             eval(consoleInput.value);
         }
@@ -29,12 +27,19 @@ function initialzeDebugConsole() {
 }
 
 function setupConsoleLogPipe() {
-    // Store actual console log functions, since they will be overwritten with new logic
+    // Store actual console log functions
     let defaultConsoleLog = console.log;
     let defaultConsoleInfo = console.info;
     let defaultConsoleDebug = console.debug;
     let defaultConsoleWarn = console.warn;
     let defaultConsoleError = console.error;
+
+    // Overwrite log functions to parse and pipe to debug html console
+    console.log = (message) => { parseMessageAndLog(message, 'log', defaultConsoleLog); };
+    console.info = (message) => { parseMessageAndLog(message, 'info', defaultConsoleInfo); };
+    console.debug = (message) => { parseMessageAndLog(message, 'debug', defaultConsoleDebug); };
+    console.warn = (message) => { parseMessageAndLog(message, 'warn', defaultConsoleWarn); };
+    console.error = (message) => { parseMessageAndLog(message, 'error', defaultConsoleError); };
 
 
     parseMessageAndLog = (message, logLevel, consoleLogFunction) => {
@@ -80,18 +85,12 @@ function setupConsoleLogPipe() {
             index = closingTag + "</color>".length;
         }
 
-        divLog(divMessage, logLevel);
+        htmlLog(divMessage, logLevel);
         consoleLogFunction(consoleMessage, ...consoleArgs);
     };
-
-    console.log = (message) => { parseMessageAndLog(message, 'log', defaultConsoleLog); };
-    console.info = (message) => { parseMessageAndLog(message, 'info', defaultConsoleInfo); };
-    console.debug = (message) => { parseMessageAndLog(message, 'debug', defaultConsoleDebug); };
-    console.warn = (message) => { parseMessageAndLog(message, 'warn', defaultConsoleWarn); };
-    console.error = (message) => { parseMessageAndLog(message, 'error', defaultConsoleError); };
 }
 
-function divLog(message, className) {
+function htmlLog(message, className) {
     var entry = document.createElement('div');
     entry.classList.add('entry', className);
     consoleDiv.appendChild(entry);
@@ -110,9 +109,19 @@ function divLog(message, className) {
     var copyIcon = document.createElement('div');
     copyIcon.classList.add('icon', 'gg-copy');
     copyButton.appendChild(copyIcon);
-    copyButton.addEventListener('click', function () {
-        navigator.clipboard.writeText(message);
 
+    copyButton.addEventListener('click', function () {
+        function customCopyCommand(e) {
+            // copy innerHTML as rich text
+            e.clipboardData.setData("text/html", message);
+            e.clipboardData.setData("text/plain", message);
+            e.preventDefault();
+        }
+        document.addEventListener("copy", customCopyCommand);
+        document.execCommand("copy");
+        document.removeEventListener("copy", customCopyCommand);
+
+        // Show copy feedback to the user
         copyButton.classList.add('active');
         setTimeout(function () {
             copyButton.classList.remove('active');

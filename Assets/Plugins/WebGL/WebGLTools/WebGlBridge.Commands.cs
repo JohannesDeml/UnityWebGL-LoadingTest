@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="WebGlBridge.Commands.cs">
 //   Copyright (c) 2022 Johannes Deml. All rights reserved.
 // </copyright>
@@ -111,7 +111,7 @@ namespace Supyrb
 		/// Log an example message to see if it is rendered correctly, and to see the stacktrace
 		/// </summary>
 		[WebGlCommand(Description = "Log an example debug message")]
-		public void LogDebugMessage()
+		public void LogExampleMessage()
 		{
 			Debug.Log("This is an <color=#ff0000>example</color> message, showing off <color=#ff00ff>rich text</color> support!");
 		}
@@ -120,8 +120,8 @@ namespace Supyrb
 		/// Log a custom message to test Debug.Log in general
 		/// </summary>
 		/// <param name="message">Message that will be logged</param>
-		[WebGlCommand(Description = "Log a custom debug message")]
-		public void LogDebugMessage(string message)
+		[WebGlCommand(Description = "Log a custom message")]
+		public void LogMessage(string message)
 		{
 			Debug.Log(message);
 		}

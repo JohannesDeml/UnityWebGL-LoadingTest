@@ -8,6 +8,7 @@
     text-align: left;
     font-family: "Lucida Console", "Courier New", monospace;
     font-size: small;
+    word-break: break-all;
 }
 
 #debugConsole .log-entries{
