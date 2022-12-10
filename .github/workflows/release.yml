@@ -23,7 +23,7 @@ jobs:
         id: set_unity_version
         run: |
           UNITY_VERSION=$(sed -n 's/^\m_EditorVersion: //p'< ./ProjectSettings/ProjectVersion.txt)
-          echo "VERSION={$UNITY_VERSION}" >> $GITHUB_OUTPUT
+          echo "VERSION=$UNITY_VERSION" >> $GITHUB_OUTPUT
 
       - name: Set tag
         id: set_tag
