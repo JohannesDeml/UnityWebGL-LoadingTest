@@ -111,15 +111,26 @@ function htmlLog(message, className) {
     copyButton.appendChild(copyIcon);
 
     copyButton.addEventListener('click', function () {
-        function customCopyCommand(e) {
-            // copy innerHTML as rich text
-            e.clipboardData.setData("text/html", message);
-            e.clipboardData.setData("text/plain", message);
-            e.preventDefault();
+        if (navigator.clipboard) {
+            var clipboardText = text.innerText;
+            navigator.clipboard.writeText(clipboardText).then(function() {
+                copyButton.setAttribute('data-before', 'copied');
+            }).catch(function() {
+                copyButton.setAttribute('data-before', 'copy with navigator.clipboard failed');
+            });
+        } else {
+            // Fallback for old browsers
+            function customCopyCommand(e) {
+                // copy innerHTML as rich text
+                e.clipboardData.setData("text/html", message);
+                e.clipboardData.setData("text/plain", message);
+                e.preventDefault();
+            }
+            document.addEventListener("copy", customCopyCommand);
+            document.execCommand("copy");
+            document.removeEventListener("copy", customCopyCommand);
+            copyButton.setAttribute('data-before', 'copied (fallback)');
         }
-        document.addEventListener("copy", customCopyCommand);
-        document.execCommand("copy");
-        document.removeEventListener("copy", customCopyCommand);
 
         // Show copy feedback to the user
         copyButton.classList.add('active');

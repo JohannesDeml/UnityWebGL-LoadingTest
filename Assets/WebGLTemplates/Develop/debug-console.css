@@ -55,7 +55,7 @@
 }
 
 #debugConsole .entry .copy-button:before {
-    content: 'copied';
+    content: attr(data-before);;
     position: absolute;
     bottom: 0;
     right: 10px;
