@@ -1,0 +1,18 @@
+name: Upgrade Unity version
+
+on:
+  workflow_dispatch:
+    inputs:
+      unityVersion:
+        description: 'Unity Version'
+        required: true
+        type: string
+
+jobs:
+  upgrade-unity-version:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "Upgrading to Unity Version: $UNITY_VERSION"
+        env:
+          UNITY_VERSION: ${{ inputs.unityVersion }}
