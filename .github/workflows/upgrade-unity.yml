@@ -10,9 +10,39 @@ on:
 
 jobs:
   upgrade-unity-version:
+    name: Upgrade Unity version and packages
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
     steps:
       - run: |
           echo "Upgrading to Unity Version: $UNITY_VERSION"
         env:
           UNITY_VERSION: ${{ inputs.unityVersion }}
+
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          lfs: true
+
+      - uses: actions/cache@v3
+        with:
+          path: Library
+          key: Library-WebGL
+          restore-keys: Library-
+
+      - name: Build project
+        uses: game-ci/unity-builder@v2
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          buildMethod: UnityBuilderAction.UnityPackageScripts.UpgradeAllPackagesToVerifiedVersion
+          unityVersion: ${{ inputs.unityVersion }}
+          targetPlatform: WebGL
+          buildName: ${{ needs.variables.outputs.BUILD_NAME }}
+          allowDirtyBuild: true
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ${{ needs.variables.outputs.BUILD_NAME }}
+          path: build/WebGL
