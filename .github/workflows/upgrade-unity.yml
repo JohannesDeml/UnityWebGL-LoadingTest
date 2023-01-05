@@ -42,7 +42,5 @@ jobs:
           buildName: ${{ needs.variables.outputs.BUILD_NAME }}
           allowDirtyBuild: true
 
-      - uses: actions/upload-artifact@v3
-        with:
-          name: ${{ needs.variables.outputs.BUILD_NAME }}
-          path: build/WebGL
+      - name: Log git status
+        run: git status
