@@ -32,7 +32,7 @@ jobs:
           restore-keys: Library-
 
       - name: Build project
-        uses: game-ci/unity-builder@v2
+        uses: JohannesDeml/unity-builder@d19141044df950835040e83b2b6d443d10b16d13
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
