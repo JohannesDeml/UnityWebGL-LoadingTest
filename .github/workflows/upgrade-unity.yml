@@ -7,6 +7,11 @@ on:
         description: 'Unity Version'
         required: true
         type: string
+      customParameters:
+        description: 'Custom cli arguments'
+        required: false
+        type: string
+        default: '-accept-apiupdate ‑ignorecompilererrors'
 
 jobs:
   upgrade-unity-version:
@@ -37,6 +42,7 @@ jobs:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           buildMethod: UnityBuilderAction.UnityPackageScripts.UpgradeAllPackagesToVerifiedVersion
+          customParameters: ${{ inputs.customParameters }}
           unityVersion: ${{ inputs.unityVersion }}
           targetPlatform: WebGL
           buildName: ${{ needs.variables.outputs.BUILD_NAME }}
