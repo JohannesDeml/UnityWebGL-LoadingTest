@@ -37,7 +37,7 @@ jobs:
           restore-keys: Library-
 
       - name: Build project
-        uses: JohannesDeml/unity-builder@d19141044df950835040e83b2b6d443d10b16d13
+        uses: JohannesDeml/unity-builder@no-quit-parameter
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
@@ -50,3 +50,14 @@ jobs:
 
       - name: Log git status
         run: git status
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ secrets.PR_GITHUB_TOKEN }}
+          commit-message: "[Automated workflow] upgrade-unity to $UNITY_VERSION"
+          branch: "ci/upgrade-unity/$UNITY_VERSION"
+          delete-branch: true
+          title: "[Automated Pull Request] upgrade-unity to $UNITY_VERSION"
+        env:
+            UNITY_VERSION: ${{ inputs.unityVersion }}
