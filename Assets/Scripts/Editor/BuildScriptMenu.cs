@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="BuildScriptMenu.cs">
 //   Copyright (c) 2022 Johannes Deml. All rights reserved.
 // </copyright>
@@ -32,7 +32,7 @@ namespace UnityBuilderAction
 		public static void BuildWebGLDefault()
 		{
 			var parameters = new List<string>(baseParameters);
-			string tag = $"{Application.unityVersion}-webgl1";
+			string tag = $"{Application.unityVersion}-webgl1-manualBuild";
 			SetBuildTarget(BuildTarget.WebGL, ref parameters);
 			SetParameterValue("-autorunplayer", "true", ref parameters);
 			SetParameterValue("-tag", tag, ref parameters);
@@ -44,7 +44,7 @@ namespace UnityBuilderAction
 		public static void BuildWebGLMinSize()
 		{
 			var parameters = new List<string>(baseParameters);
-			string tag = $"{Application.unityVersion}-minsize-webgl1";
+			string tag = $"{Application.unityVersion}-minsize-webgl1-manualBuild";
 			SetBuildTarget(BuildTarget.WebGL, ref parameters);
 			SetParameterValue("-autorunplayer", "true", ref parameters);
 			SetParameterValue("-tag", tag, ref parameters);
@@ -56,7 +56,7 @@ namespace UnityBuilderAction
 		public static void BuildWebGLDebug()
 		{
 			var parameters = new List<string>(baseParameters);
-			string tag = $"{Application.unityVersion}-debug";
+			string tag = $"{Application.unityVersion}-debug-manualBuild";
 			SetBuildTarget(BuildTarget.WebGL, ref parameters);
 			SetParameterValue("-autorunplayer", "true", ref parameters);
 			SetParameterValue("-tag", tag, ref parameters);
@@ -68,7 +68,7 @@ namespace UnityBuilderAction
 		public static void BuildWebGLWebGL2()
 		{
 			var parameters = new List<string>(baseParameters);
-			string tag = $"{Application.unityVersion}-webgl2";
+			string tag = $"{Application.unityVersion}-webgl2-manualBuild";
 			SetBuildTarget(BuildTarget.WebGL, ref parameters);
 			SetParameterValue("-autorunplayer", "true", ref parameters);
 			SetParameterValue("-tag", tag, ref parameters);
