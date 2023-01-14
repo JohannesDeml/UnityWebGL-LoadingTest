@@ -48,6 +48,9 @@ jobs:
           buildName: ${{ needs.variables.outputs.BUILD_NAME }}
           allowDirtyBuild: true
 
+      - name: Delete build folder
+        run: sudo rm -r ./build
+
       - name: Log git status
         run: git status
 
