@@ -48,6 +48,9 @@ jobs:
           buildName: ${{ needs.variables.outputs.BUILD_NAME }}
           allowDirtyBuild: true
 
+      - name: Delete build folder with elevated rights
+        run: sudo rm -r ./build
+
       - name: Log git status
         run: git status
 
@@ -55,9 +58,7 @@ jobs:
         uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ secrets.PR_GITHUB_TOKEN }}
-          commit-message: "[Automated workflow] upgrade-unity to $UNITY_VERSION"
-          branch: "ci/upgrade-unity/$UNITY_VERSION"
+          commit-message: "[Automated workflow] upgrade-unity to ${{ inputs.unityVersion }}"
+          branch: "ci/upgrade-unity/${{ inputs.unityVersion }}"
           delete-branch: true
-          title: "[Automated Pull Request] upgrade-unity to $UNITY_VERSION"
-        env:
-            UNITY_VERSION: ${{ inputs.unityVersion }}
+          title: "[Automated Pull Request] upgrade-unity to ${{ inputs.unityVersion }}"
