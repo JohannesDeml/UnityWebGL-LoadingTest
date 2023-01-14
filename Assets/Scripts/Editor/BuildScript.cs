@@ -66,8 +66,10 @@ namespace UnityBuilderAction
 					PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.Mono2x);
 					break;
 				case BuildTarget.WebGL:
+#if UNITY_2021_2_OR_NEWER
 					// Use ASTC texture compression, since we are also targeting mobile versions - Don't use this for desktop only targets
 					buildPlayerOptions.subtarget = (int)WebGLTextureSubtarget.ASTC;
+#endif
 
 					if (options.TryGetValue("tag", out string tagVersion) &&
 					    !string.IsNullOrEmpty(tagVersion))
@@ -84,7 +86,11 @@ namespace UnityBuilderAction
 							EditorUserBuildSettings.SetPlatformSettings(BuildPipeline.GetBuildTargetName(BuildTarget.WebGL), "CodeOptimization", "size");
 							PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.FullWithStacktrace;
 							PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.WebGL, Il2CppCompilerConfiguration.Debug);
+#if UNITY_2021_2_OR_NEWER
 							PlayerSettings.WebGL.debugSymbolMode = WebGLDebugSymbolMode.Embedded;
+#else
+							PlayerSettings.WebGL.debugSymbols = true;
+#endif
 							buildPlayerOptions.options |= BuildOptions.Development;
 						}
 						else

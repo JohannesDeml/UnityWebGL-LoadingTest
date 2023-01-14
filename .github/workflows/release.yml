@@ -23,15 +23,15 @@ jobs:
         id: set_unity_version
         run: |
           UNITY_VERSION=$(sed -n 's/^\m_EditorVersion: //p'< ./ProjectSettings/ProjectVersion.txt)
-          echo "::set-output name=VERSION::$UNITY_VERSION"
+          echo "VERSION=$UNITY_VERSION" >> $GITHUB_OUTPUT
 
       - name: Set tag
         id: set_tag
-        run: echo "::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}"
+        run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
 
       - name: Set target name
         id: set_build_name
-        run: echo "::set-output name=VERSION::WebGL-${{ steps.set_tag.outputs.VERSION }}"
+        run: echo "VERSION=WebGL-${{ steps.set_tag.outputs.VERSION }}" >> $GITHUB_OUTPUT
 
       - name: Log variables
         run: |
@@ -61,6 +61,8 @@ jobs:
 
   buildProject:
     name: Create Unity WebGL Build 🏗
+    # only build with additional parameters, the tag alone should only create a release draft
+    if: ${{ needs.variables.outputs.TAG != needs.variables.outputs.UNITY_VERSION }}
     needs: [ variables ]
     runs-on: ubuntu-latest
     strategy:
@@ -94,32 +96,23 @@ jobs:
 
   createRelease:
     name: Create Github release 🐙
-    # only run for the main build, the others will be added to the release manually
+    # only run for the pure tag without build parameters
     if: ${{ needs.variables.outputs.TAG == needs.variables.outputs.UNITY_VERSION }}
-    needs: [ variables, buildProject ]
+    needs: [ variables ]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: ${{ needs.variables.outputs.BUILD_NAME }}
-
-      - name: Zip release
-        run: zip -r ${{ needs.variables.outputs.BUILD_NAME }}.zip ${{ needs.variables.outputs.BUILD_NAME }}
-
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          files: ${{ needs.variables.outputs.BUILD_NAME }}.zip
           body: |
-            # ${{ needs.variables.outputs.TAG }}
             ## Changes
             *
-            *
 
-            [${{ needs.variables.outputs.TAG }} Demo](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.TAG }}/)
-            [${{ needs.variables.outputs.TAG }}-webgl2](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.TAG }}-webgl2/)
-            [${{ needs.variables.outputs.TAG }}-minsize Demo](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.TAG }}-minsize/)
-            [${{ needs.variables.outputs.TAG }}-urp Demo](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.TAG }}-urp/)
+            [${{ needs.variables.outputs.UNITY_VERSION }}-webgl2](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.UNITY_VERSION }}-webgl2/)
+            [${{ needs.variables.outputs.UNITY_VERSION }}-webgl1](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.UNITY_VERSION }}-webgl1/)
+            [${{ needs.variables.outputs.UNITY_VERSION }}-urp-webgl2 Demo](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.UNITY_VERSION }}-urp-webgl2/)
+            [${{ needs.variables.outputs.UNITY_VERSION }}-urp-webgl1 Demo](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.UNITY_VERSION }}-urp-webgl1/)
+            [${{ needs.variables.outputs.UNITY_VERSION }}-minsize-webgl1 Demo](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.UNITY_VERSION }}-minsize-webgl1/)
           draft: true
 
 
