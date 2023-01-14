@@ -1,13 +1,42 @@
-
 var consoleDiv;
+
+
+function setCookie(cname, cvalue, exdays) {
+    const d = new Date();
+    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+    let expires = "expires=" + d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function getCookie(cname) {
+    let name = cname + "=";
+    let ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+
+var scrollToBottom = true;
+if(getCookie("scrollToBottom") === "false") {
+    scrollToBottom = false;
+}
 
 function initialzeDebugConsole() {
     let debugConsole = document.createElement('div');
     debugConsole.id = 'debugConsole';
     document.body.appendChild(debugConsole);
-
     consoleDiv = document.createElement('div');
     consoleDiv.className = 'log-entries';
+
+    addDebugConsoleTopBar(debugConsole, consoleDiv);
+
     debugConsole.appendChild(consoleDiv);
 
     var consoleInput = document.createElement("input");
@@ -16,14 +45,102 @@ function initialzeDebugConsole() {
     consoleInput.value = 'unityGame.SendMessage("WebGL", "Help");';
     debugConsole.appendChild(consoleInput);
 
-    consoleInput.onkeydown = function(e) {
-        if ( ['Enter', 'NumpadEnter'].includes(e.key)) {
+    consoleInput.onkeydown = function (e) {
+        if (['Enter', 'NumpadEnter'].includes(e.key)) {
             console.log(`Evaluating ${consoleInput.value}`);
             eval(consoleInput.value);
         }
     };
 
     setupConsoleLogPipe();
+}
+
+function addDebugConsoleTopBar(debugConsole, consoleDiv) {
+    var consoleTopBar = document.createElement('div');
+    consoleTopBar.className = 'console-top-bar';
+    debugConsole.appendChild(consoleTopBar);
+
+    // Clear logs button
+    var clearButton = document.createElement('button');
+    clearButton.classList.add('clear-button', 'bubble-click-indicator');
+    clearButton.title = 'clear logs';
+    consoleTopBar.appendChild(clearButton);
+
+    var trashIcon = document.createElement('div');
+    trashIcon.classList.add('icon', 'gg-trash');
+    clearButton.appendChild(trashIcon);
+    clearButton.addEventListener('click', function () {
+        consoleDiv.innerHTML = '';
+        clearButton.setAttribute('data-before', 'cleared');
+
+        // Show copy feedback to the user
+        clearButton.classList.add('active');
+        setTimeout(function () {
+            clearButton.classList.remove('active');
+        }, 1500);
+    });
+
+
+    // Copy all logs button
+    var copyButton = document.createElement('button');
+    copyButton.classList.add('copy-button', 'bubble-click-indicator');
+    copyButton.title = 'copy to clipboard';
+    consoleTopBar.appendChild(copyButton);
+
+    var copyIcon = document.createElement('div');
+    copyIcon.classList.add('icon', 'gg-copy');
+    copyButton.appendChild(copyIcon);
+
+    copyButton.addEventListener('click', function () {
+        if (navigator.clipboard) {
+            var clipboardText = consoleDiv.innerText;
+            navigator.clipboard.writeText(clipboardText).then(function () {
+                copyButton.setAttribute('data-before', 'copied');
+            }).catch(function () {
+                copyButton.setAttribute('data-before', 'copy with navigator.clipboard failed');
+            });
+        } else {
+            copyButton.setAttribute('data-before', 'copy failed - navigator.clipboard not supported');
+        }
+
+        // Show copy feedback to the user
+        copyButton.classList.add('active');
+        setTimeout(function () {
+            copyButton.classList.remove('active');
+        }, 1500);
+    });
+
+    // Lock scrolling to bottom button
+    var toBottomButton = document.createElement('button');
+    toBottomButton.classList.add('to-bottom-button', 'bubble-click-indicator');
+    toBottomButton.title = 'lock scrolling to bottom';
+    consoleTopBar.appendChild(toBottomButton);
+
+    var arrowDownIcon = document.createElement('div');
+    arrowDownIcon.classList.add('icon', 'gg-arrow-down');
+    toBottomButton.appendChild(arrowDownIcon);
+    applyScrollToBottom(toBottomButton, consoleDiv);
+
+    toBottomButton.addEventListener('click', function () {
+        scrollToBottom = !scrollToBottom;
+        setCookie("scrollToBottom", scrollToBottom, 365);
+        applyScrollToBottom(toBottomButton, consoleDiv);
+        // Show copy feedback to the user
+        toBottomButton.classList.add('active');
+        setTimeout(function () {
+            toBottomButton.classList.remove('active');
+        }, 1500);
+    });
+}
+
+function applyScrollToBottom(toBottomButton, consoleDiv) {
+    toBottomButton.setAttribute('data-before', scrollToBottom ? 'locked' : 'unlocked');
+    if (scrollToBottom) {
+        toBottomButton.classList.add("locked");
+        consoleDiv.scrollTo(0, consoleDiv.scrollHeight);
+    } else {
+        toBottomButton.classList.remove("locked");
+    }
 }
 
 function setupConsoleLogPipe() {
@@ -47,6 +164,7 @@ function setupConsoleLogPipe() {
         let consoleArgs = [];
         let consoleMessage = "";
         let divMessage = "";
+
         // parse unity color tags to render them nicely in the console
         while (index <= message.length) {
             let startTagStart = message.indexOf("<color=", index);
@@ -85,7 +203,7 @@ function setupConsoleLogPipe() {
             index = closingTag + "</color>".length;
         }
 
-        htmlLog(divMessage, logLevel);
+        htmlLog(divMessage.trim(), logLevel);
         consoleLogFunction(consoleMessage, ...consoleArgs);
     };
 }
@@ -94,15 +212,18 @@ function htmlLog(message, className) {
     var entry = document.createElement('div');
     entry.classList.add('entry', className);
     consoleDiv.appendChild(entry);
-    consoleDiv.scrollTop = consoleDiv.scrollHeight;
 
     var text = document.createElement('p');
+    // Remove last line break if existing
+    if (message.endsWith("\n")) {
+        message = message.substring(0, message.length - "\n".length);
+    }
     message = message.replaceAll("\n", "<br />");
     text.innerHTML = message;
     entry.appendChild(text);
 
     var copyButton = document.createElement('button');
-    copyButton.className = 'copy-button';
+    copyButton.classList.add('copy-button', 'bubble-click-indicator');
     copyButton.title = 'copy to clipboard';
     entry.appendChild(copyButton);
 
@@ -111,15 +232,16 @@ function htmlLog(message, className) {
     copyButton.appendChild(copyIcon);
 
     copyButton.addEventListener('click', function () {
-        function customCopyCommand(e) {
-            // copy innerHTML as rich text
-            e.clipboardData.setData("text/html", message);
-            e.clipboardData.setData("text/plain", message);
-            e.preventDefault();
+        if (navigator.clipboard) {
+            var clipboardText = text.innerText;
+            navigator.clipboard.writeText(clipboardText).then(function () {
+                copyButton.setAttribute('data-before', 'copied');
+            }).catch(function () {
+                copyButton.setAttribute('data-before', 'copy with navigator.clipboard failed');
+            });
+        } else {
+            copyButton.setAttribute('data-before', 'copy failed - navigator.clipboard not supported');
         }
-        document.addEventListener("copy", customCopyCommand);
-        document.execCommand("copy");
-        document.removeEventListener("copy", customCopyCommand);
 
         // Show copy feedback to the user
         copyButton.classList.add('active');
@@ -127,6 +249,11 @@ function htmlLog(message, className) {
             copyButton.classList.remove('active');
         }, 1500);
     });
+
+
+    if(scrollToBottom) {
+        consoleDiv.scrollTo(0, consoleDiv.scrollHeight);
+    }
 }
 
 function initializeToggleButton(startActive) {
@@ -146,17 +273,17 @@ function initializeToggleButton(startActive) {
     debugLabel.appendChild(iconDiv);
 
     debugToggle.addEventListener('change', (event) => {
-        if(typeof unityGame === 'undefined') {
+        if (typeof unityGame === 'undefined') {
             return;
         }
         if (event.currentTarget.checked) {
-            unityGame.SendMessage("WebGL","DisableCaptureAllKeyboardInput");
+            unityGame.SendMessage("WebGL", "DisableCaptureAllKeyboardInput");
         } else {
-            if(typeof unityCaptureAllKeyboardInputDefault !== 'undefined' && unityCaptureAllKeyboardInputDefault === 'false') {
-                unityGame.SendMessage("WebGL","DisableCaptureAllKeyboardInput");
+            if (typeof unityCaptureAllKeyboardInputDefault !== 'undefined' && unityCaptureAllKeyboardInputDefault === 'false') {
+                unityGame.SendMessage("WebGL", "DisableCaptureAllKeyboardInput");
             }
             else {
-                unityGame.SendMessage("WebGL","EnableCaptureAllKeyboardInput");
+                unityGame.SendMessage("WebGL", "EnableCaptureAllKeyboardInput");
             }
         }
     })
@@ -165,12 +292,12 @@ function initializeToggleButton(startActive) {
 function getInfoPanel() {
     let infoPanel = document.getElementById('infoPanel');
 
-    if(infoPanel == null || infoPanel == 'undefined') {
+    if (infoPanel == null || infoPanel == 'undefined') {
         infoPanel = document.createElement('div');
         infoPanel.id = 'infoPanel';
         document.body.appendChild(infoPanel);
         var infoHeader = document.createElement('h3');
-        if(typeof unityVersion != `undefined` && typeof webGlVersion != `undefined`) {
+        if (typeof unityVersion != `undefined` && typeof webGlVersion != `undefined`) {
             // Set by WebGlBridge in Unity
             infoHeader.textContent = `Unity ${unityVersion} (${webGlVersion})`;
         } else {
@@ -184,7 +311,7 @@ function getInfoPanel() {
 
 function setInfoPanelVisible(visible) {
     const infoPanel = getInfoPanel();
-    if(visible) {
+    if (visible) {
         infoPanel.style.visibility = 'visible';
     }
     else {
@@ -196,7 +323,7 @@ function getOrCreateInfoEntry(id) {
     const infoPanel = getInfoPanel();
     var entry = infoPanel.querySelector(':scope > #' + id);
 
-    if(entry == null || entry == 'undefined') {
+    if (entry == null || entry == 'undefined') {
         entry = document.createElement('div');
         entry.id = id;
         infoPanel.appendChild(entry);
@@ -215,7 +342,7 @@ function refreshTrackingDiv() {
     unityTimeTrackers.forEach((value, key, map) => {
         innerHtml += `<div id='tracking-${key}'>
                         <dt>${key}</dt>
-                        <dd class='tracking-seconds'>${(value/1000.0).toFixed(2)}</dd>
+                        <dd class='tracking-seconds'>${(value / 1000.0).toFixed(2)}</dd>
                         <dd class='tracking-milliseconds'>${value}</dd>
                       </div>`;
     });
