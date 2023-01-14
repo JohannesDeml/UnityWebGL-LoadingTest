@@ -36,20 +36,23 @@ jobs:
           key: Library-WebGL
           restore-keys: Library-
 
-      - name: Build project
-        uses: JohannesDeml/unity-builder@no-quit-parameter
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-        with:
-          buildMethod: UnityBuilderAction.UnityPackageScripts.UpgradeAllPackagesToVerifiedVersion
-          customParameters: ${{ inputs.customParameters }}
-          unityVersion: ${{ inputs.unityVersion }}
-          targetPlatform: WebGL
-          buildName: ${{ needs.variables.outputs.BUILD_NAME }}
-          allowDirtyBuild: true
+      # - name: Build project
+      #   uses: JohannesDeml/unity-builder@no-quit-parameter
+      #   env:
+      #     UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+      #   with:
+      #     buildMethod: UnityBuilderAction.UnityPackageScripts.UpgradeAllPackagesToVerifiedVersion
+      #     customParameters: ${{ inputs.customParameters }}
+      #     unityVersion: ${{ inputs.unityVersion }}
+      #     targetPlatform: WebGL
+      #     buildName: ${{ needs.variables.outputs.BUILD_NAME }}
+      #     allowDirtyBuild: true
+
+      - name: Temp create example change
+        run: touch ./example.txt
 
       - name: Delete build folder with elevated rights
-        run: sudo rm -r ./build
+        run: sudo rm -rf ./build
 
       - name: Log git status
         run: git status
