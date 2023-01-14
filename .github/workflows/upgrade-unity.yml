@@ -81,8 +81,6 @@ jobs:
           git tag -a $UNITY_VERSION-webgl2 -m "[Automated workflow] Created by upgrade-unity"
           git tag -a $UNITY_VERSION-webgl2-debug -m "[Automated workflow] Created by upgrade-unity"
           git push origin -f --tags
-        with:
-          token: ${{ secrets.PR_GITHUB_TOKEN }}
         env:
           UNITY_VERSION: ${{ inputs.unityVersion }}
 
@@ -93,8 +91,6 @@ jobs:
           git tag -a $UNITY_VERSION-urp-webgl2 -m "[Automated workflow] Created by upgrade-unity"
           git tag -a $UNITY_VERSION-urp-webgl2-debug -m "[Automated workflow] Created by upgrade-unity"
           git push origin -f --tags
-        with:
-          token: ${{ secrets.PR_GITHUB_TOKEN }}
         env:
           UNITY_VERSION: ${{ inputs.unityVersion }}
 
