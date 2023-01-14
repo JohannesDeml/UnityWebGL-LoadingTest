@@ -2,10 +2,12 @@
 
 ![Preview](./preview.png)
 
-[![](https://img.shields.io/github/release-date/JohannesDeml/UnityWebGL-LoadingTest.svg)](https://github.com/JohannesDeml/UnityWebGL-LoadingTest/releases) [![Tested up to Unity 2022.1](https://img.shields.io/badge/tested%20up%20to%20unity-2022.1-green.svg?logo=unity&cacheSeconds=2592000)](https://unity3d.com/get-unity/download/archive)
+[![](https://img.shields.io/github/release-date/JohannesDeml/UnityWebGL-LoadingTest.svg)](https://github.com/JohannesDeml/UnityWebGL-LoadingTest/releases) [![Tested up to Unity 2022.2](https://img.shields.io/badge/tested%20up%20to%20unity-2022.2-green.svg?logo=unity&cacheSeconds=2592000)](https://unity3d.com/get-unity/download/archive)
 
 *Testing Unity's WebGL size and loading time for different versions and platforms*  
-[Unity Forum Thread](https://forum.unity.com/threads/webgl-builds-for-mobile.545877/).
+
+* [Unity Forum Thread](https://forum.unity.com/threads/webgl-builds-for-mobile.545877/)
+* [Overview page of all builds](https://deml.io/experiments/unity-webgl/)
 
 
 ## Features
@@ -24,51 +26,57 @@
 
 ## Live Demos
 
+### Built-in Renderpipeline WebGL2
+Version | Size | Link
+--- | --- | ---
+2020.3.38f1 | 2.91 MB | https://deml.io/experiments/unity-webgl/2020.3.38f1-webgl2/ 
+2021.3.13f1 | 2.72 MB | https://deml.io/experiments/unity-webgl/2021.3.13f1-webgl2/ 
+2022.1.8f1 | 2.77 MB | https://deml.io/experiments/unity-webgl/2022.1.8f1-webgl2/ 
+2022.2.0f1 | 2.91 MB | https://deml.io/experiments/unity-webgl/2022.2.0f1-webgl2/ 
+
 ### Built-in Renderpipeline WebGL1
 Version | Size | Link
 --- | --- | ---
 2018.4.36f1 | 2.80 MB | https://deml.io/experiments/unity-webgl/2018.4.36f1/ 
 2019.4.28f1 | 2.97 MB | https://deml.io/experiments/unity-webgl/2019.4.28f1/ 
-2020.3.30f1 | 2.89 MB | https://deml.io/experiments/unity-webgl/2020.3.30f1/ 
+2020.3.38f1 | 2.89 MB | https://deml.io/experiments/unity-webgl/2020.3.38f1/ 
 2021.1.0f1 | 2.85 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1/ 
 2021.2.0f1 | 2.69 MB | https://deml.io/experiments/unity-webgl/2021.2.0f1/ 
-2021.3.6f1 | 2.69 MB | https://deml.io/experiments/unity-webgl/2021.3.6f1/ 
+2021.3.13f1 | 2.71 MB | https://deml.io/experiments/unity-webgl/2021.3.13f1/ 
 2022.1.8f1 | 2.75 MB | https://deml.io/experiments/unity-webgl/2022.1.8f1-webgl1/ 
+2022.2.0f1 | 2.89 MB | https://deml.io/experiments/unity-webgl/2022.2.0f1-webgl1/ 
 
-### Built-in Renderpipeline WebGL2
+### URP WebGL2
 Version | Size | Link
 --- | --- | ---
-2021.3.6f1 | 2.71 MB | https://deml.io/experiments/unity-webgl/2021.3.6f1-webgl2/ 
-2022.1.8f1 | 2.77 MB | https://deml.io/experiments/unity-webgl/2022.1.8f1-webgl2/ 
-
-### Built-in Renderpipeline WebGL1 Minimum size
-Version | Size | Link
---- | --- | ---
-2018.4.36f1 Min | 2.77 MB | https://deml.io/experiments/unity-webgl/2018.4.36f1-minsize/ 
-2019.4.28f1 Min | 2.94 MB | https://deml.io/experiments/unity-webgl/2019.4.28f1-minsize/ 
-2020.3.30f1 Min | 2.45 MB | https://deml.io/experiments/unity-webgl/2020.3.30f1-minsize/ 
-2021.1.0f1 Min | 2.45 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1-minsize/ 
-2021.2.0f1 Min | 2.43 MB | https://deml.io/experiments/unity-webgl/2021.2.0f1-minsize/ 
-2021.3.6f1 Min | 2.54 MB | https://deml.io/experiments/unity-webgl/2021.3.6f1-minsize/ 
-2022.1.8f1 Min | 2.61 MB | https://deml.io/experiments/unity-webgl/2022.1.8f1-minsize-webgl1/ 
+2020.3.38f1 URP | 5.54 MB | https://deml.io/experiments/unity-webgl/2020.3.38f1-urp-webgl2/ 
+2021.3.13f1 URP | 6.15 MB | https://deml.io/experiments/unity-webgl/2021.3.13f1-urp-webgl2/ 
+2022.1.8f1 URP | 6.42 MB | https://deml.io/experiments/unity-webgl/2022.1.8f1-urp-webgl2/ 
+2022.2.0f1 URP | 6.83 MB | https://deml.io/experiments/unity-webgl/2022.2.0f1-urp-webgl2/ 
 
 ### URP WebGL1
 Version | Size | Link
 --- | --- | ---
 2018.4.36f1 LWRP | --- | https://deml.io/experiments/unity-webgl/2018.4.36f1-lwrp/ - Broken ([Notes](https://forum.unity.com/threads/exporting-to-webgl-unity-lwrp.549718/#post-4770827)) 
 2019.4.28f1 URP | 5.48 MB | https://deml.io/experiments/unity-webgl/2019.4.28f1-urp/ 
-2020.3.30f1 URP | 5.36 MB | https://deml.io/experiments/unity-webgl/2020.3.30f1-urp/ 
+2020.3.38f1 URP | 5.38 MB | https://deml.io/experiments/unity-webgl/2020.3.38f1-urp-webgl1/ 
 2021.1.0f1 URP | 5.47 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1-urp/ 
 2021.2.0f1 URP | --- | https://issuetracker.unity3d.com/product/unity/issues/guid/1360175 
-2021.3.6f1 URP | 5.98 MB | https://deml.io/experiments/unity-webgl/2021.3.6f1-urp/ 
+2021.3.13f1 URP | 5.99 MB | https://deml.io/experiments/unity-webgl/2021.3.13f1-urp/ 
 2022.1.8f1 URP | 6.26 MB | https://deml.io/experiments/unity-webgl/2022.1.8f1-urp-webgl1/ - Broken 
+2022.2.0f1 URP | 6.71 MB | https://deml.io/experiments/unity-webgl/2022.2.0f1-urp-webgl1/ 
 
-### URP WebGL2
+### Built-in Renderpipeline WebGL1 Minimum size
 Version | Size | Link
 --- | --- | ---
-2021.3.0f1 URP | 5.80 MB | https://deml.io/experiments/unity-webgl/2021.3.0f1-urp-webgl2/ 
-2021.3.0f1 URP | 6.16 MB | https://deml.io/experiments/unity-webgl/2021.3.6f1-urp-webgl2/ 
-2022.1.8f1 URP | 6.42 MB | https://deml.io/experiments/unity-webgl/2022.1.8f1-urp-webgl2/ 
+2018.4.36f1 Min | 2.77 MB | https://deml.io/experiments/unity-webgl/2018.4.36f1-minsize/ 
+2019.4.28f1 Min | 2.94 MB | https://deml.io/experiments/unity-webgl/2019.4.28f1-minsize/ 
+2020.3.38f1 Min | 2.46 MB | https://deml.io/experiments/unity-webgl/2020.3.38f1-minsize-webgl1/ 
+2021.1.0f1 Min | 2.45 MB | https://deml.io/experiments/unity-webgl/2021.1.0f1-minsize/ 
+2021.2.0f1 Min | 2.43 MB | https://deml.io/experiments/unity-webgl/2021.2.0f1-minsize/ 
+2021.3.13f1 Min | 2.57 MB | https://deml.io/experiments/unity-webgl/2021.3.13f1-minsize/ 
+2022.1.8f1 Min | 2.61 MB | https://deml.io/experiments/unity-webgl/2022.1.8f1-minsize-webgl1/ 
+2022.2.0f1 Min | 2.67 MB | https://deml.io/experiments/unity-webgl/2022.2.0f1-minsize-webgl1/ 
 
 ## Platform Compatibility
 
@@ -145,16 +153,42 @@ The script `WebGlBridge` adds an easy to access gameobject that can be called fr
 
 Currently the following commands are available:
 
-* `LogMemory()` : logs the current memory consumption
-* `SetApplicationRunInBackground(int runInBackground)` : [Application.runInBackground](https://docs.unity3d.com/ScriptReference/Application-runInBackground.html)
-* `SetApplicationTargetFrameRate(int targetFrameRate)` : [Application.targetFrameRate](https://docs.unity3d.com/ScriptReference/Application-targetFrameRate.html)
-* `SetTimeFixedDeltaTime(float fixedDeltaTime)` : [Time.fixedDeltaTime](https://docs.unity3d.com/ScriptReference/Time-fixedDeltaTime.html)
-* `SetTimeTimeScale(float timeScale)` : [Time.timeScale](https://docs.unity3d.com/ScriptReference/Time-timeScale.html)
+```javascript
+unityGame.SendMessage("WebGL", "DisableCaptureAllKeyboardInput"); -> Disable unity from consuming all keyboard input
+unityGame.SendMessage("WebGL", "EnableCaptureAllKeyboardInput"); -> Enable unity from consuming all keyboard input
+unityGame.SendMessage("WebGL", "LogMemory"); -> Logs the current memory
+unityGame.SendMessage("WebGL", "SetApplicationRunInBackground", System.Int32 runInBackground); -> Application.runInBackground
+unityGame.SendMessage("WebGL", "SetApplicationTargetFrameRate", System.Int32 targetFrameRate); -> Application.targetFrameRate
+unityGame.SendMessage("WebGL", "SetTimeFixedDeltaTime", System.Single fixedDeltaTime); -> Time.fixedDeltaTime
+unityGame.SendMessage("WebGL", "SetTimeTimeScale", System.Single timeScale); -> Time.timeScale
+unityGame.SendMessage("WebGL", "ToggleInfoPanel"); -> Toggle develop ui visibility of InfoPanel
+unityGame.SendMessage("WebGL", "LogExampleMessage"); -> Log an example debug message
+unityGame.SendMessage("WebGL", "LogMessage", "System.String message"); -> Log a custom message
+unityGame.SendMessage("WebGL", "Help"); -> Log all available commands
+```
+
+## Github Build Actions
+
+This repository supports continuous Integration through [game.ci](https://game.ci/). The main github actions workflow is [release.yml](./.github/workflows/release.yml). On Unity side a custom build script on the basis of [game.ci's BuildScript](https://github.com/game-ci/documentation/blob/main/example/BuildScript.cs) is used: [BuildScript.cs](./Assets/Scripts/Editor/BuildScript.cs). This script supports defining different build logic through git tags through the following syntax: `UNITY_VERSION`-`TAG1`-`TAG2`... Example: `2022.2.0f1-urp-webgl2`
+
+The following tags are supported:
+
+* `minsize`: Set Code optimization to size and and don't support exceptions
+* `debug`: Build a development build with embedded debug symbols and full stack trace
+* `webgl1`: Build for WebGL1
+* `webgl2`: Build for WebGL2
 
 ## Older versions
+
 | Version    | Size    | Link                                                |
 | ---------- | ------- | --------------------------------------------------- |
 | 2018.2.3f1 | 2.97 MB | https://deml.io/experiments/unity-webgl/2018.2.3f1/ |
 | 2019.3.0f6 | 3.28 MB | https://deml.io/experiments/unity-webgl/2019.3.0f6/ |
 | 2020.1.0f1 | 2.86 MB | https://deml.io/experiments/unity-webgl/2020.1.0f1/ |
-| 2020.2.0f1 | 2.82 MB | https://deml.io/experiments/unity-webgl/2020.2.0f1/ |
+| 2020.2.0f1 | 2.82 MB | https://deml.io/experiments/unity-webgl/2022.2.0f1/ |
+
+You can find a list of all builds over here: https://deml.io/experiments/unity-webgl/
+
+## License
+
+* MIT (c) Johannes Deml - see [LICENSE](./LICENSE.md)

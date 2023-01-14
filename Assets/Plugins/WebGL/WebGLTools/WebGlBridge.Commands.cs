@@ -1,6 +1,6 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="WebGlBridge.cs">
-//   Copyright (c) 2021 Johannes Deml. All rights reserved.
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="WebGlBridge.Commands.cs">
+//   Copyright (c) 2022 Johannes Deml. All rights reserved.
 // </copyright>
 // <author>
 //   Johannes Deml
@@ -8,88 +8,39 @@
 // </author>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Reflection;
-using System.Text;
 using Supyrb.Attributes;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace Supyrb
 {
-	/// <summary>
-	/// Bridge to Unity to access unity logic through the browser console
-	/// </summary>
-	public class WebGlBridge : MonoBehaviour
+	public partial class WebGlBridge
 	{
-		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-		private static void OnBeforeSceneLoadRuntimeMethod()
+		/// <summary>
+		/// Disable capturing all keyboard input, e.g. for using native html input fields
+		/// Browser Usage: <code>unityGame.SendMessage("WebGL","DisableCaptureAllKeyboardInput");</code>
+		/// </summary>
+		[WebGlCommand(Description = "Disable unity from consuming all keyboard input")]
+		public void DisableCaptureAllKeyboardInput()
 		{
-			SetGlobalVariables();
-			var bridgeInstance = new GameObject("WebGL");
-			DontDestroyOnLoad(bridgeInstance);
-			bridgeInstance.AddComponent<WebGlBridge>();
+#if !UNITY_EDITOR && UNITY_WEBGL
+			WebGLInput.captureAllKeyboardInput = false;
+			Debug.Log($"WebGLInput.captureAllKeyboardInput: {WebGLInput.captureAllKeyboardInput}");
+#endif
 		}
-
-		private static void SetGlobalVariables()
+		
+		/// <summary>
+		/// Enable capturing all keyboard input, to make sure the game does not miss any key strokes
+		/// Browser Usage: <code>unityGame.SendMessage("WebGL","EnableCaptureAllKeyboardInput");</code>
+		/// </summary>
+		[WebGlCommand(Description = "Enable unity from consuming all keyboard input")]
+		public void EnableCaptureAllKeyboardInput()
 		{
-			var graphicsDevice = SystemInfo.graphicsDeviceType;
-			string webGl = string.Empty;
-			switch (graphicsDevice)
-			{
-				case GraphicsDeviceType.OpenGLES2:
-					webGl = "WebGL 1";
-					break;
-				case GraphicsDeviceType.OpenGLES3:
-					webGl = "WebGL 2";
-					break;
-				default:
-					webGl = graphicsDevice.ToString();
-					break;
-			}
-			WebGlPlugins.SetVariable("webGlVersion", webGl);
-			WebGlPlugins.SetVariable("unityVersion", Application.unityVersion);
+#if !UNITY_EDITOR && UNITY_WEBGL
+			WebGLInput.captureAllKeyboardInput = true;
+			Debug.Log($"WebGLInput.captureAllKeyboardInput: {WebGLInput.captureAllKeyboardInput}");
+#endif
 		}
-
-		private void Start()
-		{
-			Debug.Log("Unity WebGL Bridge ready -> Run 'unityGame.SendMessage(\"WebGL\", \"Help\")' in the browser console to see usage");
-		}
-
-		[ContextMenu("Log all commands")]
-		[WebGlCommand(Description = "Log all available commands")]
-		public void Help()
-		{
-			StringBuilder sb = new StringBuilder();
-			MethodInfo[] methods = GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance);
-
-			sb.AppendLine("Available unity interfaces:");
-			for (int i = 0; i < methods.Length; i++)
-			{
-				var method = methods[i];
-				WebGlCommandAttribute commandAttribute = method.GetCustomAttribute<WebGlCommandAttribute>();
-				if (commandAttribute != null)
-				{
-					sb.Append($"- {method.Name}(");
-					ParameterInfo[] parameters = method.GetParameters();
-					for (int j = 0; j < parameters.Length; j++)
-					{
-						var parameter = parameters[j];
-						sb.Append($"{parameter.ParameterType} {parameter.Name}");
-						if (j < parameters.Length - 1)
-						{
-							sb.Append(", ");
-						}
-					}
-
-					sb.AppendLine($") -> {commandAttribute.Description}");
-				}
-			}
-
-			sb.AppendLine("\nRun a command with 'unityGame.SendMessage(\"WebGL\", \"COMMAND_NAME\",PARAMETER)'");
-			Debug.Log(sb.ToString());
-		}
-
+		
 		/// <summary>
 		/// Logs the current memory usage
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL","LogMemory");</code>
@@ -148,11 +99,31 @@ namespace Supyrb
 		
 		/// <summary>
 		/// Toggle the visibility of the info panel in the top right corner
+		/// Browser Usage: <code>unityGame.SendMessage("WebGL", "ToggleInfoPanel");</code>
 		/// </summary>
 		[WebGlCommand(Description = "Toggle develop ui visibility of InfoPanel")]
 		public void ToggleInfoPanel()
 		{
 			WebGlPlugins.ToggleInfoPanel();
 		}
-	}
+		
+		/// <summary>
+		/// Log an example message to see if it is rendered correctly, and to see the stacktrace
+		/// </summary>
+		[WebGlCommand(Description = "Log an example debug message")]
+		public void LogExampleMessage()
+		{
+			Debug.Log("This is an <color=#ff0000>example</color> message, showing off <color=#ff00ff>rich text</color> support!");
+		}
+		
+		/// <summary>
+		/// Log a custom message to test Debug.Log in general
+		/// </summary>
+		/// <param name="message">Message that will be logged</param>
+		[WebGlCommand(Description = "Log a custom message")]
+		public void LogMessage(string message)
+		{
+			Debug.Log(message);
+		}
+	} 
 }
