@@ -1,0 +1,64 @@
+name: Upgrade Unity version
+
+on:
+  workflow_dispatch:
+    inputs:
+      unityVersion:
+        description: 'Unity Version'
+        required: true
+        type: string
+      customParameters:
+        description: 'Custom cli arguments'
+        required: false
+        type: string
+        default: '-accept-apiupdate ‑ignorecompilererrors'
+
+jobs:
+  upgrade-unity-version:
+    name: Upgrade Unity version and packages
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - run: |
+          echo "Upgrading to Unity Version: $UNITY_VERSION"
+        env:
+          UNITY_VERSION: ${{ inputs.unityVersion }}
+
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          lfs: true
+
+      - uses: actions/cache@v3
+        with:
+          path: Library
+          key: Library-WebGL
+          restore-keys: Library-
+
+      - name: Build project
+        uses: JohannesDeml/unity-builder@no-quit-parameter
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          buildMethod: UnityBuilderAction.UnityPackageScripts.UpgradeAllPackagesToVerifiedVersion
+          customParameters: ${{ inputs.customParameters }}
+          unityVersion: ${{ inputs.unityVersion }}
+          targetPlatform: WebGL
+          buildName: ${{ needs.variables.outputs.BUILD_NAME }}
+          allowDirtyBuild: true
+
+      - name: Delete build folder with elevated rights
+        run: sudo rm -rf ./build
+
+      - name: Log git status
+        run: git status
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ secrets.PR_GITHUB_TOKEN }}
+          commit-message: "[Automated workflow] upgrade-unity to ${{ inputs.unityVersion }}"
+          branch: "ci/upgrade-unity/${{ inputs.unityVersion }}"
+          delete-branch: true
+          title: "[Automated Pull Request] upgrade-unity to ${{ inputs.unityVersion }}"
