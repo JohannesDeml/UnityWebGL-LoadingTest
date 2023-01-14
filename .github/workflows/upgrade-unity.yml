@@ -49,7 +49,7 @@ jobs:
           allowDirtyBuild: true
 
       - name: Delete build folder with elevated rights
-        run: sudo rm -r ./build
+        run: sudo rm -rf ./build
 
       - name: Log git status
         run: git status
