@@ -21,7 +21,13 @@ namespace UnityBuilderAction
 	{
 		private static int ProgressId;
 		private static ListRequest ListRequest;
+		#if UNITY_2021_1_OR_NEWER
 		private static AddAndRemoveRequest AddAndRemoveRequest;
+		#else
+		private static AddRequest AddRequest;
+		private static Queue<string> PackagesToAdd;
+		#endif
+		
 		private static bool IncludePrereleases;
 		
 		[MenuItem("Tools/Packages/Update to verified version")]
@@ -112,13 +118,21 @@ namespace UnityBuilderAction
 				return;
 			}
 
-			AddAndRemoveRequest = Client.AddAndRemove(toAdd.ToArray(), toRemove.ToArray());
 #if UNITY_2020_1_OR_NEWER
 			Progress.Report(ProgressId, 0.5f, $"Updating {toAdd.Count} packages: {string.Join(", ", toAdd)}");
 #endif
+			
+#if UNITY_2021_1_OR_NEWER
+			AddAndRemoveRequest = Client.AddAndRemove(toAdd.ToArray(), toRemove.ToArray());
 			EditorApplication.update += OnWaitForPackageUpdates;
+#else
+			PackagesToAdd = new Queue<string>(toAdd);
+			AddRequest = Client.Add(PackagesToAdd.Dequeue());
+			EditorApplication.update += OnWaitForSinglePackageUpdate;
+#endif
 		}
 
+#if UNITY_2021_1_OR_NEWER
 		private static void OnWaitForPackageUpdates()
 		{
 #if UNITY_2020_1_OR_NEWER
@@ -151,6 +165,50 @@ namespace UnityBuilderAction
 					break;
 			}
 		}
+#else
+		
+		private static void OnWaitForSinglePackageUpdate()
+		{
+#if UNITY_2020_1_OR_NEWER
+			Progress.Report(ProgressId, 0.5f, null);
+#endif
+			if (!AddRequest.IsCompleted)
+			{
+				return;
+			}
+
+			if (AddRequest.Status == StatusCode.Success)
+			{
+				if (PackagesToAdd.Count > 0)
+				{
+					// Update the next package
+					AddRequest = Client.Add(PackagesToAdd.Dequeue());
+					return;
+				}
+			}
+			EditorApplication.update -= OnWaitForSinglePackageUpdate;
+
+			switch (AddRequest.Status)
+			{
+				case StatusCode.Success:
+					Console.WriteLine($"Packages updated successful: {AddRequest.Result}");
+					EndUpdate(0);
+					break;
+				case StatusCode.Failure:
+					Console.WriteLine($"Updating package list failed! {AddRequest.Error}");
+					EndUpdate(201);
+					break;
+				case StatusCode.InProgress:
+					Console.WriteLine("Retrieving package list is still in progress!");
+					EndUpdate(202);
+					break;
+				default:
+					Console.WriteLine($"Unsupported status {AddRequest.Status}!");
+					EndUpdate(203);
+					break;
+			}
+		}
+#endif
 		
 		private static void EndUpdate(int returnValue)
 		{
