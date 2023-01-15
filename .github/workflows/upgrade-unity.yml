@@ -1,3 +1,4 @@
+# Manually upgrade unity and update packages
 name: Upgrade Unity version
 
 on:
@@ -30,7 +31,8 @@ jobs:
     strategy:
       fail-fast: false
     steps:
-      - run: |
+      - name: Log input parameter
+        run: |
           echo "Upgrading to Unity Version: $UNITY_VERSION"
           echo "Create tags: $CREATE_TAGS"
           echo "URP branch: $URP_BRANCH"
@@ -48,10 +50,21 @@ jobs:
           # Makes sure, that pushing new tags will trigger workflows
           token: ${{ secrets.PR_GITHUB_TOKEN }}
 
-      - uses: actions/cache@v3
+      # Unity 2020 cache is not compatible with older versions
+      - name: Unity Library Cache 2020 or higher
+        if: ${{ !startsWith(inputs.unityVersion, '201') }}
+        uses: actions/cache@v3
         with:
           path: Library
-          key: Library-WebGL
+          key: Library-202x-WebGL
+          restore-keys: Library-
+
+      - name: Unity Library Cache 2019 or lower
+        if: ${{ startsWith(inputs.unityVersion, '201') }}
+        uses: actions/cache@v3
+        with:
+          path: Library
+          key: Library-201x-WebGL
           restore-keys: Library-
 
       - name: Build project

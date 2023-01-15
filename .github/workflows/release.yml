@@ -1,3 +1,4 @@
+# Build and upload the project by pushing tags
 name: Build project & release
 
 on:
@@ -73,10 +74,21 @@ jobs:
           fetch-depth: 0
           lfs: true
 
-      - uses: actions/cache@v3
+      # Unity 2020 cache is not compatible with older versions
+      - name: Unity Library Cache 2020 or higher
+        if: ${{ !startsWith(inputs.unityVersion, '201') }}
+        uses: actions/cache@v3
         with:
           path: Library
-          key: Library-WebGL
+          key: Library-202x-WebGL
+          restore-keys: Library-
+
+      - name: Unity Library Cache 2019 or lower
+        if: ${{ startsWith(inputs.unityVersion, '201') }}
+        uses: actions/cache@v3
+        with:
+          path: Library
+          key: Library-201x-WebGL
           restore-keys: Library-
 
       - name: Build project
