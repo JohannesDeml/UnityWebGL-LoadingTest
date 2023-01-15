@@ -65,14 +65,14 @@
     var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     var maxDevicePixelRatio = isMobile? maxPixelRatioMobile: maxPixelRatioDesktop;
     var pixelRatio = Math.min(window.devicePixelRatio, maxDevicePixelRatio);
-    
+
     var loadingBar = document.querySelector("#unity-loading-bar");
     var progressBar = document.querySelector("#unity-progress-bar");
 
-    var unityInstance = UnityLoader.instantiate("unity-container", "%UNITY_WEBGL_BUILD_URL%", {onProgress: UnityProgress});
-    
+    var unityGame = UnityLoader.instantiate("unity-container", "%UNITY_WEBGL_BUILD_URL%", {onProgress: UnityProgress});
+
     function UnityProgress(unityInstance, progress) {
-      if(unityInstance.progress < 1) {
+      if(unityGame.progress < 1) {
         progressBar.style.width = 100 * progress + "%";
       }
       else {
