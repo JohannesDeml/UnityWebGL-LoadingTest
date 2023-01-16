@@ -57,7 +57,7 @@ jobs:
         with:
           path: Library
           key: Library-202x-WebGL
-          restore-keys: Library-
+          restore-keys: Library-202x-
 
       - name: Unity Library Cache 2019 or lower
         if: ${{ startsWith(inputs.unityVersion, '201') }}
@@ -65,7 +65,7 @@ jobs:
         with:
           path: Library
           key: Library-201x-WebGL
-          restore-keys: Library-
+          restore-keys: Library-201x-
 
       - name: Build project
         uses: JohannesDeml/unity-builder@no-quit-parameter
