@@ -76,20 +76,20 @@ jobs:
 
       # Unity 2020 cache is not compatible with older versions
       - name: Unity Library Cache 2020 or higher
-        if: ${{ !startsWith(inputs.unityVersion, '201') }}
+        if: ${{ !startsWith(needs.variables.outputs.UNITY_VERSION, '201') }}
         uses: actions/cache@v3
         with:
           path: Library
           key: Library-202x-WebGL
-          restore-keys: Library-
+          restore-keys: Library-202x-
 
       - name: Unity Library Cache 2019 or lower
-        if: ${{ startsWith(inputs.unityVersion, '201') }}
+        if: ${{ startsWith(needs.variables.outputs.UNITY_VERSION, '201') }}
         uses: actions/cache@v3
         with:
           path: Library
           key: Library-201x-WebGL
-          restore-keys: Library-
+          restore-keys: Library-201x-
 
       - name: Build project
         uses: game-ci/unity-builder@v2
