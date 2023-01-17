@@ -104,7 +104,7 @@ namespace UnityBuilderAction
 				string latestVersion = IncludePrereleases ? 
 					package.versions.latestCompatible : 
 #if UNITY_2019_3_OR_NEWER
-					package.versions.verified;
+					package.versions.recommended;
 #else
 					package.versions.recommended;
 #endif
