@@ -1,5 +1,6 @@
+# Unity WebGL Configuration for Unity 2020+ for LiteSpeed Web Servers (LSWS)
 # From https://github.com/JohannesDeml/UnityWebGL-LoadingTest
-# Unity WebGL Configuration for Unity 2020+
+# For nginx or apache take a look at https://docs.unity3d.com/Manual/webgl-server-configuration-code-samples.html
 # Supports Brotli and no Compression, Gzip seems to have a problem.
 
 Header set Content-Security-Policy "worker-src 'self' blob:;"
@@ -21,7 +22,7 @@ Header set Content-Security-Policy "worker-src 'self' blob:;"
   </Files>
 
   <Files *.data.gz>
-    AddType "application/octet-stream" data.gz
+    AddType "application/octet-stream" .gz
     AddEncoding gzip .gz
   </Files>
 
@@ -37,7 +38,7 @@ Header set Content-Security-Policy "worker-src 'self' blob:;"
   </Files>
 
   <Files *.data.br>
-    AddType "application/octet-stream" data.br
+    AddType "application/octet-stream" .br
     AddEncoding br .br
   </Files>
 </IfModule>
