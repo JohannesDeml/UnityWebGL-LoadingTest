@@ -101,7 +101,13 @@ namespace UnityBuilderAction
 				}
 				
 				
-				string latestVersion = IncludePrereleases ? package.versions.latestCompatible : package.versions.verified;
+				string latestVersion = IncludePrereleases ? 
+					package.versions.latestCompatible : 
+#if UNITY_2019_3_OR_NEWER
+					package.versions.verified;
+#else
+					package.versions.recommended;
+#endif
 				if (package.version == latestVersion || string.IsNullOrEmpty(latestVersion))
 				{
 					continue;

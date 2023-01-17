@@ -77,13 +77,13 @@ namespace UnityBuilderAction
 						string[] tagParameters = tagVersion.Split('-');
 						if (tagParameters.Contains("minsize"))
 						{
-							EditorUserBuildSettings.SetPlatformSettings(BuildPipeline.GetBuildTargetName(BuildTarget.WebGL), "CodeOptimization", "size");
+							SetWebGlOptimization("size");
 							PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.None;
 							PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.WebGL, Il2CppCompilerConfiguration.Master);
 						}
 						else if (tagParameters.Contains("debug"))
 						{
-							EditorUserBuildSettings.SetPlatformSettings(BuildPipeline.GetBuildTargetName(BuildTarget.WebGL), "CodeOptimization", "size");
+							SetWebGlOptimization("size");
 							PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.FullWithStacktrace;
 							PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.WebGL, Il2CppCompilerConfiguration.Debug);
 #if UNITY_2021_2_OR_NEWER
@@ -96,7 +96,7 @@ namespace UnityBuilderAction
 						else
 						{
 							// By default use the speed setting
-							EditorUserBuildSettings.SetPlatformSettings(BuildPipeline.GetBuildTargetName(BuildTarget.WebGL), "CodeOptimization", "speed");
+							SetWebGlOptimization("speed");
 						}
 
 						if (tagParameters.Contains("webgl2") && !tagParameters.Contains("webgl1"))
@@ -129,6 +129,16 @@ namespace UnityBuilderAction
 
 			// Custom build
 			Build(buildTarget, options["customBuildPath"]);
+		}
+
+		private static void SetWebGlOptimization(string value)
+		{
+#if UNITY_2019_4_OR_NEWER
+			EditorUserBuildSettings.SetPlatformSettings(BuildPipeline.GetBuildTargetName(BuildTarget.WebGL), 
+				"CodeOptimization", value);
+#else
+			Console.WriteLine($"Setting {nameof(SetWebGlOptimization)} not supported by this unity version");
+#endif
 		}
 
 		private static Dictionary<string, string> GetValidatedOptions(string[] args)
