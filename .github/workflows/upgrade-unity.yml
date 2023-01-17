@@ -76,11 +76,11 @@ jobs:
       - name: Set upgrade name
         id: upgrade_name
         run: |
-          if [[$URP_BRANCH == "true"]]
+          if [[ "$URP_BRANCH" == "true" ]]
           then
-            echo "NAME=$UNITY_VERSION" >> $GITHUB_OUTPUT
-          else
             echo "NAME=$UNITY_VERSION-urp" >> $GITHUB_OUTPUT
+          else
+            echo "NAME=$UNITY_VERSION" >> $GITHUB_OUTPUT
           fi
         env:
           UNITY_VERSION: ${{ inputs.unityVersion }}
@@ -126,24 +126,22 @@ jobs:
           delete-branch: true
           title: "[Automated workflow] upgrade-unity from ${{steps.last_unity_version.outputs.VERSION}} to ${{ inputs.unityVersion }} - URP: ${{ inputs.urp }}"
 
-      - name: Add non urp tags
-        if: ${{ inputs.createTags && !inputs.urp }}
+      - name: Add tags
         run: |
-          git tag -a -f $UNITY_VERSION-minsize-webgl1 -m "[Automated workflow] Created by upgrade-unity"
-          git tag -a -f $UNITY_VERSION-webgl1 -m "[Automated workflow] Created by upgrade-unity"
-          git tag -a -f $UNITY_VERSION-webgl2 -m "[Automated workflow] Created by upgrade-unity"
-          git tag -a -f $UNITY_VERSION-webgl2-debug -m "[Automated workflow] Created by upgrade-unity"
-          git push origin -f --tags
-        env:
-          UNITY_VERSION: ${{ inputs.unityVersion }}
+          if [[ "$URP_BRANCH" == "true" ]]
+          then
+            git tag -a -f $UNITY_VERSION-urp-webgl1 -m "[Automated workflow] Created by upgrade-unity"
+            git tag -a -f $UNITY_VERSION-urp-webgl2 -m "[Automated workflow] Created by upgrade-unity"
+            git tag -a -f $UNITY_VERSION-urp-webgl2-debug -m "[Automated workflow] Created by upgrade-unity"
+          else
+            git tag -a -f $UNITY_VERSION-minsize-webgl1 -m "[Automated workflow] Created by upgrade-unity"
+            git tag -a -f $UNITY_VERSION-webgl1 -m "[Automated workflow] Created by upgrade-unity"
+            git tag -a -f $UNITY_VERSION-webgl2 -m "[Automated workflow] Created by upgrade-unity"
+            git tag -a -f $UNITY_VERSION-webgl2-debug -m "[Automated workflow] Created by upgrade-unity"
+          fi
 
-      - name: Add urp tags
-        if: ${{ inputs.createTags && inputs.urp }}
-        run: |
-          git tag -a -f $UNITY_VERSION-urp-webgl1 -m "[Automated workflow] Created by upgrade-unity"
-          git tag -a -f $UNITY_VERSION-urp-webgl2 -m "[Automated workflow] Created by upgrade-unity"
-          git tag -a -f $UNITY_VERSION-urp-webgl2-debug -m "[Automated workflow] Created by upgrade-unity"
           git push origin -f --tags
         env:
           UNITY_VERSION: ${{ inputs.unityVersion }}
+          URP_BRANCH: ${{ inputs.urp }}
 
