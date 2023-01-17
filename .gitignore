@@ -6,10 +6,10 @@
 /Temp/**
 /Library/**
 /obj/**
-/UserSettings/**
 /Packages/*/**
 /Packages/*.meta
 /Logs/**
+/UserSettings/**
 
 # Visual Studio / Rider / MonoDevelop generated
 /ExportedObj/**
@@ -64,3 +64,4 @@ ProjectSettings/Packages/com.unity.connect.share/Settings.json
 /Assets/Temp/**
 /Assets/Temp.meta
 /.sonarqube
+ProjectSettings/RiderScriptEditorPersistedState.asset

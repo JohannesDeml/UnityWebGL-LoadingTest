@@ -1,0 +1,159 @@
+# Build and upload the project by pushing tags
+name: Build project & release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  variables:
+    name: Define variables 🔗
+    runs-on: ubuntu-latest
+    outputs:
+      UNITY_VERSION: ${{ steps.set_unity_version.outputs.VERSION }}
+      TAG: ${{ steps.set_tag.outputs.VERSION }}
+      BUILD_NAME: ${{ steps.set_build_name.outputs.VERSION }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          lfs: true
+
+      - name: Set unity version
+        id: set_unity_version
+        run: |
+          UNITY_VERSION=$(sed -n 's/^\m_EditorVersion: //p'< ./ProjectSettings/ProjectVersion.txt)
+          echo "VERSION=$UNITY_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Set tag
+        id: set_tag
+        run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
+
+      - name: Set target name
+        id: set_build_name
+        run: echo "VERSION=WebGL-${{ steps.set_tag.outputs.VERSION }}" >> $GITHUB_OUTPUT
+
+      - name: Log variables
+        run: |
+          echo "UNITY_VERSION -> ${{ steps.set_unity_version.outputs.VERSION }}"
+          echo "TAG -> ${{ steps.set_tag.outputs.VERSION }}"
+          echo "BUILD_NAME -> ${{ steps.set_build_name.outputs.VERSION }}"
+
+  tagVersionMatchTest:
+    needs: [ variables ]
+    name: Check tag version match ☑
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Log tag and version
+        run: echo "Github tag '${{ needs.variables.outputs.TAG }}' has to start with unity version '${{ needs.variables.outputs.UNITY_VERSION }}'"
+
+      - name: Version match ✔
+        if: startsWith(${{ needs.variables.outputs.TAG }}, {{ needs.variables.outputs.UNITY_VERSION }}
+        run: echo "Versions are matching 🥳"
+
+      - name: Version missmatch ❌
+        if: ${{ !startsWith(needs.variables.outputs.TAG, needs.variables.outputs.UNITY_VERSION) }}
+        uses: actions/github-script@v3
+        with:
+          script: |
+              core.setFailed('Unity version does not match tag version')
+
+  buildProject:
+    name: Create Unity WebGL Build 🏗
+    # only build with additional parameters, the tag alone should only create a release draft
+    if: ${{ needs.variables.outputs.TAG != needs.variables.outputs.UNITY_VERSION }}
+    needs: [ variables ]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          lfs: true
+
+      # Unity 2020 cache is not compatible with older versions
+      - name: Unity Library Cache 2020 or higher
+        if: ${{ !startsWith(needs.variables.outputs.UNITY_VERSION, '201') }}
+        uses: actions/cache@v3
+        with:
+          path: Library
+          key: Library-202x-WebGL
+          restore-keys: Library-202x-
+
+      - name: Unity Library Cache 2019 or lower
+        if: ${{ startsWith(needs.variables.outputs.UNITY_VERSION, '201') }}
+        uses: actions/cache@v3
+        with:
+          path: Library
+          key: Library-201x-WebGL
+          restore-keys: Library-201x-
+
+      - name: Build project
+        uses: game-ci/unity-builder@v2
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          buildMethod: UnityBuilderAction.BuildScript.BuildWithCommandlineArgs
+          customParameters: -tag ${{ needs.variables.outputs.TAG }}
+          targetPlatform: WebGL
+          buildName: ${{ needs.variables.outputs.BUILD_NAME }}
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ${{ needs.variables.outputs.BUILD_NAME }}
+          path: build/WebGL
+
+  createRelease:
+    name: Create Github release 🐙
+    # only run for the pure tag without build parameters
+    if: ${{ needs.variables.outputs.TAG == needs.variables.outputs.UNITY_VERSION }}
+    needs: [ variables ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body: |
+            ## Changes
+            *
+
+            [${{ needs.variables.outputs.UNITY_VERSION }}-webgl2](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.UNITY_VERSION }}-webgl2/)
+            [${{ needs.variables.outputs.UNITY_VERSION }}-webgl1](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.UNITY_VERSION }}-webgl1/)
+            [${{ needs.variables.outputs.UNITY_VERSION }}-urp-webgl2 Demo](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.UNITY_VERSION }}-urp-webgl2/)
+            [${{ needs.variables.outputs.UNITY_VERSION }}-urp-webgl1 Demo](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.UNITY_VERSION }}-urp-webgl1/)
+            [${{ needs.variables.outputs.UNITY_VERSION }}-minsize-webgl1 Demo](https://deml.io/experiments/unity-webgl/${{ needs.variables.outputs.UNITY_VERSION }}-minsize-webgl1/)
+          draft: true
+
+
+  deployOnServer:
+    name: Deploy on server 🚀
+    needs: [ variables, buildProject ]
+    # Guarded by username, if you want to do something sinilar remove the next line
+    if: ${{ github.repository_owner == 'JohannesDeml' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: ${{ needs.variables.outputs.BUILD_NAME }}
+          path: build
+
+      - name: Display structure of root files
+        run: ls -R
+        working-directory: build/${{ needs.variables.outputs.BUILD_NAME }}
+
+      - name: Deploy ⤴
+        uses: SamKirkland/FTP-Deploy-Action@4.2.0
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
+          protocol: ftps
+          local-dir: ./build/${{ needs.variables.outputs.BUILD_NAME }}/
+          server-dir: ./${{ needs.variables.outputs.TAG }}/

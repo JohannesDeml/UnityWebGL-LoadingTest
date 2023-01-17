@@ -1,0 +1,125 @@
+# Manually upgrade unity and update packages
+name: Upgrade Unity version
+
+on:
+  workflow_dispatch:
+    inputs:
+      unityVersion:
+        description: 'Unity Version'
+        required: true
+        type: string
+      createTags:
+        description: 'Create Tags'
+        required: false
+        type: boolean
+        default: true
+      urp:
+        description: 'URP branch'
+        required: true
+        type: boolean
+        default: false
+      customParameters:
+        description: 'Custom cli arguments'
+        required: false
+        type: string
+        default: '-accept-apiupdate ‑ignorecompilererrors'
+
+jobs:
+  upgrade-unity-version:
+    name: Upgrade Unity version and packages
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - name: Log input parameter
+        run: |
+          echo "Upgrading to Unity Version: $UNITY_VERSION"
+          echo "Create tags: $CREATE_TAGS"
+          echo "URP branch: $URP_BRANCH"
+          echo "Custom cli arguments: $CUSTOM_PARAMETERS"
+        env:
+          UNITY_VERSION: ${{ inputs.unityVersion }}
+          CREATE_TAGS: ${{ inputs.createTags }}
+          URP_BRANCH: ${{ inputs.urp }}
+          CUSTOM_PARAMETERS: ${{ inputs.customParameters }}
+
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          lfs: true
+          # Makes sure, that pushing new tags will trigger workflows
+          token: ${{ secrets.PR_GITHUB_TOKEN }}
+
+      # Unity 2020 cache is not compatible with older versions
+      - name: Unity Library Cache 2020 or higher
+        if: ${{ !startsWith(inputs.unityVersion, '201') }}
+        uses: actions/cache@v3
+        with:
+          path: Library
+          key: Library-202x-WebGL
+          restore-keys: Library-202x-
+
+      - name: Unity Library Cache 2019 or lower
+        if: ${{ startsWith(inputs.unityVersion, '201') }}
+        uses: actions/cache@v3
+        with:
+          path: Library
+          key: Library-201x-WebGL
+          restore-keys: Library-201x-
+
+      - name: Build project
+        uses: JohannesDeml/unity-builder@no-quit-parameter
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          buildMethod: UnityBuilderAction.UnityPackageScripts.UpgradeAllPackagesToVerifiedVersion
+          customParameters: ${{ inputs.customParameters }}
+          unityVersion: ${{ inputs.unityVersion }}
+          targetPlatform: WebGL
+          buildName: ${{ needs.variables.outputs.BUILD_NAME }}
+          allowDirtyBuild: true
+
+      - name: Delete build folder with elevated rights
+        run: sudo rm -rf ./build
+
+      - name: Log git status
+        run: git status
+
+      - name: Set git user
+        run: |
+          git config --global user.email "$GIT_USER@users.noreply.github.com"
+          git config --global user.name "$GIT_USER"
+        env:
+          GIT_USER: ${{ github.actor }}
+
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ secrets.PR_GITHUB_TOKEN }}
+          commit-message: "[Automated workflow] upgrade-unity to ${{ inputs.unityVersion }}"
+          branch: "ci/upgrade-unity/${{ inputs.unityVersion }}"
+          delete-branch: true
+          title: "[Automated workflow] upgrade-unity to ${{ inputs.unityVersion }} - URP: ${{ inputs.urp }}"
+
+      - name: Add non urp tags
+        if: ${{ inputs.createTags && !inputs.urp }}
+        run: |
+          git tag -a -f $UNITY_VERSION-minsize-webgl1 -m "[Automated workflow] Created by upgrade-unity"
+          git tag -a -f $UNITY_VERSION-webgl1 -m "[Automated workflow] Created by upgrade-unity"
+          git tag -a -f $UNITY_VERSION-webgl2 -m "[Automated workflow] Created by upgrade-unity"
+          git tag -a -f $UNITY_VERSION-webgl2-debug -m "[Automated workflow] Created by upgrade-unity"
+          git push origin -f --tags
+        env:
+          UNITY_VERSION: ${{ inputs.unityVersion }}
+
+      - name: Add urp tags
+        if: ${{ inputs.createTags && inputs.urp }}
+        run: |
+          git tag -a -f $UNITY_VERSION-urp-webgl1 -m "[Automated workflow] Created by upgrade-unity"
+          git tag -a -f $UNITY_VERSION-urp-webgl2 -m "[Automated workflow] Created by upgrade-unity"
+          git tag -a -f $UNITY_VERSION-urp-webgl2-debug -m "[Automated workflow] Created by upgrade-unity"
+          git push origin -f --tags
+        env:
+          UNITY_VERSION: ${{ inputs.unityVersion }}
+
