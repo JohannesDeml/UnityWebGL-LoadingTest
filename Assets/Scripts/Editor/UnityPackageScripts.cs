@@ -21,7 +21,7 @@ namespace UnityBuilderAction
 	{
 		private static int ProgressId;
 		private static ListRequest ListRequest;
-		#if UNITY_2021_1_OR_NEWER
+		#if UNITY_2021_2_OR_NEWER
 		private static AddAndRemoveRequest AddAndRemoveRequest;
 		#else
 		private static AddRequest AddRequest;
@@ -101,7 +101,13 @@ namespace UnityBuilderAction
 				}
 				
 				
-				string latestVersion = IncludePrereleases ? package.versions.latestCompatible : package.versions.verified;
+				string latestVersion = IncludePrereleases ? 
+					package.versions.latestCompatible : 
+#if UNITY_2019_3_OR_NEWER
+					package.versions.verified;
+#else
+					package.versions.recommended;
+#endif
 				if (package.version == latestVersion || string.IsNullOrEmpty(latestVersion))
 				{
 					continue;
@@ -122,7 +128,7 @@ namespace UnityBuilderAction
 			Progress.Report(ProgressId, 0.5f, $"Updating {toAdd.Count} packages: {string.Join(", ", toAdd)}");
 #endif
 			
-#if UNITY_2021_1_OR_NEWER
+#if UNITY_2021_2_OR_NEWER
 			AddAndRemoveRequest = Client.AddAndRemove(toAdd.ToArray(), toRemove.ToArray());
 			EditorApplication.update += OnWaitForPackageUpdates;
 #else
@@ -132,7 +138,7 @@ namespace UnityBuilderAction
 #endif
 		}
 
-#if UNITY_2021_1_OR_NEWER
+#if UNITY_2021_2_OR_NEWER
 		private static void OnWaitForPackageUpdates()
 		{
 #if UNITY_2020_1_OR_NEWER
