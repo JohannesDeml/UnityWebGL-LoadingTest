@@ -2,13 +2,43 @@
 #debugConsole {
     position: absolute;
     width: 100%;
-    min-height: 5px;
-    max-height: 50vh;
-    overflow-y: scroll;
+    height: 90vh;
     z-index: 100;
+    flex-direction: column;
     text-align: left;
     font-family: "Lucida Console", "Courier New", monospace;
     font-size: small;
+    word-break: break-all;
+}
+
+#debugConsole .console-top-bar {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    height: 30px;
+    padding: 10px 50px 10px 10px;
+    background-color: white;
+}
+
+#debugConsole .console-top-bar button {
+    position: relative;
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    border: 0;
+    background: none;
+}
+
+#debugConsole .log-entries {
+    overflow-y: scroll;
+}
+
+#debugConsole .console-input {
+    flex-shrink: 0;
+    height: 20px;
 }
 
 #debugConsole .entry {
@@ -35,7 +65,7 @@
     background-color: rgba(221, 46, 46, 0.9);
 }
 
-#debugConsole .entry .copy-button {
+#debugConsole .copy-button {
     position: relative;
     flex-shrink: 0;
     width: 20px;
@@ -45,8 +75,13 @@
     background: none;
 }
 
-#debugConsole .entry .copy-button:before {
-    content: 'copied';
+#debugConsole .to-bottom-button.locked {
+    border-bottom: 3px solid yellowgreen;
+}
+
+#debugConsole .bubble-click-indicator:before {
+    content: attr(data-before);
+    ;
     position: absolute;
     bottom: 0;
     right: 10px;
@@ -59,9 +94,10 @@
     border-radius: 10px;
     opacity: 0;
     transition: all 0.3s ease-out;
+    pointer-events: none;
 }
 
-#debugConsole .entry .copy-button.active:before {
+#debugConsole .bubble-click-indicator.active:before {
     opacity: 1;
     right: 30px;
     transition: all 0.2s ease-out;
@@ -89,7 +125,7 @@
     left: 25%;
     width: 50%;
     height: 50%;
-    background:rgb(128, 128, 128);
+    background: rgb(128, 128, 128);
     border-radius: 50%;
     display: none;
 }
@@ -98,15 +134,15 @@
     display: none;
 }
 
-#debugToggle:checked ~ #debugConsole {
+#debugToggle:checked~#debugConsole {
+    display: flex;
+}
+
+#debugToggle:checked~.debugToggleMenu .icon {
     display: block;
 }
 
-#debugToggle:checked ~ .debugToggleMenu .icon {
-    display: block;
-}
-
-#debugToggle:not(:checked) ~ #debugConsole {
+#debugToggle:not(:checked)~#debugConsole {
     display: none;
 }
 
@@ -123,24 +159,26 @@
     background: rgba(255, 255, 255, 0.4);
 }
 
-dt, dd {
+dt,
+dd {
     display: inline;
 }
 
-dt:after{
+dt:after {
     content: ':';
 }
 
-.tracking-seconds:after{
+.tracking-seconds:after {
     content: 's';
 }
 
-.tracking-milliseconds:after{
+.tracking-milliseconds:after {
     content: 'ms';
 }
 
 /* Hide Milliseconds value, still useful for CI to get exact values */
-.tracking-milliseconds, .tracking-milliseconds:after {
+.tracking-milliseconds,
+.tracking-milliseconds:after {
     display: none;
 }
 
@@ -149,16 +187,16 @@ dl div:after {
     content: '';
 }
 
-/* Copy icon from https://css.gg/copy */
+/* Icons from https://css.gg/ */
 .gg-copy {
     box-sizing: border-box;
     position: relative;
     display: block;
-    transform: scale(var(--ggs,1));
+    transform: scale(var(--ggs, 1));
     width: 14px;
     height: 18px;
     border: 2px solid;
-    margin-top: -4px
+    margin-top: -4px;
 }
 
 .gg-copy::after,
@@ -166,22 +204,20 @@ dl div:after {
     content: "";
     display: block;
     box-sizing: border-box;
-    position: absolute
+    position: absolute;
 }
 
 .gg-copy::before {
     background:
-            linear-gradient( to left,
-            currentColor 5px, transparent 0)
-            no-repeat right top/5px 2px,
-            linear-gradient( to left,
-            currentColor 5px, transparent 0)
-            no-repeat left bottom/ 2px 5px;
+        linear-gradient(to left,
+            currentColor 5px, transparent 0) no-repeat right top/5px 2px,
+        linear-gradient(to left,
+            currentColor 5px, transparent 0) no-repeat left bottom/ 2px 5px;
     box-shadow: inset -4px -4px 0 -2px;
     bottom: -6px;
     right: -6px;
     width: 14px;
-    height: 18px
+    height: 18px;
 }
 
 .gg-copy::after {
@@ -190,5 +226,84 @@ dl div:after {
     background: currentColor;
     left: 2px;
     top: 2px;
-    box-shadow: 0 4px 0,0 8px 0
+    box-shadow: 0 4px 0, 0 8px 0;
+}
+
+.gg-arrow-down {
+    box-sizing: border-box;
+    position: relative;
+    display: block;
+    transform: scale(var(--ggs, 1));
+    width: 22px;
+    height: 22px
+}
+
+.gg-arrow-down::after,
+.gg-arrow-down::before {
+    content: "";
+    display: block;
+    box-sizing: border-box;
+    position: absolute;
+    bottom: 4px
+}
+
+.gg-arrow-down::after {
+    width: 8px;
+    height: 8px;
+    border-bottom: 2px solid;
+    border-left: 2px solid;
+    transform: rotate(-45deg);
+    left: 7px
+}
+
+.gg-arrow-down::before {
+    width: 2px;
+    height: 16px;
+    left: 10px;
+    background: currentColor
+}
+
+.gg-trash {
+    box-sizing: border-box;
+    position: relative;
+    display: block;
+    transform: scale(var(--ggs, 1));
+    width: 10px;
+    height: 12px;
+    border: 2px solid transparent;
+    box-shadow:
+        0 0 0 2px,
+        inset -2px 0 0,
+        inset 2px 0 0;
+    border-bottom-left-radius: 1px;
+    border-bottom-right-radius: 1px;
+    margin-top: 4px
+}
+
+.gg-trash::after,
+.gg-trash::before {
+    content: "";
+    display: block;
+    box-sizing: border-box;
+    position: absolute
+}
+
+.gg-trash::after {
+    background: currentColor;
+    border-radius: 3px;
+    width: 16px;
+    height: 2px;
+    top: -4px;
+    left: -5px
+}
+
+.gg-trash::before {
+    width: 10px;
+    height: 4px;
+    border: 2px solid;
+    border-bottom: transparent;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    top: -7px;
+    left: -2px
 }

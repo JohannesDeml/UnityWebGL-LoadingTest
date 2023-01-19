@@ -6,7 +6,6 @@
 /Temp/**
 /Library/**
 /obj/**
-/UserSettings/**
 /Packages/*/**
 /Packages/*.meta
 /Logs/**
