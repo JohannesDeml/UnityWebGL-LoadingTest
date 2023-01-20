@@ -148,7 +148,7 @@ jobs:
         working-directory: build/${{ needs.variables.outputs.BUILD_NAME }}
 
       - name: Deploy ⤴
-        uses: SamKirkland/FTP-Deploy-Action@4.2.0
+        uses: SamKirkland/FTP-Deploy-Action@4.3.3
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USER }}
