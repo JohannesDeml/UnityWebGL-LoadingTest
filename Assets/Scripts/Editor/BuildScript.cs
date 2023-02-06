@@ -77,12 +77,14 @@ namespace UnityBuilderAction
 						string[] tagParameters = tagVersion.Split('-');
 						if (tagParameters.Contains("minsize"))
 						{
+							PlayerSettings.WebGL.template = "PROJECT:Release";
 							SetWebGlOptimization("size");
 							PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.None;
 							PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.WebGL, Il2CppCompilerConfiguration.Master);
 						}
 						else if (tagParameters.Contains("debug"))
 						{
+							PlayerSettings.WebGL.template = "PROJECT:Develop";
 							SetWebGlOptimization("size");
 							PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.FullWithStacktrace;
 							PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.WebGL, Il2CppCompilerConfiguration.Debug);
@@ -95,6 +97,7 @@ namespace UnityBuilderAction
 						}
 						else
 						{
+							PlayerSettings.WebGL.template = "PROJECT:Develop";
 							// By default use the speed setting
 							SetWebGlOptimization("speed");
 						}
