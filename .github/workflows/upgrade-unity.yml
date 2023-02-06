@@ -137,6 +137,8 @@ jobs:
             git tag -a -f $UNITY_VERSION-minsize-webgl1 -m "[Automated workflow] Created by upgrade-unity"
             git tag -a -f $UNITY_VERSION-webgl1 -m "[Automated workflow] Created by upgrade-unity"
             git tag -a -f $UNITY_VERSION-webgl2 -m "[Automated workflow] Created by upgrade-unity"
+            # Push tags in between - pushing more than 3 tags won't trigger tag workflows
+            git push origin -f --tags
             git tag -a -f $UNITY_VERSION-webgl2-debug -m "[Automated workflow] Created by upgrade-unity"
           fi
 

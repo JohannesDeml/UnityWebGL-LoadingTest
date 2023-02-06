@@ -1,4 +1,12 @@
 var consoleDiv;
+var logCounterDivs = {};
+var logCounter = {
+    "log": 0,
+    "info": 0,
+    "debug": 0,
+    "warn": 0,
+    "error": 0
+};
 
 
 function setCookie(cname, cvalue, exdays) {
@@ -23,9 +31,9 @@ function getCookie(cname) {
     return "";
 }
 
-var scrollToBottom = true;
-if(getCookie("scrollToBottom") === "false") {
-    scrollToBottom = false;
+var scrollToBottom = false; // Default to false, since continuous erros can overload the system
+if(getCookie("scrollToBottom") === "true") {
+    scrollToBottom = true;
 }
 
 function initialzeDebugConsole() {
@@ -59,6 +67,12 @@ function addDebugConsoleTopBar(debugConsole, consoleDiv) {
     var consoleTopBar = document.createElement('div');
     consoleTopBar.className = 'console-top-bar';
     debugConsole.appendChild(consoleTopBar);
+
+    addTopBarLogCounter(consoleTopBar);
+
+    var separator = document.createElement('div');
+    separator.classList.add('separator');
+    consoleTopBar.appendChild(separator);
 
     // Clear logs button
     var clearButton = document.createElement('button');
@@ -133,6 +147,56 @@ function addDebugConsoleTopBar(debugConsole, consoleDiv) {
     });
 }
 
+function addTopBarLogCounter(consoleTopBar) {
+
+    addButton = (logLevels) => {
+        var counter = document.createElement('div');
+        const logLevelsArray = logLevels.split(',');
+        counter.classList.add('log-counter', 'bubble-click-indicator', ...logLevelsArray);
+        counter.setAttribute('data-loglevels', logLevels);
+        counter.title = logLevels;
+        let count = 0;
+        logLevelsArray.forEach(logLevel => {
+            count += logCounter[logLevel];
+            logCounterDivs[logLevel] = counter;
+        });
+        consoleTopBar.appendChild(counter);
+
+        var checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = `counter-${logLevels}`;
+        checkbox.name = checkbox.id;
+        checkbox.checked = true;
+        checkbox.setAttribute('hidden', 'true');
+        counter.appendChild(checkbox);
+
+        var counterText = document.createElement('label');
+        counterText.className = 'counter';
+        counterText.htmlFor = checkbox.id;
+        counterText.innerHTML = count;
+        counter.appendChild(counterText);
+
+        checkbox.addEventListener('change', (event) => {
+           var logLevels = event.currentTarget.parentNode.getAttribute('data-loglevels');
+           const logLevelsArray = logLevels.split(',');
+           var debugConsole = document.getElementById('debugConsole');
+           if(event.currentTarget.checked) {
+            logLevelsArray.forEach(element => {
+                debugConsole.classList.remove(`hidelogs-${element}`);
+            });
+           } else {
+            logLevelsArray.forEach(element => {
+                debugConsole.classList.add(`hidelogs-${element}`);
+            });
+           }
+        })
+    }
+
+    addButton('debug,log,info');
+    addButton('warn');
+    addButton('error');
+}
+
 function applyScrollToBottom(toBottomButton, consoleDiv) {
     toBottomButton.setAttribute('data-before', scrollToBottom ? 'locked' : 'unlocked');
     if (scrollToBottom) {
@@ -160,6 +224,7 @@ function setupConsoleLogPipe() {
 
 
     parseMessageAndLog = (message, logLevel, consoleLogFunction) => {
+        updateLogCounter(logLevel);
         let index = 0;
         let consoleArgs = [];
         let consoleMessage = "";
@@ -206,6 +271,20 @@ function setupConsoleLogPipe() {
         htmlLog(divMessage.trim(), logLevel);
         consoleLogFunction(consoleMessage, ...consoleArgs);
     };
+}
+
+function updateLogCounter(logLevel) {
+    logCounter[logLevel]++;
+
+    counter = logCounterDivs[logLevel];
+    const logLevels = counter.getAttribute('data-loglevels');
+    const logLevelsArray = logLevels.split(',');
+    let count = 0;
+    logLevelsArray.forEach(logLevel => {
+        count += logCounter[logLevel];
+    });
+
+    counter.querySelector(".counter").innerHTML = count;
 }
 
 function htmlLog(message, className) {
