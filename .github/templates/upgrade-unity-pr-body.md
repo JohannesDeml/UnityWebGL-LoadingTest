@@ -1,11 +1,11 @@
-## [Automated Workflow] Upgrade unity to {{ .unity-version }}
+## [Automated Workflow] Upgrade unity to {{ .unityversion }}
 
 >  [workflow file](https://github.com/JohannesDeml/UnityWebGL-LoadingTest/blob/master/.github/workflows/upgrade-unity.yml) using [create-pull-request](https://github.com/peter-evans/create-pull-request) & [render-template](https://github.com/chuhlomin/render-template)
 
 ### Built version demos
 
-* https://deml.io/experiments/unity-webgl/{{ .unity-version }}-webgl2
-* https://deml.io/experiments/unity-webgl/{{ .unity-version }}-webgl1
+* https://deml.io/experiments/unity-webgl/{{ .unityversion }}-webgl2
+* https://deml.io/experiments/unity-webgl/{{ .unityversion }}-webgl1
 
 ### Other links
 

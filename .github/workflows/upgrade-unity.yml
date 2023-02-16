@@ -124,7 +124,7 @@ jobs:
         with:
           template: .github/templates/upgrade-unity-pr-body.md
           vars: |
-            unity-version: ${{ steps.upgrade_name.outputs.NAME }}
+            unityversion: ${{ steps.upgrade_name.outputs.NAME }}
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
