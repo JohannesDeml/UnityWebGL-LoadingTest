@@ -1,6 +1,8 @@
 /* Debug console styling */
 #debugConsole {
     position: absolute;
+    top: 0px;
+    left: 0px;
     width: 100%;
     height: 90vh;
     z-index: 100;
@@ -19,17 +21,60 @@
     align-items: center;
     height: 30px;
     padding: 10px 50px 10px 10px;
-    background-color: white;
+    background-color: rgb(243, 243, 243);
 }
 
 #debugConsole .console-top-bar button {
     position: relative;
     flex-shrink: 0;
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
+    margin: 0px 8px;
     cursor: pointer;
     border: 0;
     background: none;
+}
+
+#debugConsole .console-top-bar .log-counter {
+    position: relative;
+    flex-shrink: 0;
+    height: 24px;
+    margin: 0px 8px;
+    border: 0;
+}
+
+#debugConsole .console-top-bar .log-counter .counter {
+    cursor: pointer;
+    padding: 8px;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+#debugConsole .console-top-bar .log-counter input[type='checkbox']:checked + .counter {
+    border-bottom: 3px solid yellowgreen;
+}
+
+#debugConsole .console-top-bar .log-counter .counter::before {
+    padding-right: 2px;
+}
+#debugConsole .console-top-bar .log-counter.info .counter::before {
+    content: 'ℹ️';
+}
+
+#debugConsole .console-top-bar .log-counter.warn .counter::before {
+    content: '⚠️';
+}
+
+#debugConsole .console-top-bar .log-counter.error .counter::before {
+    content: '🛑';
+}
+
+#debugConsole .console-top-bar .separator {
+    position: relative;
+    flex-shrink: 0;
+    width: 1px;
+    height: 24px;
+    margin: 0px 8px;
+    background: black;
 }
 
 #debugConsole .log-entries {
@@ -38,7 +83,7 @@
 
 #debugConsole .console-input {
     flex-shrink: 0;
-    height: 20px;
+    height: 24px;
 }
 
 #debugConsole .entry {
@@ -53,6 +98,13 @@
 #debugConsole .entry.info {
     color: rgb(41, 50, 60);
     background-color: rgba(172, 204, 224, 0.9);
+}
+#debugConsole.hidelogs-info .entry.info,
+#debugConsole.hidelogs-info .entry.debug,
+#debugConsole.hidelogs-info .entry.log,
+#debugConsole.hidelogs-warn .entry.warn,
+#debugConsole.hidelogs-error .entry.error {
+    display:none;
 }
 
 #debugConsole .entry.warn {
