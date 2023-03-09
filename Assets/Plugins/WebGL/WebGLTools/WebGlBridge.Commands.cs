@@ -8,6 +8,8 @@
 // </author>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
 using Supyrb.Attributes;
 using UnityEngine;
 
@@ -124,6 +126,40 @@ namespace Supyrb
 		public void LogMessage(string message)
 		{
 			Debug.Log(message);
+		}
+		
+		/// <summary>
+		/// Log information of all texture formats that Unity supports, which ones are supported by
+		/// the current platform and browser, and which ones are not supported
+		/// </summary>
+		[WebGlCommand(Description = "Log supported and unsupported texture formats")]
+		public void LogTextureSupport()
+		{
+			List<TextureFormat> supportedFormats = new List<TextureFormat>();
+			List<TextureFormat> unsupportedFormats = new List<TextureFormat>();
+
+			foreach (TextureFormat textureFormat in Enum.GetValues(typeof(TextureFormat)))
+			{
+				var memberInfos = typeof(TextureFormat).GetMember(textureFormat.ToString());
+				object[] obsoleteAttributes = memberInfos[0].GetCustomAttributes(typeof(ObsoleteAttribute), false);
+				if (obsoleteAttributes.Length > 0)
+				{
+					// don't evaluate obsolete enum values
+					continue;
+				}
+
+				if (SystemInfo.SupportsTextureFormat(textureFormat))
+				{
+					supportedFormats.Add(textureFormat);
+				}
+				else
+				{
+					unsupportedFormats.Add(textureFormat);
+				}
+			}
+			
+			Debug.Log($"Supported Texture formats: \n{string.Join(", ", supportedFormats)}");
+			Debug.Log($"Unsupported Texture formats: \n{string.Join(", ", unsupportedFormats)}");
 		}
 	} 
 }
