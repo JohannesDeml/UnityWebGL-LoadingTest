@@ -31,9 +31,13 @@ function getCookie(cname) {
     return "";
 }
 
-var scrollToBottom = false; // Default to false, since continuous erros can overload the system
-if(getCookie("scrollToBottom") === "true") {
-    scrollToBottom = true;
+var scrollToBottom = true;
+if(getCookie("scrollToBottom") === "false") {
+    scrollToBottom = false;
+}
+var addTimestamp = true;
+if(getCookie("addTimestamp") === "false") {
+    addTimestamp = false;
 }
 
 function initialzeDebugConsole() {
@@ -73,6 +77,28 @@ function addDebugConsoleTopBar(debugConsole, consoleDiv) {
     var separator = document.createElement('div');
     separator.classList.add('separator');
     consoleTopBar.appendChild(separator);
+
+    // Add timestamp toggle
+    var timestampButton = document.createElement('button');
+    timestampButton.classList.add('timestamp-button', 'bubble-click-indicator');
+    timestampButton.title = 'Add timestamp to logs';
+    consoleTopBar.appendChild(timestampButton);
+
+    var timestampIcon = document.createElement('div');
+    timestampIcon.classList.add('icon');
+    timestampButton.appendChild(timestampIcon);
+    applyTimestamp(timestampButton, consoleDiv);
+
+    timestampButton.addEventListener('click', function () {
+        addTimestamp = !addTimestamp;
+        setCookie("addTimestamp", addTimestamp, 365);
+        applyTimestamp(timestampButton, consoleDiv);
+        // Show copy feedback to the user
+        timestampButton.classList.add('active');
+        setTimeout(function () {
+            timestampButton.classList.remove('active');
+        }, 1500);
+    });
 
     // Clear logs button
     var clearButton = document.createElement('button');
@@ -207,6 +233,18 @@ function applyScrollToBottom(toBottomButton, consoleDiv) {
     }
 }
 
+function applyTimestamp(timestampButton, consoleDiv) {
+    timestampButton.setAttribute('data-before', addTimestamp ? 'Show' : 'Hide');
+    var debugConsole = document.getElementById('debugConsole');
+    if (addTimestamp) {
+        timestampButton.classList.add("show");
+        debugConsole.classList.remove("hidelogtimestamps");
+    } else {
+        timestampButton.classList.remove("show");
+        debugConsole.classList.add("hidelogtimestamps");
+    }
+}
+
 function setupConsoleLogPipe() {
     // Store actual console log functions
     let defaultConsoleLog = console.log;
@@ -293,10 +331,13 @@ function htmlLog(message, className) {
     consoleDiv.appendChild(entry);
 
     var text = document.createElement('p');
-    // Remove last line break if existing
-    if (message.endsWith("\n")) {
-        message = message.substring(0, message.length - "\n".length);
-    }
+    var time = new Date().toLocaleTimeString('en-US', {
+        hour12: false,
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric"}
+    );
+    message = "<span class='timestamplog'>[" + time + "] </span>" + message;
     message = message.replaceAll("\n", "<br />");
     text.innerHTML = message;
     entry.appendChild(text);

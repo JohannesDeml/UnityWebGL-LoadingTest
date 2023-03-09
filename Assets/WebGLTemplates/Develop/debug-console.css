@@ -68,6 +68,10 @@
     content: '🛑';
 }
 
+#debugConsole .console-top-bar .timestamp-button .icon::before {
+    content: '🕰️';
+}
+
 #debugConsole .console-top-bar .separator {
     position: relative;
     flex-shrink: 0;
@@ -107,6 +111,14 @@
     display:none;
 }
 
+#debugConsole .timestamplog {
+    color: #888;
+}
+
+#debugConsole.hidelogtimestamps .timestamplog {
+    display: none;
+}
+
 #debugConsole .entry.warn {
     color: rgb(82, 70, 3);
     background-color: rgba(231, 196, 41, 0.9);
@@ -128,6 +140,10 @@
 }
 
 #debugConsole .to-bottom-button.locked {
+    border-bottom: 3px solid yellowgreen;
+}
+
+#debugConsole .timestamp-button.show {
     border-bottom: 3px solid yellowgreen;
 }
 
