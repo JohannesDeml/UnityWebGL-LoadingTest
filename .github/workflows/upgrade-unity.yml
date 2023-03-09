@@ -1,4 +1,5 @@
 # Manually upgrade unity and update packages
+# Check if the Unity version already exists as a docker image: https://game.ci/docs/docker/versions
 name: Upgrade Unity version
 
 on:
@@ -117,6 +118,14 @@ jobs:
           GIT_USER: ${{ github.actor }}
 
 
+      - name: Render template
+        id: template
+        uses: chuhlomin/render-template@v1.4
+        with:
+          template: .github/templates/upgrade-unity-pr-body.md
+          vars: |
+            unityversion: ${{ steps.upgrade_name.outputs.NAME }}
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
         with:
@@ -124,7 +133,8 @@ jobs:
           commit-message: "[Automated workflow] upgrade-unity from ${{steps.last_unity_version.outputs.VERSION}} to ${{ inputs.unityVersion }}"
           branch: "ci/upgrade-unity/from-${{steps.last_unity_version.outputs.VERSION}}-to-${{ steps.upgrade_name.outputs.NAME }}"
           delete-branch: true
-          title: "[Automated workflow] upgrade-unity from ${{steps.last_unity_version.outputs.VERSION}} to ${{ inputs.unityVersion }} - URP: ${{ inputs.urp }}"
+          title: "[Automated workflow] upgrade-unity from ${{steps.last_unity_version.outputs.VERSION}} to ${{ steps.upgrade_name.outputs.NAME }}"
+          body: ${{ steps.template.outputs.result }}
 
       - name: Add tags
         run: |
