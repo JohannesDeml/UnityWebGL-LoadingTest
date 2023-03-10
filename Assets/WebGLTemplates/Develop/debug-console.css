@@ -19,28 +19,29 @@
     flex-direction: row;
     justify-content: flex-end;
     align-items: center;
+    overflow: auto;
     height: 30px;
-    padding: 10px 50px 10px 10px;
+    padding: 10px 42px 10px 10px;
     background-color: rgb(243, 243, 243);
 }
 
-#debugConsole .console-top-bar button {
+#debugConsole .console-top-bar .element {
     position: relative;
     flex-shrink: 0;
-    width: 24px;
     height: 24px;
-    margin: 0px 8px;
-    cursor: pointer;
+    margin: 0px 4px;
     border: 0;
+}
+
+#debugConsole .console-top-bar button {
+    width: 24px;
+    cursor: pointer;
     background: none;
 }
 
-#debugConsole .console-top-bar .log-counter {
-    position: relative;
-    flex-shrink: 0;
-    height: 24px;
-    margin: 0px 8px;
-    border: 0;
+#debugConsole .console-top-bar .separator {
+    width: 1px;
+    background: black;
 }
 
 #debugConsole .console-top-bar .log-counter .counter {
@@ -72,15 +73,6 @@
     content: '🕰️';
 }
 
-#debugConsole .console-top-bar .separator {
-    position: relative;
-    flex-shrink: 0;
-    width: 1px;
-    height: 24px;
-    margin: 0px 8px;
-    background: black;
-}
-
 #debugConsole .log-entries {
     overflow-y: scroll;
 }
@@ -101,7 +93,7 @@
 
 #debugConsole .entry.info {
     color: rgb(41, 50, 60);
-    background-color: rgba(172, 204, 224, 0.9);
+    background-color: rgba(178, 216, 239, 0.9);
 }
 #debugConsole.hidelogs-info .entry.info,
 #debugConsole.hidelogs-info .entry.debug,
@@ -111,22 +103,18 @@
     display:none;
 }
 
-#debugConsole .timestamplog {
-    color: #888;
-}
-
 #debugConsole.hidelogtimestamps .timestamplog {
     display: none;
 }
 
 #debugConsole .entry.warn {
     color: rgb(82, 70, 3);
-    background-color: rgba(231, 196, 41, 0.9);
+    background-color: rgba(234, 209, 101, 0.9);
 }
 
 #debugConsole .entry.error {
-    color: rgb(97, 15, 9);
-    background-color: rgba(221, 46, 46, 0.9);
+    color: rgb(75, 10, 5);
+    background-color: rgba(233, 91, 91, 0.9);
 }
 
 #debugConsole .copy-button {
@@ -178,8 +166,8 @@
     top: 8px;
     right: 8px;
     display: block;
-    width: 2rem;
-    height: 2rem;
+    width: 30px;
+    height: 30px;
     cursor: pointer;
     border-radius: 50%;
     box-shadow: 0px 1px 3px 2px #CDD9ED;

@@ -75,12 +75,12 @@ function addDebugConsoleTopBar(debugConsole, consoleDiv) {
     addTopBarLogCounter(consoleTopBar);
 
     var separator = document.createElement('div');
-    separator.classList.add('separator');
+    separator.classList.add('separator', 'element');
     consoleTopBar.appendChild(separator);
 
     // Add timestamp toggle
     var timestampButton = document.createElement('button');
-    timestampButton.classList.add('timestamp-button', 'bubble-click-indicator');
+    timestampButton.classList.add('timestamp-button', 'bubble-click-indicator', 'element');
     timestampButton.title = 'Add timestamp to logs';
     consoleTopBar.appendChild(timestampButton);
 
@@ -102,7 +102,7 @@ function addDebugConsoleTopBar(debugConsole, consoleDiv) {
 
     // Clear logs button
     var clearButton = document.createElement('button');
-    clearButton.classList.add('clear-button', 'bubble-click-indicator');
+    clearButton.classList.add('clear-button', 'bubble-click-indicator', 'element');
     clearButton.title = 'clear logs';
     consoleTopBar.appendChild(clearButton);
 
@@ -123,7 +123,7 @@ function addDebugConsoleTopBar(debugConsole, consoleDiv) {
 
     // Copy all logs button
     var copyButton = document.createElement('button');
-    copyButton.classList.add('copy-button', 'bubble-click-indicator');
+    copyButton.classList.add('copy-button', 'bubble-click-indicator', 'element');
     copyButton.title = 'copy to clipboard';
     consoleTopBar.appendChild(copyButton);
 
@@ -152,7 +152,7 @@ function addDebugConsoleTopBar(debugConsole, consoleDiv) {
 
     // Lock scrolling to bottom button
     var toBottomButton = document.createElement('button');
-    toBottomButton.classList.add('to-bottom-button', 'bubble-click-indicator');
+    toBottomButton.classList.add('to-bottom-button', 'bubble-click-indicator', 'element');
     toBottomButton.title = 'lock scrolling to bottom';
     consoleTopBar.appendChild(toBottomButton);
 
@@ -178,7 +178,7 @@ function addTopBarLogCounter(consoleTopBar) {
     addButton = (logLevels) => {
         var counter = document.createElement('div');
         const logLevelsArray = logLevels.split(',');
-        counter.classList.add('log-counter', 'bubble-click-indicator', ...logLevelsArray);
+        counter.classList.add('log-counter', 'bubble-click-indicator', 'element', ...logLevelsArray);
         counter.setAttribute('data-loglevels', logLevels);
         counter.title = logLevels;
         let count = 0;
