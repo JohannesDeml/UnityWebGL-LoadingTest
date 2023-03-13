@@ -11,8 +11,15 @@
       margin: 0;
     }
 
+    html {
+      /* fix mobile viewport menu bar on iOS */
+      height: -webkit-fill-available;
+    }
+
     body {
       height: 100%;
+      /* fix mobile viewport menu bar on iOS */
+      height: -webkit-fill-available;
       width: 100%;
       text-align: center;
     }
