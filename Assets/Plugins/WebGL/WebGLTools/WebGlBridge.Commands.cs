@@ -48,6 +48,7 @@ namespace Supyrb
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL","LogMemory");</code>
 		/// </summary>
 		[WebGlCommand(Description = "Logs the current memory")]
+		[ContextMenu(nameof(LogMemory))]
 		public void LogMemory()
 		{
 			WebGlPlugins.LogMemory();
@@ -110,12 +111,15 @@ namespace Supyrb
 		}
 		
 		/// <summary>
-		/// Log an example message to see if it is rendered correctly, and to see the stacktrace
+		/// Log example messages to see if they are rendered and colored correctly
 		/// </summary>
-		[WebGlCommand(Description = "Log an example debug message")]
-		public void LogExampleMessage()
+		[WebGlCommand(Description = "Log example messages for Log, warning and error")]
+		[ContextMenu(nameof(LogExampleMessages))]
+		public void LogExampleMessages()
 		{
-			Debug.Log("This is an <color=#ff0000>example</color> message, showing off <color=#ff00ff>rich text</color> support!");
+			Debug.Log("This is an example <color=#2596be>log</color> message, showing off <color=#ff00ff>rich text support with <color=#ff0000>[nesting (I should be red - not supported yet)]</color></color>!");
+			Debug.LogWarning("This is an example <color=#e28743>warning</color> message!");
+			Debug.LogError("This is an example <color=#d36a33>error</color> message!");
 		}
 		
 		/// <summary>
@@ -133,6 +137,7 @@ namespace Supyrb
 		/// the current platform and browser, and which ones are not supported
 		/// </summary>
 		[WebGlCommand(Description = "Log supported and unsupported texture formats")]
+		[ContextMenu(nameof(LogTextureSupport))]
 		public void LogTextureSupport()
 		{
 			List<TextureFormat> supportedFormats = new List<TextureFormat>();
