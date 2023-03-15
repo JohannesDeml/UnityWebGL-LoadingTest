@@ -29,7 +29,7 @@ namespace Supyrb
 			Debug.Log($"WebGLInput.captureAllKeyboardInput: {WebGLInput.captureAllKeyboardInput}");
 #endif
 		}
-		
+
 		/// <summary>
 		/// Enable capturing all keyboard input, to make sure the game does not miss any key strokes
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL","EnableCaptureAllKeyboardInput");</code>
@@ -42,7 +42,7 @@ namespace Supyrb
 			Debug.Log($"WebGLInput.captureAllKeyboardInput: {WebGLInput.captureAllKeyboardInput}");
 #endif
 		}
-		
+
 		/// <summary>
 		/// Logs the current memory usage
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL","LogMemory");</code>
@@ -53,7 +53,7 @@ namespace Supyrb
 		{
 			WebGlPlugins.LogMemory();
 		}
-		
+
 		/// <summary>
 		/// Sets if the application should run while not focused.
 		/// It is in background while another tab is focused or the console is focused
@@ -65,7 +65,7 @@ namespace Supyrb
 		{
 			Application.runInBackground = runInBackground == 1;
 		}
-		
+
 		/// <summary>
 		/// Sets the rendering frame rate, see <see cref="Application.targetFrameRate"/>
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL", "SetApplicationTargetFrameRate", 15);</code>
@@ -76,7 +76,7 @@ namespace Supyrb
 		{
 			Application.targetFrameRate = targetFrameRate;
 		}
-		
+
 		/// <summary>
 		/// Sets the interval for fixed time updates, see <see cref="Time.fixedDeltaTime"/>
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL", "SetTimeFixedDeltaTime", 0.02);</code>
@@ -87,7 +87,7 @@ namespace Supyrb
 		{
 			Time.fixedDeltaTime = fixedDeltaTime;
 		}
-		
+
 		/// <summary>
 		/// Sets the global timeScale, see <see cref="Time.timeScale"/>
 		/// Somehow the timescale also affects the physics refresh rate on WebGL
@@ -99,7 +99,7 @@ namespace Supyrb
 		{
 			Time.timeScale = timeScale;
 		}
-		
+
 		/// <summary>
 		/// Toggle the visibility of the info panel in the top right corner
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL", "ToggleInfoPanel");</code>
@@ -109,7 +109,7 @@ namespace Supyrb
 		{
 			WebGlPlugins.ToggleInfoPanel();
 		}
-		
+
 		/// <summary>
 		/// Log example messages to see if they are rendered and colored correctly
 		/// </summary>
@@ -121,7 +121,7 @@ namespace Supyrb
 			Debug.LogWarning("This is an example <color=#e28743>warning</color> message!");
 			Debug.LogError("This is an example <color=#d36a33>error</color> message!");
 		}
-		
+
 		/// <summary>
 		/// Log a custom message to test Debug.Log in general
 		/// </summary>
@@ -131,7 +131,19 @@ namespace Supyrb
 		{
 			Debug.Log(message);
 		}
-		
+
+		/// <summary>
+		/// Throw an exception from System namespace to see how stack traces look for that
+		/// </summary>
+		[WebGlCommand(Description = "Throw a dictionary key not found exception")]
+		[ContextMenu(nameof(ThrowDictionaryException))]
+		public void ThrowDictionaryException()
+		{
+			Dictionary<int, int> testDictionary = new Dictionary<int, int>();
+			// this will throw a KeyNotFoundException because the key does not exist
+			Debug.Log(testDictionary[10]);
+		}
+
 		/// <summary>
 		/// Log information of all texture formats that Unity supports, which ones are supported by
 		/// the current platform and browser, and which ones are not supported
@@ -162,9 +174,9 @@ namespace Supyrb
 					unsupportedFormats.Add(textureFormat);
 				}
 			}
-			
+
 			Debug.Log($"Supported Texture formats: \n{string.Join(", ", supportedFormats)}");
 			Debug.Log($"Unsupported Texture formats: \n{string.Join(", ", unsupportedFormats)}");
 		}
-	} 
+	}
 }
