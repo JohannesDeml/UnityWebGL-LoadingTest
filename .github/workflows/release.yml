@@ -1,3 +1,4 @@
+# Build and upload the project by pushing tags
 name: Build project & release
 
 on:
@@ -73,11 +74,22 @@ jobs:
           fetch-depth: 0
           lfs: true
 
-      - uses: actions/cache@v3
+      # Unity 2020 cache is not compatible with older versions
+      - name: Unity Library Cache 2020 or higher
+        if: ${{ !startsWith(needs.variables.outputs.UNITY_VERSION, '201') }}
+        uses: actions/cache@v3
         with:
           path: Library
-          key: Library-WebGL
-          restore-keys: Library-
+          key: Library-202x-WebGL
+          restore-keys: Library-202x-
+
+      - name: Unity Library Cache 2019 or lower
+        if: ${{ startsWith(needs.variables.outputs.UNITY_VERSION, '201') }}
+        uses: actions/cache@v3
+        with:
+          path: Library
+          key: Library-201x-WebGL
+          restore-keys: Library-201x-
 
       - name: Build project
         uses: game-ci/unity-builder@v2
@@ -136,7 +148,7 @@ jobs:
         working-directory: build/${{ needs.variables.outputs.BUILD_NAME }}
 
       - name: Deploy ⤴
-        uses: SamKirkland/FTP-Deploy-Action@4.2.0
+        uses: SamKirkland/FTP-Deploy-Action@4.3.3
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USER }}

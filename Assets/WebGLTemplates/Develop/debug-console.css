@@ -1,6 +1,8 @@
 /* Debug console styling */
 #debugConsole {
     position: absolute;
+    top: 0px;
+    left: 0px;
     width: 100%;
     height: 90vh;
     z-index: 100;
@@ -17,20 +19,66 @@
     flex-direction: row;
     justify-content: flex-end;
     align-items: center;
+    overflow: auto;
     height: 30px;
-    padding: 10px 50px 10px 10px;
-    background-color: white;
+    padding: 10px 42px 10px 10px;
+    background-color: rgb(243, 243, 243);
+}
+
+#debugConsole .console-top-bar .element {
+    position: relative;
+    flex-shrink: 0;
+    height: 24px;
+    margin: 0px 4px;
+    border: 0;
 }
 
 #debugConsole .console-top-bar button {
-    position: relative;
-    flex-shrink: 0;
-    width: 20px;
-    height: 20px;
+    width: 24px;
     cursor: pointer;
-    border: 0;
     background: none;
 }
+
+#debugConsole .console-top-bar .separator {
+    width: 1px;
+    background: black;
+}
+
+#debugConsole .console-top-bar .log-counter .counter {
+    cursor: pointer;
+    padding: 8px;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+#debugConsole .console-top-bar .log-counter input[type='checkbox']:checked + .counter {
+    border-bottom: 3px solid yellowgreen;
+}
+
+#debugConsole .console-top-bar .log-counter .counter::before {
+    padding-right: 2px;
+}
+.log-counter.info .counter::before {
+    content: 'ℹ️';
+}
+.log-counter.warn .counter::before {
+    content: '⚠️';
+}
+.log-counter.error .counter::before {
+    content: '🛑';
+}
+.timestamp-button .icon::before {
+    content: '🕰️';
+}
+.to-bottom-button .icon::before {
+    content: '⬇️';
+}
+.clear-button .icon::before {
+    content: '🗑️';
+}
+.copy-button .icon::before {
+    content: '📋';
+}
+
 
 #debugConsole .log-entries {
     overflow-y: scroll;
@@ -38,7 +86,7 @@
 
 #debugConsole .console-input {
     flex-shrink: 0;
-    height: 20px;
+    height: 24px;
 }
 
 #debugConsole .entry {
@@ -52,17 +100,28 @@
 
 #debugConsole .entry.info {
     color: rgb(41, 50, 60);
-    background-color: rgba(172, 204, 224, 0.9);
+    background-color: rgba(178, 216, 239, 0.9);
+}
+#debugConsole.hidelogs-info .entry.info,
+#debugConsole.hidelogs-info .entry.debug,
+#debugConsole.hidelogs-info .entry.log,
+#debugConsole.hidelogs-warn .entry.warn,
+#debugConsole.hidelogs-error .entry.error {
+    display:none;
+}
+
+#debugConsole.hidelogtimestamps .timestamplog {
+    display: none;
 }
 
 #debugConsole .entry.warn {
     color: rgb(82, 70, 3);
-    background-color: rgba(231, 196, 41, 0.9);
+    background-color: rgba(234, 209, 101, 0.9);
 }
 
 #debugConsole .entry.error {
-    color: rgb(97, 15, 9);
-    background-color: rgba(221, 46, 46, 0.9);
+    color: rgb(75, 10, 5);
+    background-color: rgba(233, 91, 91, 0.9);
 }
 
 #debugConsole .copy-button {
@@ -76,6 +135,10 @@
 }
 
 #debugConsole .to-bottom-button.locked {
+    border-bottom: 3px solid yellowgreen;
+}
+
+#debugConsole .timestamp-button.show {
     border-bottom: 3px solid yellowgreen;
 }
 
@@ -104,22 +167,39 @@
 }
 
 /* Debug console toggle button */
-.debugToggleMenu {
+#debugToggleMenu {
     z-index: 101;
     position: absolute;
     top: 8px;
     right: 8px;
     display: block;
-    width: 2rem;
-    height: 2rem;
+    width: 30px;
+    height: 30px;
     cursor: pointer;
     border-radius: 50%;
     box-shadow: 0px 1px 3px 2px #CDD9ED;
     background: #fff;
-    transition: all .3s ease;
+    transition: all .2s ease;
 }
 
-.debugToggleMenu .icon {
+#debugToggleMenu.unseen-error {
+    background: rgb(189, 40, 40);
+    animation: error-background 1.0s ease 3;
+}
+
+@keyframes error-background {
+    0% {
+        background: rgb(189, 40, 40);
+    }
+    50% {
+        background: rgb(231, 39, 39);
+    }
+    100% {
+        background: rgb(189, 40, 40);
+    }
+}
+
+#debugToggleMenu .icon {
     position: absolute;
     top: 25%;
     left: 25%;
@@ -138,7 +218,7 @@
     display: flex;
 }
 
-#debugToggle:checked~.debugToggleMenu .icon {
+#debugToggle:checked~#debugToggleMenu .icon {
     display: block;
 }
 
@@ -185,125 +265,4 @@ dt:after {
 dl div:after {
     display: block;
     content: '';
-}
-
-/* Icons from https://css.gg/ */
-.gg-copy {
-    box-sizing: border-box;
-    position: relative;
-    display: block;
-    transform: scale(var(--ggs, 1));
-    width: 14px;
-    height: 18px;
-    border: 2px solid;
-    margin-top: -4px;
-}
-
-.gg-copy::after,
-.gg-copy::before {
-    content: "";
-    display: block;
-    box-sizing: border-box;
-    position: absolute;
-}
-
-.gg-copy::before {
-    background:
-        linear-gradient(to left,
-            currentColor 5px, transparent 0) no-repeat right top/5px 2px,
-        linear-gradient(to left,
-            currentColor 5px, transparent 0) no-repeat left bottom/ 2px 5px;
-    box-shadow: inset -4px -4px 0 -2px;
-    bottom: -6px;
-    right: -6px;
-    width: 14px;
-    height: 18px;
-}
-
-.gg-copy::after {
-    width: 6px;
-    height: 2px;
-    background: currentColor;
-    left: 2px;
-    top: 2px;
-    box-shadow: 0 4px 0, 0 8px 0;
-}
-
-.gg-arrow-down {
-    box-sizing: border-box;
-    position: relative;
-    display: block;
-    transform: scale(var(--ggs, 1));
-    width: 22px;
-    height: 22px
-}
-
-.gg-arrow-down::after,
-.gg-arrow-down::before {
-    content: "";
-    display: block;
-    box-sizing: border-box;
-    position: absolute;
-    bottom: 4px
-}
-
-.gg-arrow-down::after {
-    width: 8px;
-    height: 8px;
-    border-bottom: 2px solid;
-    border-left: 2px solid;
-    transform: rotate(-45deg);
-    left: 7px
-}
-
-.gg-arrow-down::before {
-    width: 2px;
-    height: 16px;
-    left: 10px;
-    background: currentColor
-}
-
-.gg-trash {
-    box-sizing: border-box;
-    position: relative;
-    display: block;
-    transform: scale(var(--ggs, 1));
-    width: 10px;
-    height: 12px;
-    border: 2px solid transparent;
-    box-shadow:
-        0 0 0 2px,
-        inset -2px 0 0,
-        inset 2px 0 0;
-    border-bottom-left-radius: 1px;
-    border-bottom-right-radius: 1px;
-    margin-top: 4px
-}
-
-.gg-trash::after,
-.gg-trash::before {
-    content: "";
-    display: block;
-    box-sizing: border-box;
-    position: absolute
-}
-
-.gg-trash::after {
-    background: currentColor;
-    border-radius: 3px;
-    width: 16px;
-    height: 2px;
-    top: -4px;
-    left: -5px
-}
-
-.gg-trash::before {
-    width: 10px;
-    height: 4px;
-    border: 2px solid;
-    border-bottom: transparent;
-    border-top-left-radius: 2px;
-    border-top-right-radius: 2px;
-    top: -7px;
-    left: -2px
 }

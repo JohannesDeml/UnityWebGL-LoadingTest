@@ -1,4 +1,25 @@
-var consoleDiv;
+let consoleDiv;
+let debugToggle;
+let logCounterDivs = {};
+let logCounter = {
+    "log": 0,
+    "info": 0,
+    "debug": 0,
+    "warn": 0,
+    "error": 0
+};
+
+let scrollToBottom = true;
+if(getCookie("scrollToBottom") === "false") {
+    scrollToBottom = false;
+}
+let addTimestamp = true;
+if(getCookie("addTimestamp") === "false") {
+    addTimestamp = false;
+}
+
+initializeToggleButton(false);
+initialzeDebugConsole();
 
 
 function setCookie(cname, cvalue, exdays) {
@@ -23,11 +44,6 @@ function getCookie(cname) {
     return "";
 }
 
-var scrollToBottom = true;
-if(getCookie("scrollToBottom") === "false") {
-    scrollToBottom = false;
-}
-
 function initialzeDebugConsole() {
     let debugConsole = document.createElement('div');
     debugConsole.id = 'debugConsole';
@@ -35,7 +51,7 @@ function initialzeDebugConsole() {
     consoleDiv = document.createElement('div');
     consoleDiv.className = 'log-entries';
 
-    addDebugConsoleTopBar(debugConsole, consoleDiv);
+    addDebugConsoleTopBar(debugConsole);
 
     debugConsole.appendChild(consoleDiv);
 
@@ -55,25 +71,74 @@ function initialzeDebugConsole() {
     setupConsoleLogPipe();
 }
 
-function addDebugConsoleTopBar(debugConsole, consoleDiv) {
+function addDebugConsoleTopBar(debugConsole) {
     var consoleTopBar = document.createElement('div');
     consoleTopBar.className = 'console-top-bar';
     debugConsole.appendChild(consoleTopBar);
 
+    addTopBarLogCounter(consoleTopBar);
+
+    var separator = document.createElement('div');
+    separator.classList.add('separator', 'element');
+    consoleTopBar.appendChild(separator);
+
+    // Add timestamp toggle
+    var timestampButton = document.createElement('button');
+    timestampButton.classList.add('timestamp-button', 'bubble-click-indicator', 'element');
+    timestampButton.title = 'Add timestamp to logs';
+    consoleTopBar.appendChild(timestampButton);
+
+    var timestampIcon = document.createElement('div');
+    timestampIcon.classList.add('icon');
+    timestampButton.appendChild(timestampIcon);
+    applyTimestamp(timestampButton);
+
+    timestampButton.addEventListener('click', function () {
+        addTimestamp = !addTimestamp;
+        setCookie("addTimestamp", addTimestamp, 365);
+        applyTimestamp(timestampButton);
+        // Show feedback to the user
+        timestampButton.classList.add('active');
+        setTimeout(function () {
+            timestampButton.classList.remove('active');
+        }, 1500);
+    });
+
+    // Lock scrolling to bottom button
+    var toBottomButton = document.createElement('button');
+    toBottomButton.classList.add('to-bottom-button', 'bubble-click-indicator', 'element');
+    toBottomButton.title = 'lock scrolling to bottom';
+    consoleTopBar.appendChild(toBottomButton);
+
+    var arrowDownIcon = document.createElement('div');
+    arrowDownIcon.classList.add('icon');
+    toBottomButton.appendChild(arrowDownIcon);
+    applyScrollToBottom(toBottomButton);
+
+    toBottomButton.addEventListener('click', function () {
+        scrollToBottom = !scrollToBottom;
+        setCookie("scrollToBottom", scrollToBottom, 365);
+        applyScrollToBottom(toBottomButton);
+        // Show feedback to the user
+        toBottomButton.classList.add('active');
+        setTimeout(function () {
+            toBottomButton.classList.remove('active');
+        }, 1500);
+    });
+
     // Clear logs button
     var clearButton = document.createElement('button');
-    clearButton.classList.add('clear-button', 'bubble-click-indicator');
+    clearButton.classList.add('clear-button', 'bubble-click-indicator', 'element');
     clearButton.title = 'clear logs';
     consoleTopBar.appendChild(clearButton);
 
     var trashIcon = document.createElement('div');
-    trashIcon.classList.add('icon', 'gg-trash');
+    trashIcon.classList.add('icon');
     clearButton.appendChild(trashIcon);
     clearButton.addEventListener('click', function () {
         consoleDiv.innerHTML = '';
         clearButton.setAttribute('data-before', 'cleared');
-
-        // Show copy feedback to the user
+        // Show feedback to the user
         clearButton.classList.add('active');
         setTimeout(function () {
             clearButton.classList.remove('active');
@@ -83,12 +148,12 @@ function addDebugConsoleTopBar(debugConsole, consoleDiv) {
 
     // Copy all logs button
     var copyButton = document.createElement('button');
-    copyButton.classList.add('copy-button', 'bubble-click-indicator');
+    copyButton.classList.add('copy-button', 'bubble-click-indicator', 'element');
     copyButton.title = 'copy to clipboard';
     consoleTopBar.appendChild(copyButton);
 
     var copyIcon = document.createElement('div');
-    copyIcon.classList.add('icon', 'gg-copy');
+    copyIcon.classList.add('icon');
     copyButton.appendChild(copyIcon);
 
     copyButton.addEventListener('click', function () {
@@ -109,37 +174,90 @@ function addDebugConsoleTopBar(debugConsole, consoleDiv) {
             copyButton.classList.remove('active');
         }, 1500);
     });
-
-    // Lock scrolling to bottom button
-    var toBottomButton = document.createElement('button');
-    toBottomButton.classList.add('to-bottom-button', 'bubble-click-indicator');
-    toBottomButton.title = 'lock scrolling to bottom';
-    consoleTopBar.appendChild(toBottomButton);
-
-    var arrowDownIcon = document.createElement('div');
-    arrowDownIcon.classList.add('icon', 'gg-arrow-down');
-    toBottomButton.appendChild(arrowDownIcon);
-    applyScrollToBottom(toBottomButton, consoleDiv);
-
-    toBottomButton.addEventListener('click', function () {
-        scrollToBottom = !scrollToBottom;
-        setCookie("scrollToBottom", scrollToBottom, 365);
-        applyScrollToBottom(toBottomButton, consoleDiv);
-        // Show copy feedback to the user
-        toBottomButton.classList.add('active');
-        setTimeout(function () {
-            toBottomButton.classList.remove('active');
-        }, 1500);
-    });
 }
 
-function applyScrollToBottom(toBottomButton, consoleDiv) {
+function addTopBarLogCounter(consoleTopBar) {
+
+    addLogToggle = (logLevels) => {
+        var counter = document.createElement('div');
+        const logLevelsArray = logLevels.split(',');
+        counter.classList.add('log-counter', 'bubble-click-indicator', 'element', ...logLevelsArray);
+        counter.setAttribute('data-loglevels', logLevels);
+        counter.title = logLevels;
+        let count = 0;
+        logLevelsArray.forEach(logLevel => {
+            count += logCounter[logLevel];
+            logCounterDivs[logLevel] = counter;
+        });
+        consoleTopBar.appendChild(counter);
+
+        var checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = `counter-${logLevels}`;
+        checkbox.name = checkbox.id;
+        checkbox.checked = true;
+        checkbox.setAttribute('hidden', 'true');
+        counter.appendChild(checkbox);
+
+        var counterText = document.createElement('label');
+        counterText.className = 'counter';
+        counterText.htmlFor = checkbox.id;
+        counterText.innerHTML = count;
+        counter.appendChild(counterText);
+
+        checkbox.addEventListener('change', (event) => {
+           var logLevels = event.currentTarget.parentNode.getAttribute('data-loglevels');
+           const logLevelsArray = logLevels.split(',');
+           var debugConsole = document.getElementById('debugConsole');
+           if(event.currentTarget.checked) {
+            logLevelsArray.forEach(element => {
+                debugConsole.classList.remove(`hidelogs-${element}`);
+            });
+           } else {
+            logLevelsArray.forEach(element => {
+                debugConsole.classList.add(`hidelogs-${element}`);
+            });
+           }
+        })
+    }
+
+    addLogToggle('debug,log,info');
+    addLogToggle('warn');
+    addLogToggle('error');
+}
+
+function applyScrollToBottom(toBottomButton) {
     toBottomButton.setAttribute('data-before', scrollToBottom ? 'locked' : 'unlocked');
     if (scrollToBottom) {
         toBottomButton.classList.add("locked");
-        consoleDiv.scrollTo(0, consoleDiv.scrollHeight);
     } else {
         toBottomButton.classList.remove("locked");
+    }
+    applyScrollToBottomSetting();
+}
+
+function applyScrollToBottomSetting() {
+    if (scrollToBottom) {
+        consoleDiv.scrollTo(0, consoleDiv.scrollHeight);
+    }
+}
+
+function applyTimestamp(timestampButton) {
+    timestampButton.setAttribute('data-before', addTimestamp ? 'Show' : 'Hide');
+    if (addTimestamp) {
+        timestampButton.classList.add("show");
+    } else {
+        timestampButton.classList.remove("show");
+    }
+    applyTimestampSetting();
+}
+
+function applyTimestampSetting() {
+    var debugConsole = document.getElementById('debugConsole');
+    if (addTimestamp) {
+        debugConsole.classList.remove("hidelogtimestamps");
+    } else {
+        debugConsole.classList.add("hidelogtimestamps");
     }
 }
 
@@ -156,10 +274,11 @@ function setupConsoleLogPipe() {
     console.info = (message) => { parseMessageAndLog(message, 'info', defaultConsoleInfo); };
     console.debug = (message) => { parseMessageAndLog(message, 'debug', defaultConsoleDebug); };
     console.warn = (message) => { parseMessageAndLog(message, 'warn', defaultConsoleWarn); };
-    console.error = (message) => { parseMessageAndLog(message, 'error', defaultConsoleError); };
+    console.error = (message) => { parseMessageAndLog(message, 'error', defaultConsoleError); errorReceived(); };
 
 
     parseMessageAndLog = (message, logLevel, consoleLogFunction) => {
+        updateLogCounter(logLevel);
         let index = 0;
         let consoleArgs = [];
         let consoleMessage = "";
@@ -208,16 +327,33 @@ function setupConsoleLogPipe() {
     };
 }
 
+function updateLogCounter(logLevel) {
+    logCounter[logLevel]++;
+
+    counter = logCounterDivs[logLevel];
+    const logLevels = counter.getAttribute('data-loglevels');
+    const logLevelsArray = logLevels.split(',');
+    let count = 0;
+    logLevelsArray.forEach(logLevel => {
+        count += logCounter[logLevel];
+    });
+
+    counter.querySelector(".counter").innerHTML = count;
+}
+
 function htmlLog(message, className) {
     var entry = document.createElement('div');
     entry.classList.add('entry', className);
     consoleDiv.appendChild(entry);
 
     var text = document.createElement('p');
-    // Remove last line break if existing
-    if (message.endsWith("\n")) {
-        message = message.substring(0, message.length - "\n".length);
-    }
+    var time = new Date().toLocaleTimeString('en-US', {
+        hour12: false,
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric"}
+    );
+    message = "<span class='timestamplog'>[" + time + "] </span>" + message;
     message = message.replaceAll("\n", "<br />");
     text.innerHTML = message;
     entry.appendChild(text);
@@ -228,7 +364,7 @@ function htmlLog(message, className) {
     entry.appendChild(copyButton);
 
     var copyIcon = document.createElement('div');
-    copyIcon.classList.add('icon', 'gg-copy');
+    copyIcon.classList.add('icon');
     copyButton.appendChild(copyIcon);
 
     copyButton.addEventListener('click', function () {
@@ -256,8 +392,18 @@ function htmlLog(message, className) {
     }
 }
 
+function errorReceived() {
+    if(debugToggle.checked === false) {
+        let debugToggleMenu = document.getElementById('debugToggleMenu');
+        debugToggleMenu.classList.remove('unseen-error');
+        // trigger reflow
+        debugToggleMenu.offsetWidth;
+        debugToggleMenu.classList.add('unseen-error');
+    }
+}
+
 function initializeToggleButton(startActive) {
-    var debugToggle = document.createElement('input');
+    debugToggle = document.createElement('input');
     debugToggle.type = 'checkbox';
     debugToggle.id = 'debugToggle';
     debugToggle.name = 'debugToggle';
@@ -265,7 +411,7 @@ function initializeToggleButton(startActive) {
     document.body.appendChild(debugToggle);
 
     var debugLabel = document.createElement('label');
-    debugLabel.className = 'debugToggleMenu';
+    debugLabel.id = 'debugToggleMenu';
     debugLabel.htmlFor = 'debugToggle';
     document.body.appendChild(debugLabel);
     var iconDiv = document.createElement('div');
@@ -273,18 +419,24 @@ function initializeToggleButton(startActive) {
     debugLabel.appendChild(iconDiv);
 
     debugToggle.addEventListener('change', (event) => {
+        if (event.currentTarget.checked) {
+            applyScrollToBottomSetting();
+            debugLabel.classList.remove('unseen-error');
+        }
+
         if (typeof unityGame === 'undefined') {
             return;
         }
         if (event.currentTarget.checked) {
             unityGame.SendMessage("WebGL", "DisableCaptureAllKeyboardInput");
-        } else {
-            if (typeof unityCaptureAllKeyboardInputDefault !== 'undefined' && unityCaptureAllKeyboardInputDefault === 'false') {
-                unityGame.SendMessage("WebGL", "DisableCaptureAllKeyboardInput");
-            }
-            else {
-                unityGame.SendMessage("WebGL", "EnableCaptureAllKeyboardInput");
-            }
+            return;
+        }
+
+        if (typeof unityCaptureAllKeyboardInputDefault !== 'undefined' && unityCaptureAllKeyboardInputDefault === 'false') {
+            unityGame.SendMessage("WebGL", "DisableCaptureAllKeyboardInput");
+        }
+        else {
+            unityGame.SendMessage("WebGL", "EnableCaptureAllKeyboardInput");
         }
     })
 }
@@ -349,6 +501,3 @@ function refreshTrackingDiv() {
     innerHtml += '</dl>';
     trackingDiv.innerHTML = innerHtml;
 }
-
-initializeToggleButton(false);
-initialzeDebugConsole();
