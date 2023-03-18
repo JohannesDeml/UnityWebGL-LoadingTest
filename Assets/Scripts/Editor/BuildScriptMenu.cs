@@ -37,6 +37,7 @@ namespace UnityBuilderAction
 			SetParameterValue("-autorunplayer", "true", ref parameters);
 			SetParameterValue("-tag", tag, ref parameters);
 			SetParameterValue("-customBuildPath", $"Builds/WebGL/{tag}", ref parameters);
+			SetParameterValue("-customBuildName", tag, ref parameters);
 			BuildWithParameters(parameters);
 		}
 
@@ -49,6 +50,7 @@ namespace UnityBuilderAction
 			SetParameterValue("-autorunplayer", "true", ref parameters);
 			SetParameterValue("-tag", tag, ref parameters);
 			SetParameterValue("-customBuildPath", $"Builds/WebGL/{tag}", ref parameters);
+			SetParameterValue("-customBuildName", tag, ref parameters);
 			BuildWithParameters(parameters);
 		}
 
@@ -61,6 +63,7 @@ namespace UnityBuilderAction
 			SetParameterValue("-autorunplayer", "true", ref parameters);
 			SetParameterValue("-tag", tag, ref parameters);
 			SetParameterValue("-customBuildPath", $"Builds/WebGL/{tag}", ref parameters);
+			SetParameterValue("-customBuildName", tag, ref parameters);
 			BuildWithParameters(parameters);
 		}
 
@@ -73,6 +76,7 @@ namespace UnityBuilderAction
 			SetParameterValue("-autorunplayer", "true", ref parameters);
 			SetParameterValue("-tag", tag, ref parameters);
 			SetParameterValue("-customBuildPath", $"Builds/WebGL/{tag}", ref parameters);
+			SetParameterValue("-customBuildName", tag, ref parameters);
 			BuildWithParameters(parameters);
 		}
 

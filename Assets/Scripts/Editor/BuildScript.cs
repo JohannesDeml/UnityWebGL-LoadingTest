@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using JetBrains.Annotations;
 using UnityEditor;
@@ -16,6 +17,8 @@ namespace UnityBuilderAction
 	public static class BuildScript
 	{
 		private static readonly string Eol = Environment.NewLine;
+		private const bool LogVerboseBatchMode = true;
+		private const bool LogVerboseNonBatchMode = false;
 
 		private static readonly string[] Secrets =
 			{ "androidKeystorePass", "androidKeyaliasName", "androidKeyaliasPass" };
@@ -49,16 +52,16 @@ namespace UnityBuilderAction
 				{
 					EditorUserBuildSettings.buildAppBundle = options["customBuildPath"].EndsWith(".aab");
 					if (options.TryGetValue("androidKeystoreName", out string keystoreName) &&
-					    !string.IsNullOrEmpty(keystoreName))
+						!string.IsNullOrEmpty(keystoreName))
 						PlayerSettings.Android.keystoreName = keystoreName;
 					if (options.TryGetValue("androidKeystorePass", out string keystorePass) &&
-					    !string.IsNullOrEmpty(keystorePass))
+						!string.IsNullOrEmpty(keystorePass))
 						PlayerSettings.Android.keystorePass = keystorePass;
 					if (options.TryGetValue("androidKeyaliasName", out string keyaliasName) &&
-					    !string.IsNullOrEmpty(keyaliasName))
+						!string.IsNullOrEmpty(keyaliasName))
 						PlayerSettings.Android.keyaliasName = keyaliasName;
 					if (options.TryGetValue("androidKeyaliasPass", out string keyaliasPass) &&
-					    !string.IsNullOrEmpty(keyaliasPass))
+						!string.IsNullOrEmpty(keyaliasPass))
 						PlayerSettings.Android.keyaliasPass = keyaliasPass;
 					break;
 				}
@@ -72,7 +75,7 @@ namespace UnityBuilderAction
 #endif
 
 					if (options.TryGetValue("tag", out string tagVersion) &&
-					    !string.IsNullOrEmpty(tagVersion))
+						!string.IsNullOrEmpty(tagVersion))
 					{
 						string[] tagParameters = tagVersion.Split('-');
 						if (tagParameters.Contains("minsize"))
@@ -128,19 +131,48 @@ namespace UnityBuilderAction
 				{
 					buildPlayerOptions.options |= BuildOptions.AutoRunPlayer;
 				}
+
+				var projectPath = Application.dataPath.Substring(0, Application.dataPath.Length - "/Assets".Length);
+				BackupLastBuild($"{projectPath}/{options["customBuildPath"]}");
 			}
 
 			// Custom build
 			Build(buildTarget, options["customBuildPath"]);
 		}
 
+		private static void BackupLastBuild(string buildPath)
+		{
+			if (Directory.Exists(buildPath))
+			{
+				string backupFolderPath = $"{buildPath}-Previous";
+				if (Directory.Exists(backupFolderPath))
+				{
+					Directory.Delete(backupFolderPath, true);
+				}
+				Log($"Moving current build folder to backup location: {backupFolderPath}");
+				Directory.Move(buildPath, backupFolderPath);
+			}
+			else if (File.Exists(buildPath))
+			{
+				string extension = Path.GetExtension(buildPath);
+				string pathWithoutExtension = buildPath.Substring(0, buildPath.Length - extension.Length);
+				string backupFilePath = $"{pathWithoutExtension}-Previous{extension}";
+				if (File.Exists(backupFilePath))
+				{
+					File.Delete(backupFilePath);
+				}
+				Log($"Moving current build file to backup location: {backupFilePath}");
+				File.Move(buildPath, backupFilePath);
+			}
+		}
+
 		private static void SetWebGlOptimization(string value)
 		{
 #if UNITY_2019_4_OR_NEWER
-			EditorUserBuildSettings.SetPlatformSettings(BuildPipeline.GetBuildTargetName(BuildTarget.WebGL), 
+			EditorUserBuildSettings.SetPlatformSettings(BuildPipeline.GetBuildTargetName(BuildTarget.WebGL),
 				"CodeOptimization", value);
 #else
-			Console.WriteLine($"Setting {nameof(SetWebGlOptimization)} not supported by this unity version");
+			Log($"Setting {nameof(SetWebGlOptimization)} not supported by this unity version");
 #endif
 		}
 
@@ -150,13 +182,13 @@ namespace UnityBuilderAction
 
 			if (!validatedOptions.TryGetValue("projectPath", out string _))
 			{
-				Console.WriteLine("Missing argument -projectPath");
+				LogError("Missing argument -projectPath");
 				EndBuild(110);
 			}
 
 			if (!validatedOptions.TryGetValue("buildTarget", out string buildTarget))
 			{
-				Console.WriteLine("Missing argument -buildTarget");
+				LogError("Missing argument -buildTarget");
 				EndBuild(120);
 			}
 
@@ -167,19 +199,19 @@ namespace UnityBuilderAction
 
 			if (!validatedOptions.TryGetValue("customBuildPath", out string _))
 			{
-				Console.WriteLine("Missing argument -customBuildPath");
+				LogError("Missing argument -customBuildPath");
 				EndBuild(130);
 			}
 
 			const string defaultCustomBuildName = "TestBuild";
 			if (!validatedOptions.TryGetValue("customBuildName", out string customBuildName))
 			{
-				Console.WriteLine($"Missing argument -customBuildName, defaulting to {defaultCustomBuildName}.");
+				LogError($"Missing argument -customBuildName, defaulting to {defaultCustomBuildName}.");
 				validatedOptions.Add("customBuildName", defaultCustomBuildName);
 			}
 			else if (customBuildName == "")
 			{
-				Console.WriteLine($"Invalid argument -customBuildName, defaulting to {defaultCustomBuildName}.");
+				LogError($"Invalid argument -customBuildName, defaulting to {defaultCustomBuildName}.");
 				validatedOptions.Add("customBuildName", defaultCustomBuildName);
 			}
 
@@ -190,10 +222,10 @@ namespace UnityBuilderAction
 		{
 			providedArguments = new Dictionary<string, string>();
 
-			Console.WriteLine(
+			LogVerbose(
 				$"{Eol}" +
 				$"###########################{Eol}" +
-				$"#    Parsing settings     #{Eol}" +
+				$"#	Parsing settings	 #{Eol}" +
 				$"###########################{Eol}" +
 				$"{Eol}"
 			);
@@ -213,7 +245,7 @@ namespace UnityBuilderAction
 				string displayValue = secret ? "*HIDDEN*" : "\"" + value + "\"";
 
 				// Assign
-				Console.WriteLine($"Found flag \"{flag}\" with value {displayValue}.");
+				LogVerbose($"Found flag \"{flag}\" with value {displayValue}.");
 				providedArguments.Add(flag, value);
 			}
 		}
@@ -232,39 +264,46 @@ namespace UnityBuilderAction
 
 		private static void ReportSummary(BuildSummary summary)
 		{
-			Console.WriteLine(
-				$"{Eol}" +
+			string summaryText = $"{Eol}" +
 				$"###########################{Eol}" +
-				$"#      Build results      #{Eol}" +
+				$"#	  Build results	  #{Eol}" +
 				$"###########################{Eol}" +
 				$"{Eol}" +
 				$"Duration: {summary.totalTime.ToString()}{Eol}" +
 				$"Warnings: {summary.totalWarnings.ToString()}{Eol}" +
 				$"Errors: {summary.totalErrors.ToString()}{Eol}" +
 				$"Size: {summary.totalSize.ToString()} bytes{Eol}" +
-				$"{Eol}"
-			);
-		}
+				$"{Eol}";
+
+            if (summary.totalErrors == 0)
+            {
+                Log(summaryText);
+            }
+            else
+            {
+                LogError(summaryText);
+            }
+        }
 
 		private static void ExitWithResult(BuildResult result)
 		{
 			switch (result)
 			{
 				case BuildResult.Succeeded:
-					Console.WriteLine("Build succeeded!");
+					Log("Build succeeded!");
 					EndBuild(0);
 					break;
 				case BuildResult.Failed:
-					Console.WriteLine("Build failed!");
+					LogError("Build failed!");
 					EndBuild(101);
 					break;
 				case BuildResult.Cancelled:
-					Console.WriteLine("Build cancelled!");
+					LogError("Build cancelled!");
 					EndBuild(102);
 					break;
 				case BuildResult.Unknown:
 				default:
-					Console.WriteLine("Build result is unknown!");
+					LogError("Build result is unknown!");
 					EndBuild(103);
 					break;
 			}
@@ -282,6 +321,48 @@ namespace UnityBuilderAction
 				{
 					throw new Exception($"BuildScript ended with non-zero exitCode: {returnValue}");
 				}
+			}
+		}
+
+		private static void LogVerbose(string message)
+		{
+			if(Application.isBatchMode)
+			{
+				if (LogVerboseBatchMode)
+				{
+					Console.WriteLine(message);
+				}
+			}
+			else
+			{
+				if (LogVerboseNonBatchMode)
+				{
+					Debug.Log(message);
+				}
+			}
+		}
+
+		private static void Log(string message)
+		{
+			if(Application.isBatchMode)
+			{
+				Console.WriteLine(message);
+			}
+			else
+			{
+				Debug.Log(message);
+			}
+		}
+
+		private static void LogError(string message)
+		{
+			if(Application.isBatchMode)
+			{
+				Console.WriteLine(message);
+			}
+			else
+			{
+				Debug.LogError(message);
 			}
 		}
 	}
