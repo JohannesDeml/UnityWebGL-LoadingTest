@@ -11,8 +11,10 @@ using UnityEngine.Rendering;
 namespace UnityBuilderAction
 {
 	/// <summary>
-	/// Used for building the project through CI
-	/// Modified version from https://github.com/game-ci/documentation/blob/main/example/BuildScript.cs
+	/// Used for building the project through continuous integration (CI) or semi-automated through menu items
+	/// Supports logging in the editor and highly configurable WebGL
+	/// Modified version of <see href="https://github.com/game-ci/documentation/blob/main/example/BuildScript.cs">
+	/// Tailored to the needs for <see href="https://github.com/JohannesDeml/UnityWebGL-LoadingTest">
 	/// </summary>
 	public static class BuildScript
 	{
@@ -275,15 +277,15 @@ namespace UnityBuilderAction
 				$"Size: {summary.totalSize.ToString()} bytes{Eol}" +
 				$"{Eol}";
 
-            if (summary.totalErrors == 0)
-            {
-                Log(summaryText);
-            }
-            else
-            {
-                LogError(summaryText);
-            }
-        }
+			if (summary.totalErrors == 0)
+			{
+				Log(summaryText);
+			}
+			else
+			{
+				LogError(summaryText);
+			}
+		}
 
 		private static void ExitWithResult(BuildResult result)
 		{

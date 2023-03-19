@@ -16,8 +16,8 @@ using UnityEngine;
 namespace UnityBuilderAction
 {
 	/// <summary>
-	/// Unity menu items for building the project for WebGL with the build script
-	/// Helpful for testing the CI behavior
+	/// Menu items for <see cref="BuildScript"> to build the project in the editor
+	/// Helpful for testing the CI behavior and semi-automated builds
 	/// </summary>
 	public class BuildScriptMenu
 	{
