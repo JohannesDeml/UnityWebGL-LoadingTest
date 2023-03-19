@@ -19,8 +19,8 @@ namespace UnityBuilderAction
 	public static class BuildScript
 	{
 		private static readonly string Eol = Environment.NewLine;
-		private const bool LogVerboseBatchMode = true;
-		private const bool LogVerboseNonBatchMode = false;
+		private static bool LogVerboseBatchMode = true;
+		private static bool LogVerboseInEditor = false;
 
 		private static readonly string[] Secrets =
 			{ "androidKeystorePass", "androidKeyaliasName", "androidKeyaliasPass" };
@@ -337,7 +337,7 @@ namespace UnityBuilderAction
 			}
 			else
 			{
-				if (LogVerboseNonBatchMode)
+				if (LogVerboseInEditor)
 				{
 					Debug.Log(message);
 				}
