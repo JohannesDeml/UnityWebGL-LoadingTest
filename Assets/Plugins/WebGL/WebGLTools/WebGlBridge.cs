@@ -61,8 +61,8 @@ namespace Supyrb
 			Debug.Log("Unity WebGL Bridge ready -> Run 'unityGame.SendMessage(\"WebGL\", \"Help\")' in the browser console to see usage");
 		}
 
-		[ContextMenu("Log all commands")]
 		[WebGlCommand(Description = "Log all available commands")]
+		[ContextMenu(nameof(Help))]
 		public void Help()
 		{
 			StringBuilder sb = new StringBuilder();
