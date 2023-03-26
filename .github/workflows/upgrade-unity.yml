@@ -19,6 +19,11 @@ on:
         required: true
         type: boolean
         default: false
+      tagsOnly:
+        description: 'Only create tags'
+        required: true
+        type: boolean
+        default: false
       customParameters:
         description: 'Custom cli arguments'
         required: false
@@ -42,6 +47,7 @@ jobs:
           UNITY_VERSION: ${{ inputs.unityVersion }}
           CREATE_TAGS: ${{ inputs.createTags }}
           URP_BRANCH: ${{ inputs.urp }}
+          TAGS_ONLY: ${{ inputs.tagsOnly }}
           CUSTOM_PARAMETERS: ${{ inputs.customParameters }}
 
       - uses: actions/checkout@v3
@@ -93,6 +99,7 @@ jobs:
           echo "upgrade_name -> ${{ steps.upgrade_name.outputs.NAME }}"
 
       - name: Build project
+        if: ${{ !inputs.tagsOnly }}
         uses: JohannesDeml/unity-builder@no-quit-parameter
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -105,20 +112,19 @@ jobs:
           allowDirtyBuild: true
 
       - name: Delete build folder with elevated rights
+        if: ${{ !inputs.tagsOnly }}
         run: sudo rm -rf ./build
-
-      - name: Log git status
-        run: git status
 
       - name: Set git user
         run: |
+          git status
           git config --global user.email "$GIT_USER@users.noreply.github.com"
           git config --global user.name "$GIT_USER"
         env:
           GIT_USER: ${{ github.actor }}
 
-
       - name: Render template
+        if: ${{ !inputs.tagsOnly }}
         id: template
         uses: chuhlomin/render-template@v1.4
         with:
@@ -127,6 +133,7 @@ jobs:
             unityversion: ${{ steps.upgrade_name.outputs.NAME }}
 
       - name: Create Pull Request
+        if: ${{ !inputs.tagsOnly }}
         uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ secrets.PR_GITHUB_TOKEN }}
@@ -137,6 +144,7 @@ jobs:
           body: ${{ steps.template.outputs.result }}
 
       - name: Add tags
+        if: ${{ inputs.createTags || inputs.tagsOnly }}
         run: |
           if [[ "$URP_BRANCH" == "true" ]]
           then
