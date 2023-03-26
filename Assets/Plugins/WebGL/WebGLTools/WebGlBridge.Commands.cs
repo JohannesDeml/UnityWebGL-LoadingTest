@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using Supyrb.Attributes;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Supyrb
 {
@@ -52,6 +53,17 @@ namespace Supyrb
 		public void LogMemory()
 		{
 			WebGlPlugins.LogMemory();
+		}
+
+		/// <summary>
+		/// Unloads all unused assets <see cref="Resources.UnloadUnusedAssets"/>
+		/// Browser Usage: <code>unityGame.SendMessage("WebGL","UnloadUnusedAssets");</code>
+		/// </summary>
+		[WebGlCommand(Description = "Resources.UnloadUnusedAssets")]
+		[ContextMenu(nameof(UnloadUnusedAssets))]
+		public void UnloadUnusedAssets()
+		{
+			Resources.UnloadUnusedAssets();
 		}
 
 		/// <summary>
@@ -177,6 +189,28 @@ namespace Supyrb
 
 			Debug.Log($"Supported Texture formats: \n{string.Join(", ", supportedFormats)}");
 			Debug.Log($"Unsupported Texture formats: \n{string.Join(", ", unsupportedFormats)}");
+		}
+
+		/// <summary>
+		/// Deletes all player prefs <see cref="PlayerPrefs.DeleteAll"/>
+		/// </summary>
+		[WebGlCommand(Description = "PlayerPrefs.DeleteAll")]
+		[ContextMenu(nameof(DeleteAllPlayerPrefs))]
+		public void DeleteAllPlayerPrefs()
+		{
+			PlayerPrefs.DeleteAll();
+		}
+
+		/// <summary>
+		/// Log shader compilation in debug builds (no effect in release builds)
+		/// <see cref="GraphicsSettings.logWhenShaderIsCompiled "/>
+		/// </summary>
+		/// <param name="runInBackground">1 if it should run in background</param>
+		[WebGlCommand(Description = "GraphicsSettings.logWhenShaderIsCompiled")]
+		[ContextMenu(nameof(LogShaderCompilation))]
+		public void LogShaderCompilation(int enabled)
+		{
+			GraphicsSettings.logWhenShaderIsCompiled = enabled == 1;
 		}
 	}
 }
