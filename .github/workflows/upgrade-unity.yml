@@ -1,4 +1,5 @@
 # Manually upgrade unity and update packages
+# Check if the Unity version already exists as a docker image: https://game.ci/docs/docker/versions
 name: Upgrade Unity version
 
 on:
@@ -18,11 +19,16 @@ on:
         required: true
         type: boolean
         default: false
+      tagsOnly:
+        description: 'Only create tags'
+        required: true
+        type: boolean
+        default: false
       customParameters:
         description: 'Custom cli arguments'
         required: false
         type: string
-        default: '-accept-apiupdate ‑ignorecompilererrors'
+        default: '-accept-apiupdate'
 
 jobs:
   upgrade-unity-version:
@@ -41,6 +47,7 @@ jobs:
           UNITY_VERSION: ${{ inputs.unityVersion }}
           CREATE_TAGS: ${{ inputs.createTags }}
           URP_BRANCH: ${{ inputs.urp }}
+          TAGS_ONLY: ${{ inputs.tagsOnly }}
           CUSTOM_PARAMETERS: ${{ inputs.customParameters }}
 
       - uses: actions/checkout@v3
@@ -67,7 +74,32 @@ jobs:
           key: Library-201x-WebGL
           restore-keys: Library-201x-
 
+      - name: Set last unity version
+        id: last_unity_version
+        run: |
+          LAST_UNITY_VERSION=$(sed -n 's/^\m_EditorVersion: //p'< ./ProjectSettings/ProjectVersion.txt)
+          echo "VERSION=$LAST_UNITY_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Set upgrade name
+        id: upgrade_name
+        run: |
+          if [[ "$URP_BRANCH" == "true" ]]
+          then
+            echo "NAME=$UNITY_VERSION-urp" >> $GITHUB_OUTPUT
+          else
+            echo "NAME=$UNITY_VERSION" >> $GITHUB_OUTPUT
+          fi
+        env:
+          UNITY_VERSION: ${{ inputs.unityVersion }}
+          URP_BRANCH: ${{ inputs.urp }}
+
+      - name: Log variables
+        run: |
+          echo "last_unity_version -> ${{ steps.last_unity_version.outputs.VERSION }}"
+          echo "upgrade_name -> ${{ steps.upgrade_name.outputs.NAME }}"
+
       - name: Build project
+        if: ${{ !inputs.tagsOnly }}
         uses: JohannesDeml/unity-builder@no-quit-parameter
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -80,46 +112,56 @@ jobs:
           allowDirtyBuild: true
 
       - name: Delete build folder with elevated rights
+        if: ${{ !inputs.tagsOnly }}
         run: sudo rm -rf ./build
-
-      - name: Log git status
-        run: git status
 
       - name: Set git user
         run: |
+          git status
           git config --global user.email "$GIT_USER@users.noreply.github.com"
           git config --global user.name "$GIT_USER"
         env:
           GIT_USER: ${{ github.actor }}
 
+      - name: Render template
+        if: ${{ !inputs.tagsOnly }}
+        id: template
+        uses: chuhlomin/render-template@v1.4
+        with:
+          template: .github/templates/upgrade-unity-pr-body.md
+          vars: |
+            unityversion: ${{ steps.upgrade_name.outputs.NAME }}
 
       - name: Create Pull Request
+        if: ${{ !inputs.tagsOnly }}
         uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ secrets.PR_GITHUB_TOKEN }}
-          commit-message: "[Automated workflow] upgrade-unity to ${{ inputs.unityVersion }}"
-          branch: "ci/upgrade-unity/${{ inputs.unityVersion }}"
+          commit-message: "[Automated workflow] upgrade-unity from ${{steps.last_unity_version.outputs.VERSION}} to ${{ inputs.unityVersion }}"
+          branch: "ci/upgrade-unity/from-${{steps.last_unity_version.outputs.VERSION}}-to-${{ steps.upgrade_name.outputs.NAME }}"
           delete-branch: true
-          title: "[Automated workflow] upgrade-unity to ${{ inputs.unityVersion }} - URP: ${{ inputs.urp }}"
+          title: "[Automated workflow] upgrade-unity from ${{steps.last_unity_version.outputs.VERSION}} to ${{ steps.upgrade_name.outputs.NAME }}"
+          body: ${{ steps.template.outputs.result }}
 
-      - name: Add non urp tags
-        if: ${{ inputs.createTags && !inputs.urp }}
+      - name: Add tags
+        if: ${{ inputs.createTags || inputs.tagsOnly }}
         run: |
-          git tag -a -f $UNITY_VERSION-minsize-webgl1 -m "[Automated workflow] Created by upgrade-unity"
-          git tag -a -f $UNITY_VERSION-webgl1 -m "[Automated workflow] Created by upgrade-unity"
-          git tag -a -f $UNITY_VERSION-webgl2 -m "[Automated workflow] Created by upgrade-unity"
-          git tag -a -f $UNITY_VERSION-webgl2-debug -m "[Automated workflow] Created by upgrade-unity"
+          if [[ "$URP_BRANCH" == "true" ]]
+          then
+            git tag -a -f $UNITY_VERSION-urp-webgl1 -m "[Automated workflow] Created by upgrade-unity"
+            git tag -a -f $UNITY_VERSION-urp-webgl2 -m "[Automated workflow] Created by upgrade-unity"
+            git tag -a -f $UNITY_VERSION-urp-webgl2-debug -m "[Automated workflow] Created by upgrade-unity"
+          else
+            git tag -a -f $UNITY_VERSION-minsize-webgl1 -m "[Automated workflow] Created by upgrade-unity"
+            git tag -a -f $UNITY_VERSION-webgl1 -m "[Automated workflow] Created by upgrade-unity"
+            git tag -a -f $UNITY_VERSION-webgl2 -m "[Automated workflow] Created by upgrade-unity"
+            # Push tags in between - pushing more than 3 tags won't trigger tag workflows
+            git push origin -f --tags
+            git tag -a -f $UNITY_VERSION-webgl2-debug -m "[Automated workflow] Created by upgrade-unity"
+          fi
+
           git push origin -f --tags
         env:
           UNITY_VERSION: ${{ inputs.unityVersion }}
-
-      - name: Add urp tags
-        if: ${{ inputs.createTags && inputs.urp }}
-        run: |
-          git tag -a -f $UNITY_VERSION-urp-webgl1 -m "[Automated workflow] Created by upgrade-unity"
-          git tag -a -f $UNITY_VERSION-urp-webgl2 -m "[Automated workflow] Created by upgrade-unity"
-          git tag -a -f $UNITY_VERSION-urp-webgl2-debug -m "[Automated workflow] Created by upgrade-unity"
-          git push origin -f --tags
-        env:
-          UNITY_VERSION: ${{ inputs.unityVersion }}
+          URP_BRANCH: ${{ inputs.urp }}
 
