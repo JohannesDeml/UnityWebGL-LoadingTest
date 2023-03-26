@@ -17,13 +17,24 @@ using UnityEngine;
 
 namespace UnityBuilderAction
 {
+	/// <summary>
+	/// Editor script to automatically update all packages in the project to the newest version
+	/// Can be used in continuous integration (CI) or through menu items in the editor
+	/// Uses non-blocking tasks, so you can continue working until the packages recompile
+	/// </summary>
 	public static class UnityPackageScripts
 	{
 		private static int ProgressId;
 		private static ListRequest ListRequest;
+		#if UNITY_2021_2_OR_NEWER
 		private static AddAndRemoveRequest AddAndRemoveRequest;
+		#else
+		private static AddRequest AddRequest;
+		private static Queue<string> PackagesToAdd;
+		#endif
+
 		private static bool IncludePrereleases;
-		
+
 		[MenuItem("Tools/Packages/Update to verified version")]
 		public static void UpgradeAllPackagesToVerifiedVersion()
 		{
@@ -37,11 +48,11 @@ namespace UnityBuilderAction
 			IncludePrereleases = true;
 			StartPackageListUpdate();
 		}
-		
+
 		private static void StartPackageListUpdate()
 		{
 #if UNITY_2020_1_OR_NEWER
-			ProgressId = Progress.Start("Update Packages", 
+			ProgressId = Progress.Start("Update Packages",
 			$"Update all packages to latest version (Include Pre-Releases: {IncludePrereleases})");
 #endif
 			ListRequest = Client.List();
@@ -57,7 +68,7 @@ namespace UnityBuilderAction
 #endif
 				return;
 			}
-			
+
 			EditorApplication.update -= OnWaitForPackageList;
 
 			switch (ListRequest.Status)
@@ -93,14 +104,20 @@ namespace UnityBuilderAction
 				{
 					continue;
 				}
-				
-				
-				string latestVersion = IncludePrereleases ? package.versions.latestCompatible : package.versions.verified;
+
+
+				string latestVersion = IncludePrereleases ?
+					package.versions.latestCompatible :
+#if UNITY_2019_3_OR_NEWER
+					package.versions.verified;
+#else
+					package.versions.recommended;
+#endif
 				if (package.version == latestVersion || string.IsNullOrEmpty(latestVersion))
 				{
 					continue;
 				}
-				
+
 				Debug.Log($"Update {package.name} from {package.version} to {latestVersion}");
 				toAdd.Add($"{package.name}@{latestVersion}");
 			}
@@ -112,13 +129,21 @@ namespace UnityBuilderAction
 				return;
 			}
 
-			AddAndRemoveRequest = Client.AddAndRemove(toAdd.ToArray(), toRemove.ToArray());
 #if UNITY_2020_1_OR_NEWER
 			Progress.Report(ProgressId, 0.5f, $"Updating {toAdd.Count} packages: {string.Join(", ", toAdd)}");
 #endif
+
+#if UNITY_2021_2_OR_NEWER
+			AddAndRemoveRequest = Client.AddAndRemove(toAdd.ToArray(), toRemove.ToArray());
 			EditorApplication.update += OnWaitForPackageUpdates;
+#else
+			PackagesToAdd = new Queue<string>(toAdd);
+			AddRequest = Client.Add(PackagesToAdd.Dequeue());
+			EditorApplication.update += OnWaitForSinglePackageUpdate;
+#endif
 		}
 
+#if UNITY_2021_2_OR_NEWER
 		private static void OnWaitForPackageUpdates()
 		{
 #if UNITY_2020_1_OR_NEWER
@@ -128,7 +153,7 @@ namespace UnityBuilderAction
 			{
 				return;
 			}
-			
+
 			EditorApplication.update -= OnWaitForPackageUpdates;
 
 			switch (AddAndRemoveRequest.Status)
@@ -151,7 +176,51 @@ namespace UnityBuilderAction
 					break;
 			}
 		}
-		
+#else
+
+		private static void OnWaitForSinglePackageUpdate()
+		{
+#if UNITY_2020_1_OR_NEWER
+			Progress.Report(ProgressId, 0.5f, null);
+#endif
+			if (!AddRequest.IsCompleted)
+			{
+				return;
+			}
+
+			if (AddRequest.Status == StatusCode.Success)
+			{
+				if (PackagesToAdd.Count > 0)
+				{
+					// Update the next package
+					AddRequest = Client.Add(PackagesToAdd.Dequeue());
+					return;
+				}
+			}
+			EditorApplication.update -= OnWaitForSinglePackageUpdate;
+
+			switch (AddRequest.Status)
+			{
+				case StatusCode.Success:
+					Console.WriteLine($"Packages updated successful: {AddRequest.Result}");
+					EndUpdate(0);
+					break;
+				case StatusCode.Failure:
+					Console.WriteLine($"Updating package list failed! {AddRequest.Error}");
+					EndUpdate(201);
+					break;
+				case StatusCode.InProgress:
+					Console.WriteLine("Retrieving package list is still in progress!");
+					EndUpdate(202);
+					break;
+				default:
+					Console.WriteLine($"Unsupported status {AddRequest.Status}!");
+					EndUpdate(203);
+					break;
+			}
+		}
+#endif
+
 		private static void EndUpdate(int returnValue)
 		{
 #if UNITY_2020_1_OR_NEWER
@@ -167,7 +236,7 @@ namespace UnityBuilderAction
 				{
 					throw new Exception($"BuildScript ended with non-zero exitCode: {returnValue}");
 				}
-				
+
 				Debug.Log($"Successfully updated packages");
 			}
 		}
