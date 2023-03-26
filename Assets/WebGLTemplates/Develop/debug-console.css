@@ -1,268 +1,278 @@
 /* Debug console styling */
 #debugConsole {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    height: 90vh;
-    z-index: 100;
-    flex-direction: column;
-    text-align: left;
-    font-family: "Lucida Console", "Courier New", monospace;
-    font-size: small;
-    word-break: break-all;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 90vh;
+  z-index: 100;
+  flex-direction: column;
+  text-align: left;
+  font-family: "Lucida Console", "Courier New", monospace;
+  font-size: small;
+  word-break: break-all;
 }
 
 #debugConsole .console-top-bar {
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    align-items: center;
-    overflow: auto;
-    height: 30px;
-    padding: 10px 42px 10px 10px;
-    background-color: rgb(243, 243, 243);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  overflow: auto;
+  height: 30px;
+  padding: 10px 42px 10px 10px;
+  background-color: rgb(243, 243, 243);
 }
 
 #debugConsole .console-top-bar .element {
-    position: relative;
-    flex-shrink: 0;
-    height: 24px;
-    margin: 0px 4px;
-    border: 0;
+  position: relative;
+  flex-shrink: 0;
+  height: 24px;
+  margin: 0px 4px;
+  border: 0;
 }
 
 #debugConsole .console-top-bar button {
-    width: 24px;
-    cursor: pointer;
-    background: none;
+  width: 24px;
+  cursor: pointer;
+  background: none;
 }
 
 #debugConsole .console-top-bar .separator {
-    width: 1px;
-    background: black;
+  width: 1px;
+  background: black;
 }
 
 #debugConsole .console-top-bar .log-counter .counter {
-    cursor: pointer;
-    padding: 8px;
-    background-color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  padding: 8px;
+  background-color: rgba(255, 255, 255, 0.5);
 }
 
-#debugConsole .console-top-bar .log-counter input[type='checkbox']:checked + .counter {
-    border-bottom: 3px solid yellowgreen;
+#debugConsole .console-top-bar .log-counter input[type='checkbox']:checked+.counter {
+  border-bottom: 3px solid yellowgreen;
 }
 
 #debugConsole .console-top-bar .log-counter .counter::before {
-    padding-right: 2px;
+  padding-right: 2px;
 }
+
 .log-counter.info .counter::before {
-    content: 'ℹ️';
+  content: 'ℹ️';
 }
+
 .log-counter.warn .counter::before {
-    content: '⚠️';
+  content: '⚠️';
 }
+
 .log-counter.error .counter::before {
-    content: '🛑';
+  content: '🛑';
 }
+
 .timestamp-button .icon::before {
-    content: '🕰️';
+  content: '🕰️';
 }
+
 .to-bottom-button .icon::before {
-    content: '⬇️';
+  content: '⬇️';
 }
+
 .clear-button .icon::before {
-    content: '🗑️';
+  content: '🗑️';
 }
+
 .copy-button .icon::before {
-    content: '📋';
+  content: '📋';
 }
 
 
 #debugConsole .log-entries {
-    overflow-y: scroll;
+  overflow-y: scroll;
 }
 
 #debugConsole .console-input {
-    flex-shrink: 0;
-    height: 24px;
+  flex-shrink: 0;
+  height: 24px;
 }
 
 #debugConsole .entry {
-    padding: 8px 4px;
-    color: rgb(41, 41, 41);
-    background-color: rgba(230, 230, 230, 0.9);
-    display: flex;
-    justify-content: space-between;
-    border-bottom: 1px solid #3d3d3d;
+  padding: 8px 4px;
+  color: rgb(41, 41, 41);
+  background-color: rgba(230, 230, 230, 0.9);
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #3d3d3d;
 }
 
 #debugConsole .entry.info {
-    color: rgb(41, 50, 60);
-    background-color: rgba(178, 216, 239, 0.9);
+  color: rgb(41, 50, 60);
+  background-color: rgba(178, 216, 239, 0.9);
 }
+
 #debugConsole.hidelogs-info .entry.info,
 #debugConsole.hidelogs-info .entry.debug,
 #debugConsole.hidelogs-info .entry.log,
 #debugConsole.hidelogs-warn .entry.warn,
 #debugConsole.hidelogs-error .entry.error {
-    display:none;
+  display: none;
 }
 
 #debugConsole.hidelogtimestamps .timestamplog {
-    display: none;
+  display: none;
 }
 
 #debugConsole .entry.warn {
-    color: rgb(82, 70, 3);
-    background-color: rgba(234, 209, 101, 0.9);
+  color: rgb(82, 70, 3);
+  background-color: rgba(234, 209, 101, 0.9);
 }
 
 #debugConsole .entry.error {
-    color: rgb(75, 10, 5);
-    background-color: rgba(233, 91, 91, 0.9);
+  color: rgb(75, 10, 5);
+  background-color: rgba(233, 91, 91, 0.9);
 }
 
 #debugConsole .copy-button {
-    position: relative;
-    flex-shrink: 0;
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-    border: 0;
-    background: none;
+  position: relative;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  border: 0;
+  background: none;
 }
 
 #debugConsole .to-bottom-button.locked {
-    border-bottom: 3px solid yellowgreen;
+  border-bottom: 3px solid yellowgreen;
 }
 
 #debugConsole .timestamp-button.show {
-    border-bottom: 3px solid yellowgreen;
+  border-bottom: 3px solid yellowgreen;
 }
 
 #debugConsole .bubble-click-indicator:before {
-    content: attr(data-before);
-    ;
-    position: absolute;
-    bottom: 0;
-    right: 10px;
-    width: 60px;
-    height: 20px;
-    padding-top: 4px;
-    text-align: center;
-    color: white;
-    background: #333;
-    border-radius: 10px;
-    opacity: 0;
-    transition: all 0.3s ease-out;
-    pointer-events: none;
+  content: attr(data-before);
+  ;
+  position: absolute;
+  bottom: 0;
+  right: 10px;
+  width: 60px;
+  height: 20px;
+  padding-top: 4px;
+  text-align: center;
+  color: white;
+  background: #333;
+  border-radius: 10px;
+  opacity: 0;
+  transition: all 0.3s ease-out;
+  pointer-events: none;
 }
 
 #debugConsole .bubble-click-indicator.active:before {
-    opacity: 1;
-    right: 30px;
-    transition: all 0.2s ease-out;
+  opacity: 1;
+  right: 30px;
+  transition: all 0.2s ease-out;
 }
 
 /* Debug console toggle button */
 #debugToggleMenu {
-    z-index: 101;
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    display: block;
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-    border-radius: 50%;
-    box-shadow: 0px 1px 3px 2px #CDD9ED;
-    background: #fff;
-    transition: all .2s ease;
+  z-index: 101;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: block;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  border-radius: 50%;
+  box-shadow: 0px 1px 3px 2px #CDD9ED;
+  background: #fff;
+  transition: all .2s ease;
 }
 
 #debugToggleMenu.unseen-error {
-    background: rgb(189, 40, 40);
-    animation: error-background 1.0s ease 3;
+  background: rgb(189, 40, 40);
+  animation: error-background 1.0s ease 3;
 }
 
 @keyframes error-background {
-    0% {
-        background: rgb(189, 40, 40);
-    }
-    50% {
-        background: rgb(231, 39, 39);
-    }
-    100% {
-        background: rgb(189, 40, 40);
-    }
+  0% {
+    background: rgb(189, 40, 40);
+  }
+
+  50% {
+    background: rgb(231, 39, 39);
+  }
+
+  100% {
+    background: rgb(189, 40, 40);
+  }
 }
 
 #debugToggleMenu .icon {
-    position: absolute;
-    top: 25%;
-    left: 25%;
-    width: 50%;
-    height: 50%;
-    background: rgb(128, 128, 128);
-    border-radius: 50%;
-    display: none;
+  position: absolute;
+  top: 25%;
+  left: 25%;
+  width: 50%;
+  height: 50%;
+  background: rgb(128, 128, 128);
+  border-radius: 50%;
+  display: none;
 }
 
 #debugToggle {
-    display: none;
+  display: none;
 }
 
 #debugToggle:checked~#debugConsole {
-    display: flex;
+  display: flex;
 }
 
 #debugToggle:checked~#debugToggleMenu .icon {
-    display: block;
+  display: block;
 }
 
 #debugToggle:not(:checked)~#debugConsole {
-    display: none;
+  display: none;
 }
 
 /* Startup Time interface */
 #infoPanel {
-    z-index: 10;
-    position: absolute;
-    top: 0;
-    left: 0;
-    padding: 8px;
-    font-family: "Lucida Console", "Courier New", monospace;
-    text-align: left;
-    color: black;
-    background: rgba(255, 255, 255, 0.4);
+  z-index: 10;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 8px;
+  font-family: "Lucida Console", "Courier New", monospace;
+  text-align: left;
+  color: black;
+  background: rgba(255, 255, 255, 0.4);
 }
 
 dt,
 dd {
-    display: inline;
+  display: inline;
 }
 
 dt:after {
-    content: ':';
+  content: ':';
 }
 
 .tracking-seconds:after {
-    content: 's';
+  content: 's';
 }
 
 .tracking-milliseconds:after {
-    content: 'ms';
+  content: 'ms';
 }
 
 /* Hide Milliseconds value, still useful for CI to get exact values */
 .tracking-milliseconds,
 .tracking-milliseconds:after {
-    display: none;
+  display: none;
 }
 
 dl div:after {
-    display: block;
-    content: '';
+  display: block;
+  content: '';
 }
