@@ -131,7 +131,7 @@ jobs:
   deployOnServer:
     name: Deploy on server 🚀
     needs: [ variables, buildProject ]
-    # Guarded by username, if you want to do something sinilar remove the next line
+    # Guarded by username, you will need to remove or replace the line for your fork
     if: ${{ github.repository_owner == 'JohannesDeml' }}
     runs-on: ubuntu-latest
     steps:
@@ -157,3 +157,5 @@ jobs:
           protocol: ftps
           local-dir: ./build/${{ needs.variables.outputs.BUILD_NAME }}/
           server-dir: ./${{ needs.variables.outputs.TAG }}/
+          # Make sure old files are deleted (e.g. created with name files as hashes)
+          dangerous-clean-slate: true
