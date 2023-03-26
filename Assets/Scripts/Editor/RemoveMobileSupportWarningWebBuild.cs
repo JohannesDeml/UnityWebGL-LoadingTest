@@ -17,8 +17,9 @@ using UnityEngine;
 namespace Supyrb
 {
 	/// <summary>
-	/// removes a warning popup for mobile builds, that this platform might not be supported:
+	/// Removes a warning popup for mobile builds, that this platform might not be supported:
 	/// "Please note that Unity WebGL is not currently supported on mobiles. Press OK if you wish to continue anyway."
+	/// This warning only shows up for unity versions prior to 2020.1
 	/// </summary>
 	public class RemoveMobileSupportWarningWebBuild
 	{

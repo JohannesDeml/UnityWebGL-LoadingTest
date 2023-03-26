@@ -16,8 +16,8 @@ using UnityEngine;
 namespace UnityBuilderAction
 {
 	/// <summary>
-	/// Unity menu items for building the project for WebGL with the build script
-	/// Helpful for testing the CI behavior
+	/// Menu items for <see cref="BuildScript"> to build the project in the editor
+	/// Helpful for testing the CI behavior and semi-automated builds
 	/// </summary>
 	public class BuildScriptMenu
 	{
@@ -37,6 +37,7 @@ namespace UnityBuilderAction
 			SetParameterValue("-autorunplayer", "true", ref parameters);
 			SetParameterValue("-tag", tag, ref parameters);
 			SetParameterValue("-customBuildPath", $"Builds/WebGL/{tag}", ref parameters);
+			SetParameterValue("-customBuildName", tag, ref parameters);
 			BuildWithParameters(parameters);
 		}
 
@@ -49,6 +50,7 @@ namespace UnityBuilderAction
 			SetParameterValue("-autorunplayer", "true", ref parameters);
 			SetParameterValue("-tag", tag, ref parameters);
 			SetParameterValue("-customBuildPath", $"Builds/WebGL/{tag}", ref parameters);
+			SetParameterValue("-customBuildName", tag, ref parameters);
 			BuildWithParameters(parameters);
 		}
 
@@ -61,6 +63,7 @@ namespace UnityBuilderAction
 			SetParameterValue("-autorunplayer", "true", ref parameters);
 			SetParameterValue("-tag", tag, ref parameters);
 			SetParameterValue("-customBuildPath", $"Builds/WebGL/{tag}", ref parameters);
+			SetParameterValue("-customBuildName", tag, ref parameters);
 			BuildWithParameters(parameters);
 		}
 
@@ -73,6 +76,7 @@ namespace UnityBuilderAction
 			SetParameterValue("-autorunplayer", "true", ref parameters);
 			SetParameterValue("-tag", tag, ref parameters);
 			SetParameterValue("-customBuildPath", $"Builds/WebGL/{tag}", ref parameters);
+			SetParameterValue("-customBuildName", tag, ref parameters);
 			BuildWithParameters(parameters);
 		}
 
