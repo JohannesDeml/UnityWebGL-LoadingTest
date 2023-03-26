@@ -8,8 +8,11 @@
 // </author>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
 using Supyrb.Attributes;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Supyrb
 {
@@ -27,7 +30,7 @@ namespace Supyrb
 			Debug.Log($"WebGLInput.captureAllKeyboardInput: {WebGLInput.captureAllKeyboardInput}");
 #endif
 		}
-		
+
 		/// <summary>
 		/// Enable capturing all keyboard input, to make sure the game does not miss any key strokes
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL","EnableCaptureAllKeyboardInput");</code>
@@ -40,17 +43,29 @@ namespace Supyrb
 			Debug.Log($"WebGLInput.captureAllKeyboardInput: {WebGLInput.captureAllKeyboardInput}");
 #endif
 		}
-		
+
 		/// <summary>
 		/// Logs the current memory usage
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL","LogMemory");</code>
 		/// </summary>
 		[WebGlCommand(Description = "Logs the current memory")]
+		[ContextMenu(nameof(LogMemory))]
 		public void LogMemory()
 		{
 			WebGlPlugins.LogMemory();
 		}
-		
+
+		/// <summary>
+		/// Unloads all unused assets <see cref="Resources.UnloadUnusedAssets"/>
+		/// Browser Usage: <code>unityGame.SendMessage("WebGL","UnloadUnusedAssets");</code>
+		/// </summary>
+		[WebGlCommand(Description = "Resources.UnloadUnusedAssets")]
+		[ContextMenu(nameof(UnloadUnusedAssets))]
+		public void UnloadUnusedAssets()
+		{
+			Resources.UnloadUnusedAssets();
+		}
+
 		/// <summary>
 		/// Sets if the application should run while not focused.
 		/// It is in background while another tab is focused or the console is focused
@@ -62,7 +77,7 @@ namespace Supyrb
 		{
 			Application.runInBackground = runInBackground == 1;
 		}
-		
+
 		/// <summary>
 		/// Sets the rendering frame rate, see <see cref="Application.targetFrameRate"/>
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL", "SetApplicationTargetFrameRate", 15);</code>
@@ -73,7 +88,7 @@ namespace Supyrb
 		{
 			Application.targetFrameRate = targetFrameRate;
 		}
-		
+
 		/// <summary>
 		/// Sets the interval for fixed time updates, see <see cref="Time.fixedDeltaTime"/>
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL", "SetTimeFixedDeltaTime", 0.02);</code>
@@ -84,7 +99,7 @@ namespace Supyrb
 		{
 			Time.fixedDeltaTime = fixedDeltaTime;
 		}
-		
+
 		/// <summary>
 		/// Sets the global timeScale, see <see cref="Time.timeScale"/>
 		/// Somehow the timescale also affects the physics refresh rate on WebGL
@@ -96,7 +111,7 @@ namespace Supyrb
 		{
 			Time.timeScale = timeScale;
 		}
-		
+
 		/// <summary>
 		/// Toggle the visibility of the info panel in the top right corner
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL", "ToggleInfoPanel");</code>
@@ -106,16 +121,19 @@ namespace Supyrb
 		{
 			WebGlPlugins.ToggleInfoPanel();
 		}
-		
+
 		/// <summary>
-		/// Log an example message to see if it is rendered correctly, and to see the stacktrace
+		/// Log example messages to see if they are rendered and colored correctly
 		/// </summary>
-		[WebGlCommand(Description = "Log an example debug message")]
-		public void LogExampleMessage()
+		[WebGlCommand(Description = "Log example messages for Log, warning and error")]
+		[ContextMenu(nameof(LogExampleMessages))]
+		public void LogExampleMessages()
 		{
-			Debug.Log("This is an <color=#ff0000>example</color> message, showing off <color=#ff00ff>rich text</color> support!");
+			Debug.Log("This is an example <color=#2596be>log</color> message, showing off <color=#ff00ff>rich text support with <color=#ff0000>[nesting (I should be red - not supported yet)]</color></color>!");
+			Debug.LogWarning("This is an example <color=#e28743>warning</color> message!");
+			Debug.LogError("This is an example <color=#d36a33>error</color> message!");
 		}
-		
+
 		/// <summary>
 		/// Log a custom message to test Debug.Log in general
 		/// </summary>
@@ -125,5 +143,74 @@ namespace Supyrb
 		{
 			Debug.Log(message);
 		}
-	} 
+
+		/// <summary>
+		/// Throw an exception from System namespace to see how stack traces look for that
+		/// </summary>
+		[WebGlCommand(Description = "Throw a dictionary key not found exception")]
+		[ContextMenu(nameof(ThrowDictionaryException))]
+		public void ThrowDictionaryException()
+		{
+			Dictionary<int, int> testDictionary = new Dictionary<int, int>();
+			// this will throw a KeyNotFoundException because the key does not exist
+			Debug.Log(testDictionary[10]);
+		}
+
+		/// <summary>
+		/// Log information of all texture formats that Unity supports, which ones are supported by
+		/// the current platform and browser, and which ones are not supported
+		/// </summary>
+		[WebGlCommand(Description = "Log supported and unsupported texture formats")]
+		[ContextMenu(nameof(LogTextureSupport))]
+		public void LogTextureSupport()
+		{
+			List<TextureFormat> supportedFormats = new List<TextureFormat>();
+			List<TextureFormat> unsupportedFormats = new List<TextureFormat>();
+
+			foreach (TextureFormat textureFormat in Enum.GetValues(typeof(TextureFormat)))
+			{
+				var memberInfos = typeof(TextureFormat).GetMember(textureFormat.ToString());
+				object[] obsoleteAttributes = memberInfos[0].GetCustomAttributes(typeof(ObsoleteAttribute), false);
+				if (obsoleteAttributes.Length > 0)
+				{
+					// don't evaluate obsolete enum values
+					continue;
+				}
+
+				if (SystemInfo.SupportsTextureFormat(textureFormat))
+				{
+					supportedFormats.Add(textureFormat);
+				}
+				else
+				{
+					unsupportedFormats.Add(textureFormat);
+				}
+			}
+
+			Debug.Log($"Supported Texture formats: \n{string.Join(", ", supportedFormats)}");
+			Debug.Log($"Unsupported Texture formats: \n{string.Join(", ", unsupportedFormats)}");
+		}
+
+		/// <summary>
+		/// Deletes all player prefs <see cref="PlayerPrefs.DeleteAll"/>
+		/// </summary>
+		[WebGlCommand(Description = "PlayerPrefs.DeleteAll")]
+		[ContextMenu(nameof(DeleteAllPlayerPrefs))]
+		public void DeleteAllPlayerPrefs()
+		{
+			PlayerPrefs.DeleteAll();
+		}
+
+		/// <summary>
+		/// Log shader compilation in debug builds (no effect in release builds)
+		/// <see cref="GraphicsSettings.logWhenShaderIsCompiled "/>
+		/// </summary>
+		/// <param name="runInBackground">1 if it should run in background</param>
+		[WebGlCommand(Description = "GraphicsSettings.logWhenShaderIsCompiled")]
+		[ContextMenu(nameof(LogShaderCompilation))]
+		public void LogShaderCompilation(int enabled)
+		{
+			GraphicsSettings.logWhenShaderIsCompiled = enabled == 1;
+		}
+	}
 }

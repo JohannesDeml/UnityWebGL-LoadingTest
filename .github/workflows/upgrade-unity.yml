@@ -1,4 +1,5 @@
 # Manually upgrade unity and update packages
+# Check if the Unity version already exists as a docker image: https://game.ci/docs/docker/versions
 name: Upgrade Unity version
 
 on:
@@ -15,6 +16,11 @@ on:
         default: true
       urp:
         description: 'URP branch'
+        required: true
+        type: boolean
+        default: false
+      tagsOnly:
+        description: 'Only create tags'
         required: true
         type: boolean
         default: false
@@ -41,6 +47,7 @@ jobs:
           UNITY_VERSION: ${{ inputs.unityVersion }}
           CREATE_TAGS: ${{ inputs.createTags }}
           URP_BRANCH: ${{ inputs.urp }}
+          TAGS_ONLY: ${{ inputs.tagsOnly }}
           CUSTOM_PARAMETERS: ${{ inputs.customParameters }}
 
       - uses: actions/checkout@v3
@@ -92,6 +99,7 @@ jobs:
           echo "upgrade_name -> ${{ steps.upgrade_name.outputs.NAME }}"
 
       - name: Build project
+        if: ${{ !inputs.tagsOnly }}
         uses: JohannesDeml/unity-builder@no-quit-parameter
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -104,29 +112,39 @@ jobs:
           allowDirtyBuild: true
 
       - name: Delete build folder with elevated rights
+        if: ${{ !inputs.tagsOnly }}
         run: sudo rm -rf ./build
-
-      - name: Log git status
-        run: git status
 
       - name: Set git user
         run: |
+          git status
           git config --global user.email "$GIT_USER@users.noreply.github.com"
           git config --global user.name "$GIT_USER"
         env:
           GIT_USER: ${{ github.actor }}
 
+      - name: Render template
+        if: ${{ !inputs.tagsOnly }}
+        id: template
+        uses: chuhlomin/render-template@v1.4
+        with:
+          template: .github/templates/upgrade-unity-pr-body.md
+          vars: |
+            unityversion: ${{ steps.upgrade_name.outputs.NAME }}
 
       - name: Create Pull Request
+        if: ${{ !inputs.tagsOnly }}
         uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ secrets.PR_GITHUB_TOKEN }}
           commit-message: "[Automated workflow] upgrade-unity from ${{steps.last_unity_version.outputs.VERSION}} to ${{ inputs.unityVersion }}"
           branch: "ci/upgrade-unity/from-${{steps.last_unity_version.outputs.VERSION}}-to-${{ steps.upgrade_name.outputs.NAME }}"
           delete-branch: true
-          title: "[Automated workflow] upgrade-unity from ${{steps.last_unity_version.outputs.VERSION}} to ${{ inputs.unityVersion }} - URP: ${{ inputs.urp }}"
+          title: "[Automated workflow] upgrade-unity from ${{steps.last_unity_version.outputs.VERSION}} to ${{ steps.upgrade_name.outputs.NAME }}"
+          body: ${{ steps.template.outputs.result }}
 
       - name: Add tags
+        if: ${{ inputs.createTags || inputs.tagsOnly }}
         run: |
           if [[ "$URP_BRANCH" == "true" ]]
           then
