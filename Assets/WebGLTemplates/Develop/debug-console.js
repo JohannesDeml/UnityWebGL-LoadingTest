@@ -19,7 +19,7 @@ if (getCookie("addTimestamp") === "false") {
 }
 
 initializeToggleButton(false);
-initialzeDebugConsole();
+initializeDebugConsole();
 
 
 function setCookie(cname, cvalue, exdays) {
@@ -44,7 +44,7 @@ function getCookie(cname) {
   return "";
 }
 
-function initialzeDebugConsole() {
+function initializeDebugConsole() {
   let debugConsole = document.createElement('div');
   debugConsole.id = 'debugConsole';
   document.body.appendChild(debugConsole);
@@ -279,52 +279,135 @@ function setupConsoleLogPipe() {
 
   parseMessageAndLog = (message, logLevel, consoleLogFunction) => {
     updateLogCounter(logLevel);
-    let index = 0;
-    let consoleArgs = [];
-    let consoleMessage = "";
-    let divMessage = "";
+    let styledTextParts = parseUnityRichText(message);
 
-    // parse unity color tags to render them nicely in the console
-    while (index <= message.length) {
-      let startTagStart = message.indexOf("<color=", index);
-      if (startTagStart == -1) {
-        // Parse the reset of the message without styling
-        let remainingMessage = message.substring(index);
-        consoleMessage += `%c${remainingMessage}`;
-        consoleArgs.push("color:inherit");
-        divMessage += remainingMessage;
-        break;
+    let consoleText = '';
+    let consoleStyle = [];
+    let htmlText = '';
+    styledTextParts.forEach(textPart => {
+      consoleText += textPart.toConsoleTextString();
+      consoleStyle.push(textPart.toConsoleStyleString());
+      htmlText += textPart.toHTML();
+    });
+    htmlLog(htmlText.trim(), logLevel);
+    consoleLogFunction(consoleText, ...consoleStyle);
+  };
+}
+
+class StyledTextPart {
+  constructor(text, styles) {
+    this.text = text;
+    this.styles = styles;
+  }
+
+  toHTML() {
+    if (this.styles.length > 0) {
+      return `<span style="${this.styles.join(';')}">${this.text}</span>`;
+    }
+    return this.text;
+  }
+
+  toConsoleStyleString() {
+    if (this.styles.length > 0) {
+      return this.styles.join(';');
+    }
+    // Return some styling that does not change anything to support unstyled text
+    return 'color:inherit';
+  }
+
+  toConsoleTextString() {
+    return `%c${this.text}`;
+  }
+}
+
+function parseUnityRichText(message) {
+  // Mapping for unity tags to css style tags
+  // Unity rich text tags, see https://docs.unity3d.com/Packages/com.unity.ugui@1.0/manual/StyledText.html
+  const tagMap = {
+    'color': { startTag: '<color=', closeTag: '</color>', styleTag: 'color:', postfix: '', hasParameter: true },
+    'size': { startTag: '<size=', closeTag: '</size>', styleTag: 'font-size:', postfix: 'px', hasParameter: true },
+    'bold': { startTag: '<b', closeTag: '</b>', styleTag: 'font-weight:', styleValue: 'bold', hasParameter: false },
+    'italic': { startTag: '<i', closeTag: '</i>', styleTag: 'font-style:', styleValue: 'italic', hasParameter: false }
+  };
+
+  let index = 0;
+  const styledTextParts = [];
+
+  // Stack of applied styles, so we can also nest styling
+  let styleStack = [];
+  // next start index for each tag
+  let nextStartIndex = [];
+  // next end index for each tag
+  let nextEndIndex = [];
+  Object.keys(tagMap).forEach(key => {
+    nextStartIndex[key] = message.indexOf(tagMap[key].startTag, index);
+    nextEndIndex[key] = message.indexOf(tagMap[key].closeTag, index);
+  });
+
+  while (index < message.length) {
+    let nextTagFound = false;
+    let nextKey;
+    let fromArray = [];
+    let nextIndex = message.length;
+
+    // find the next tag start or end
+    Object.keys(tagMap).forEach(key => {
+      if (nextStartIndex[key] >= 0 && nextStartIndex[key] < nextIndex) {
+        nextIndex = nextStartIndex[key];
+        nextKey = key;
+        fromArray = nextStartIndex;
+        nextTagFound = true;
       }
 
-      if (startTagStart > index) {
-        let textBeforeTag = message.substring(index, startTagStart);
-        consoleMessage += `%c${textBeforeTag}`;
-        consoleArgs.push("color:inherit");
-        divMessage += textBeforeTag;
+      if (nextEndIndex[key] >= 0 && nextEndIndex[key] < nextIndex) {
+        nextIndex = nextEndIndex[key];
+        nextKey = key;
+        fromArray = nextEndIndex;
+        nextTagFound = true;
       }
+    });
 
-      let startTagEnd = message.indexOf(">", startTagStart);
-      let closingTag = message.indexOf("</color>", startTagStart);
-      if (startTagEnd == -1 || closingTag == -1) {
-        // Tag is set up in the wrong way, abort parsing
-        defaultConsoleError({ error: "Could not parse color tag, since no end tag was found", startStartIndex: startTagStart, startEndIndex: startTagEnd, closingIndex: closingTag });
-        let remainingMessage = message.substring(index);
-        consoleMessage += `%c${remainingMessage}`;
-        consoleArgs.push("color:inherit");
-        divMessage += remainingMessage;
-        break;
-      }
-      let color = message.substring(startTagStart + "<color=".length, startTagEnd);
-      let text = message.substring(startTagEnd + 1, closingTag);
-      consoleMessage += `%c${text}`;
-      consoleArgs.push("color:" + color);
-      divMessage += `<span style="color:${color};">${text}</span>`;
-      index = closingTag + "</color>".length;
+    // write the text in before the next tag to our style text part array
+    if (nextIndex > index) {
+      let messageToNextTag = message.substring(index, nextIndex);
+      let styles = [...styleStack];
+      styledTextParts.push(new StyledTextPart(messageToNextTag, styles));
     }
 
-    htmlLog(divMessage.trim(), logLevel);
-    consoleLogFunction(consoleMessage, ...consoleArgs);
-  };
+    // end if no more tags exist
+    if (nextTagFound === false) {
+      index = message.length;
+      break;
+    }
+
+    let closeTagIndex = message.indexOf('>', nextIndex + 1);
+
+    // Process start tag
+    if (fromArray === nextStartIndex) {
+      let styleValue;
+      if (tagMap[nextKey].hasParameter) {
+        styleValue = message.substring(nextIndex + tagMap[nextKey].startTag.length, closeTagIndex);
+        styleValue += tagMap[nextKey].postfix;
+      } else {
+        styleValue = tagMap[nextKey].styleValue;
+      }
+      styleStack.push(`${tagMap[nextKey].styleTag}${styleValue}`);
+
+      // Update list entry to next unprocessed start tag of type nextKey
+      nextStartIndex[nextKey] = message.indexOf(tagMap[nextKey].startTag, nextIndex + 1);
+    }
+    // process end tag
+    else if (fromArray === nextEndIndex) {
+      styleStack.pop();
+
+      // Update list entry to next unprocessed end tag of type nextKey
+      nextEndIndex[nextKey] = message.indexOf(tagMap[nextKey].closeTag, nextIndex + 1);
+    }
+
+    // Update index to position after the tag closes
+    index = closeTagIndex + 1;
+  }
+  return styledTextParts;
 }
 
 function updateLogCounter(logLevel) {
@@ -352,8 +435,7 @@ function htmlLog(message, className) {
     hour: "numeric",
     minute: "numeric",
     second: "numeric"
-  }
-  );
+  });
   message = "<span class='timestamplog'>[" + time + "] </span>" + message;
   message = message.replaceAll("\n", "<br />");
   text.innerHTML = message;
