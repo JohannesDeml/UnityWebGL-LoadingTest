@@ -3,7 +3,7 @@
 
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{{ PRODUCT_NAME }}}</title>
   <style>
     * {
@@ -66,13 +66,6 @@
   </div>
   <script src="Build/{{{ LOADER_FILENAME }}}"></script>
   <script>
-    const maxPixelRatioMobile = 2.0;
-    const maxPixelRatioDesktop = 1.5;
-
-    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    var maxDevicePixelRatio = isMobile? maxPixelRatioMobile: maxPixelRatioDesktop;
-    var pixelRatio = Math.min(window.devicePixelRatio, maxDevicePixelRatio);
-
     var buildUrl = "Build";
     var loaderUrl = buildUrl + "/{{{ LOADER_FILENAME }}}";
     var config = {
@@ -89,14 +82,20 @@
       companyName: "{{{ COMPANY_NAME }}}",
       productName: "{{{ PRODUCT_NAME }}}",
       productVersion: "{{{ PRODUCT_VERSION }}}",
-      devicePixelRatio: pixelRatio
     };
+
+    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if(isMobile) {
+      // Define a maximum pixel ratio for mobile to avoid rendering at too high resolutions
+      const maxPixelRatioMobile = 2.0;
+      config.devicePixelRatio = Math.min(window.devicePixelRatio, maxDevicePixelRatio);
+    }
 
     var canvas = document.querySelector("#unity-canvas");
     var loadingBar = document.querySelector("#unity-loading-bar");
     var progressBar = document.querySelector("#unity-progress-bar");
 
-    var unityGame; // This can be used to access the application with .SendMessage() commands
+    var unityGame; // This variable can be used to access the application with .SendMessage() commands
     var script = document.createElement("script");
     script.src = loaderUrl;
     script.onload = function() {
