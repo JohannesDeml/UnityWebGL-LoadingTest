@@ -24,18 +24,77 @@
       text-align: center;
     }
 
-    #unity-canvas {
+    #unity-container {
       position: absolute;
       left: 0px;
       top: 0px;
       width: 100%;
       height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+#if CONTAINER_BACKGROUND_COLOR
+      background-color: {{{CONTAINER_BACKGROUND_COLOR}}};
+#endif
+    }
+
+    /* Default values, might be overwritten by aspect ratio media queries */
+    #unity-canvas {
+      width: 100%;
+      height: 100%;
+      background-color: #fff;
+    }
+
+#if MIN_ASPECT_RATIO
+    @media (min-aspect-ratio: {{{ MIN_ASPECT_RATIO }}}) {
+      #unity-canvas {
+        width: auto;
+        height: 100%;
+        aspect-ratio: {{{ MIN_ASPECT_RATIO }}};
+      }
+    }
+#endif
+
+#if MAX_ASPECT_RATIO
+    @media (max-aspect-ratio: {{{ MAX_ASPECT_RATIO }}}) {
+      #unity-canvas {
+        width: 100%;
+        height: auto;
+        aspect-ratio: {{{ MAX_ASPECT_RATIO }}};
+      }
+    }
+#endif
+
+    #unity-loading-container {
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      width: 100%;
+      height: 100%;
+      background-color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 40px;
+
+      opacity: 1;
+      visibility: visible;
+      transition: 800ms linear;
+    }
+
+    #unity-loading-container.finished {
+      opacity: 0;
+      visibility: collapse;
+    }
+
+    #unity-loading-container .logo {
+      width: 15%;
+      height: 15%;
     }
 
     #unity-loading-bar {
-      position: absolute;
-      left: 30%;
-      top: 50%;
+      position: relative;
       width: 40%;
       height: 10px;
       background-color: #fff;
@@ -43,7 +102,7 @@
       border-radius: 10px;
     }
 
-    #unity-progress-bar {
+    #unity-loading-bar-inner {
       position: absolute;
       left: 0%;
       top: 0%;
@@ -57,10 +116,13 @@
 </head>
 
 <body>
-  <script src="./pretty-console.js"></script>
-  <canvas id="unity-canvas"></canvas>
-  <div id="unity-loading-bar">
-    <div id="unity-progress-bar">
+  <div id="unity-container">
+    <canvas id="unity-canvas"></canvas>
+  </div>
+  <div id="unity-loading-container">
+    <img src="logo.svg" class="logo" alt="Logo {{{ COMPANY_NAME }}}">
+    <div id="unity-loading-bar">
+      <div id="unity-loading-bar-inner"></div>
     </div>
   </div>
   <script src="Build/{{{ LOADER_FILENAME }}}"></script>
@@ -91,24 +153,25 @@
     }
 
     var canvas = document.querySelector("#unity-canvas");
-    var loadingBar = document.querySelector("#unity-loading-bar");
-    var progressBar = document.querySelector("#unity-progress-bar");
+    var loadingContainer = document.querySelector("#unity-loading-container");
+    var loadingBar = document.querySelector("#unity-loading-bar-inner");
 
     var unityGame;
     var script = document.createElement("script");
     script.src = loaderUrl;
     script.onload = function() {
       createUnityInstance(canvas, config, function(progress) {
-        progressBar.style.width = 100 * progress + "%";
+        loadingBar.style.width = 100 * progress + "%";
       }).then(function(unityInstance) {
         unityGame = unityInstance;
-        loadingBar.style.display = "none";
+        loadingContainer.classList.add("finished");
       }).catch(function(message) {
         alert(message);
       });
     };
     document.body.appendChild(script);
   </script>
+  <!-- Parse Unity rich text to render stylized browser console logs -->
+  <script src="./pretty-console.js"></script>
 </body>
-
 </html>
