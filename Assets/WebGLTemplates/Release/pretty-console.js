@@ -10,14 +10,25 @@ function setupConsoleLogPipe() {
   let defaultConsoleError = console.error;
 
   // Overwrite log functions to parse and pipe to debug html console
-  console.log = (message) => { parseMessageAndLog(message, defaultConsoleLog); };
-  console.info = (message) => { parseMessageAndLog(message, defaultConsoleInfo); };
-  console.debug = (message) => { parseMessageAndLog(message, defaultConsoleDebug); };
-  console.warn = (message) => { parseMessageAndLog(message, defaultConsoleWarn); };
-  console.error = (message) => { parseMessageAndLog(message, defaultConsoleError); };
+  console.log = (message) => { handleLog(message, 'log', defaultConsoleLog); };
+  console.info = (message) => { handleLog(message, 'info', defaultConsoleInfo); };
+  console.debug = (message) => { handleLog(message, 'debug', defaultConsoleDebug); };
+  console.warn = (message) => { handleLog(message, 'warn', defaultConsoleWarn); };
+  console.error = (message) => { handleLog(message, 'error', defaultConsoleError); errorReceived(); };
 
 
-  parseMessageAndLog = (message, consoleLogFunction) => {
+  handleLog = (message, logLevel, consoleLogFunction) => {
+    updateLogCounter(logLevel);
+    if (typeof message === 'string') {
+      // Only parse messages that are actual strings
+      parseMessageAndLog(message, logLevel, consoleLogFunction);
+    }
+    else {
+      consoleLogFunction(message);
+    }
+  };
+
+  parseMessageAndLog = (message, logLevel, consoleLogFunction) => {
     let styledTextParts = parseUnityRichText(message);
     let consoleText = '';
     let consoleStyle = [];
