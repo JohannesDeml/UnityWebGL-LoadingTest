@@ -285,7 +285,14 @@ function setupConsoleLogPipe() {
     }
     else {
       consoleLogFunction(message);
-      htmlLog(JSON.stringify(message), logLevel);
+      // Try to also log the object to the html console (does not always work in a meaningful manner)
+      var htmlMessage;
+      try {
+        htmlMessage = JSON.stringify(message);
+      } catch (error) {
+        htmlMessage = `Can't convert message to JSON: ${error}`;
+      }
+      htmlLog(htmlMessage, logLevel);
     }
   };
 
