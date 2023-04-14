@@ -149,7 +149,7 @@
     if(isMobile) {
       // Define a maximum pixel ratio for mobile to avoid rendering at too high resolutions
       const maxPixelRatioMobile = 2.0;
-      config.devicePixelRatio = Math.min(window.devicePixelRatio, maxDevicePixelRatio);
+      config.devicePixelRatio = Math.min(window.devicePixelRatio, maxPixelRatioMobile);
     }
 
     var canvas = document.querySelector("#unity-canvas");
