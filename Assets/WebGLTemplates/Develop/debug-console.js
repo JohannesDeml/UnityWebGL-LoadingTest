@@ -270,15 +270,33 @@ function setupConsoleLogPipe() {
   let defaultConsoleError = console.error;
 
   // Overwrite log functions to parse and pipe to debug html console
-  console.log = (message) => { parseMessageAndLog(message, 'log', defaultConsoleLog); };
-  console.info = (message) => { parseMessageAndLog(message, 'info', defaultConsoleInfo); };
-  console.debug = (message) => { parseMessageAndLog(message, 'debug', defaultConsoleDebug); };
-  console.warn = (message) => { parseMessageAndLog(message, 'warn', defaultConsoleWarn); };
-  console.error = (message) => { parseMessageAndLog(message, 'error', defaultConsoleError); errorReceived(); };
+  console.log = (message) => { handleLog(message, 'log', defaultConsoleLog); };
+  console.info = (message) => { handleLog(message, 'info', defaultConsoleInfo); };
+  console.debug = (message) => { handleLog(message, 'debug', defaultConsoleDebug); };
+  console.warn = (message) => { handleLog(message, 'warn', defaultConsoleWarn); };
+  console.error = (message) => { handleLog(message, 'error', defaultConsoleError); errorReceived(); };
 
+
+  handleLog = (message, logLevel, consoleLogFunction) => {
+    updateLogCounter(logLevel);
+    if (typeof message === 'string') {
+      // Only parse messages that are actual strings
+      parseMessageAndLog(message, logLevel, consoleLogFunction);
+    }
+    else {
+      consoleLogFunction(message);
+      // Try to also log the object to the html console (does not always work in a meaningful manner)
+      var htmlMessage;
+      try {
+        htmlMessage = JSON.stringify(message);
+      } catch (error) {
+        htmlMessage = `Can't convert message to JSON: ${error}`;
+      }
+      htmlLog(htmlMessage, logLevel);
+    }
+  };
 
   parseMessageAndLog = (message, logLevel, consoleLogFunction) => {
-    updateLogCounter(logLevel);
     let styledTextParts = parseUnityRichText(message);
 
     let consoleText = '';
@@ -301,16 +319,17 @@ class StyledTextPart {
   }
 
   toHTML() {
-    if(this.styles.length > 0) {
+    if (this.styles.length > 0) {
       return `<span style="${this.styles.join(';')}">${this.text}</span>`;
     }
     return this.text;
   }
 
   toConsoleStyleString() {
-    if(this.styles.length > 0) {
+    if (this.styles.length > 0) {
       return this.styles.join(';');
     }
+    // Return some styling that does not change anything to support unstyled text
     return 'color:inherit';
   }
 
@@ -321,11 +340,12 @@ class StyledTextPart {
 
 function parseUnityRichText(message) {
   // Mapping for unity tags to css style tags
+  // Unity rich text tags, see https://docs.unity3d.com/Packages/com.unity.ugui@1.0/manual/StyledText.html
   const tagMap = {
-    'color': {startTag: '<color=', closeTag: '</color>', styleTag: 'color:', postfix: '', hasParameter: true},
-    'size':  {startTag: '<size=', closeTag: '</size>', styleTag: 'font-size:', postfix: 'px', hasParameter: true},
-    'bold': {startTag: '<b', closeTag: '</b>', styleTag: 'font-weight:', styleValue: 'bold', hasParameter: false},
-    'italic': {startTag: '<i', closeTag: '</i>', styleTag: 'font-style:', styleValue: 'italic', hasParameter: false}
+    'color': { startTag: '<color=', closeTag: '</color>', styleTag: 'color:', postfix: '', hasParameter: true },
+    'size': { startTag: '<size=', closeTag: '</size>', styleTag: 'font-size:', postfix: 'px', hasParameter: true },
+    'bold': { startTag: '<b', closeTag: '</b>', styleTag: 'font-weight:', styleValue: 'bold', hasParameter: false },
+    'italic': { startTag: '<i', closeTag: '</i>', styleTag: 'font-style:', styleValue: 'italic', hasParameter: false }
   };
 
   let index = 0;
@@ -338,7 +358,7 @@ function parseUnityRichText(message) {
   // next end index for each tag
   let nextEndIndex = [];
   Object.keys(tagMap).forEach(key => {
-    nextStartIndex[key] =  message.indexOf(tagMap[key].startTag, index);
+    nextStartIndex[key] = message.indexOf(tagMap[key].startTag, index);
     nextEndIndex[key] = message.indexOf(tagMap[key].closeTag, index);
   });
 
@@ -350,14 +370,14 @@ function parseUnityRichText(message) {
 
     // find the next tag start or end
     Object.keys(tagMap).forEach(key => {
-      if(nextStartIndex[key] >= 0 && nextStartIndex[key] < nextIndex) {
+      if (nextStartIndex[key] >= 0 && nextStartIndex[key] < nextIndex) {
         nextIndex = nextStartIndex[key];
         nextKey = key;
         fromArray = nextStartIndex;
         nextTagFound = true;
       }
 
-      if(nextEndIndex[key] >= 0 && nextEndIndex[key] < nextIndex) {
+      if (nextEndIndex[key] >= 0 && nextEndIndex[key] < nextIndex) {
         nextIndex = nextEndIndex[key];
         nextKey = key;
         fromArray = nextEndIndex;
@@ -366,39 +386,44 @@ function parseUnityRichText(message) {
     });
 
     // write the text in before the next tag to our style text part array
-    if(nextIndex > index) {
+    if (nextIndex > index) {
       let messageToNextTag = message.substring(index, nextIndex);
       let styles = [...styleStack];
       styledTextParts.push(new StyledTextPart(messageToNextTag, styles));
     }
 
     // end if no more tags exist
-    if(nextTagFound === false) {
+    if (nextTagFound === false) {
       index = message.length;
       break;
     }
 
+    let closeTagIndex = message.indexOf('>', nextIndex + 1);
+
     // Process start tag
-    if(fromArray === nextStartIndex) {
-      nextStartIndex[nextKey] = message.indexOf(tagMap[nextKey].startTag, nextIndex+1);
-      let closeTagIndex = message.indexOf('>', nextIndex+1);
+    if (fromArray === nextStartIndex) {
       let styleValue;
-      if(tagMap[nextKey].hasParameter) {
+      if (tagMap[nextKey].hasParameter) {
         styleValue = message.substring(nextIndex + tagMap[nextKey].startTag.length, closeTagIndex);
-        styleValue+=tagMap[nextKey].postfix;
+        styleValue += tagMap[nextKey].postfix;
       } else {
         styleValue = tagMap[nextKey].styleValue;
       }
       styleStack.push(`${tagMap[nextKey].styleTag}${styleValue}`);
-      index = closeTagIndex+1;
+
+      // Update list entry to next unprocessed start tag of type nextKey
+      nextStartIndex[nextKey] = message.indexOf(tagMap[nextKey].startTag, nextIndex + 1);
     }
     // process end tag
-    else if(fromArray === nextEndIndex) {
-      nextEndIndex[nextKey] = message.indexOf(tagMap[nextKey].closeTag, nextIndex+1);
-      let closeTagIndex = message.indexOf('>', nextIndex+1);
+    else if (fromArray === nextEndIndex) {
       styleStack.pop();
-      index = closeTagIndex+1;
+
+      // Update list entry to next unprocessed end tag of type nextKey
+      nextEndIndex[nextKey] = message.indexOf(tagMap[nextKey].closeTag, nextIndex + 1);
     }
+
+    // Update index to position after the tag closes
+    index = closeTagIndex + 1;
   }
   return styledTextParts;
 }
