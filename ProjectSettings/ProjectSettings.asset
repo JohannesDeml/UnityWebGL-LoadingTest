@@ -527,7 +527,10 @@ PlayerSettings:
   openGLRequireES31: 0
   openGLRequireES31AEP: 0
   openGLRequireES32: 0
-  m_TemplateCustomTags: {}
+  m_TemplateCustomTags:
+    CONTAINER_BACKGROUND_COLOR: '#222'
+    MAX_ASPECT_RATIO: 1/2
+    MIN_ASPECT_RATIO: 3/1
   mobileMTRendering:
     Android: 1
     iPhone: 1
