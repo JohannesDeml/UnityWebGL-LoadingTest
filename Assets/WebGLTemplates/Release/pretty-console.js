@@ -18,7 +18,6 @@ function setupConsoleLogPipe() {
 
 
   handleLog = (message, logLevel, consoleLogFunction) => {
-    updateLogCounter(logLevel);
     if (typeof message === 'string') {
       // Only parse messages that are actual strings
       parseMessageAndLog(message, logLevel, consoleLogFunction);
