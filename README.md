@@ -18,6 +18,8 @@
 * Brotli Compression
 * Togglable In-DOM Debug console
   ![Debug Console Screenshot with description of features](./Documentation/DebugConsole.png)
+* Unity Rich text styling support for browser console & debug console
+  ![Screenshot of styled unity log message in browser console](./Documentation/UnityRichTextSupport.png)
 * Easy access to unity functions through the browser console ([Demo](https://deml.io/experiments/unity-webgl/2020.3.23f1/)|[Youtube](https://youtu.be/OjypxsD6XMI))
 * Handy debug functions for times and memory consumption
 * Responsive template layout for maximum mobile compatibility

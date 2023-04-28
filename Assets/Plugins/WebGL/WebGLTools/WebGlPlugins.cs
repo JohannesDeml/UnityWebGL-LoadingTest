@@ -29,6 +29,8 @@ namespace Supyrb
 		[DllImport("__Internal")]
 		private static extern void _HideInfoPanel();
 		[DllImport("__Internal")]
+		private static extern string _GetUserAgent();
+		[DllImport("__Internal")]
 		private static extern uint _GetTotalMemorySize();
 		[DllImport("__Internal")]
 		private static extern uint _GetStaticMemorySize();
@@ -51,7 +53,7 @@ namespace Supyrb
 			#endif
 			Debug.Log($"<color=#00CCCC>{nameof(WebGlPlugins)}.{nameof(SetVariable)} set {variableName}: {value}</color>");
 		}
-		
+
 		/// <summary>
 		/// Adds a time marker at the call time to the javascript map "unityTimeTrackers"
 		/// The mapped value is performance.now() at the time of the call
@@ -65,7 +67,7 @@ namespace Supyrb
 			Debug.Log($"{nameof(WebGlPlugins)}.{nameof(AddTimeTrackingEvent)} called with {eventName}");
 			#endif
 		}
-		
+
 		/// <summary>
 		/// Show the info panel in the top right corner
 		/// By default triggered by <see cref="WebGlTimeTracker"/> in Awake
@@ -80,7 +82,7 @@ namespace Supyrb
 			Debug.Log($"{nameof(WebGlPlugins)}.{nameof(ShowInfoPanel)} called");
 			#endif
 		}
-		
+
 		/// <summary>
 		/// Hide the info panel in the top right corner
 		/// By default triggered by <see cref="WebGlTimeTracker"/> in Awake
@@ -109,6 +111,33 @@ namespace Supyrb
 			{
 				ShowInfoPanel();
 			}
+		}
+
+		/// <summary>
+		/// Get navigator.userAgent from the browser
+		/// </summary>
+		/// <returns>navigator.userAgent</returns>
+		public static string GetUserAgent()
+		{
+			#if UNITY_WEBGL && !UNITY_EDITOR
+			return _GetUserAgent();
+			#else
+			Debug.Log($"{nameof(WebGlPlugins)}.{nameof(GetUserAgent)} called");
+			return "undefined";
+			#endif
+		}
+
+		/// <summary>
+		/// Check user agent to determine if the game runs on a mobile device
+		/// </summary>
+		/// <returns>true if on phone or tablet</returns>
+		public static bool IsMobileDevice()
+		{
+			string userAgent = GetUserAgent();
+			return userAgent.Contains("iPhone") ||
+				userAgent.Contains("iPad") ||
+				userAgent.Contains("iPod") ||
+				userAgent.Contains("Android");
 		}
 
 		/// <summary>
@@ -194,7 +223,7 @@ namespace Supyrb
 			var bytes = (uint) GC.GetTotalMemory(false);
 			return GetMegaBytes(bytes);
 		}
-		
+
 		/// <summary>
 		/// Converts bytes (B) to mega bytes (MB)
 		/// </summary>
