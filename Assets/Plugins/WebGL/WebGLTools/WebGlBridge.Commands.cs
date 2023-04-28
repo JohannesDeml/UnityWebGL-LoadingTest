@@ -123,6 +123,18 @@ namespace Supyrb
 		}
 
 		/// <summary>
+		/// Log the user agent of the browser and if this agent is classified as mobile
+		/// Browser Usage: <code>unityGame.SendMessage("WebGL", "LogUserAgent");</code>
+		/// </summary>
+		[WebGlCommand(Description = "Log User Agent and isMobileDevice")]
+		public void LogUserAgent()
+		{
+			string userAgent = WebGlPlugins.GetUserAgent();
+			bool isMobileDevice = WebGlPlugins.IsMobileDevice();
+			Debug.Log($"<color=#4D65A4>User Agent:</color> '{userAgent}', <color=#4D65A4>IsMobileDevice:</color> '{isMobileDevice}'");
+		}
+
+		/// <summary>
 		/// Log example messages to show off unity rich text parsing to html & console styling
 		/// </summary>
 		[WebGlCommand(Description = "Log example messages for Log, warning and error")]
