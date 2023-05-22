@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       unityVersion:
-        description: 'Unity Version'
+        description: 'Unity version'
         required: true
         type: string
       createTags:
@@ -24,6 +24,11 @@ on:
         required: true
         type: boolean
         default: false
+      mergeMaster:
+        description: 'Merge master into branch'
+        required: true
+        type: boolean
+        default: true
       customParameters:
         description: 'Custom cli arguments'
         required: false
@@ -39,15 +44,18 @@ jobs:
     steps:
       - name: Log input parameter
         run: |
-          echo "Upgrading to Unity Version: $UNITY_VERSION"
+          echo "Unity version: $UNITY_VERSION"
           echo "Create tags: $CREATE_TAGS"
           echo "URP branch: $URP_BRANCH"
+          echo "Only create tags: $TAGS_ONLY"
+          echo "Merge master into branch: $MERGE_MASTER"
           echo "Custom cli arguments: $CUSTOM_PARAMETERS"
         env:
           UNITY_VERSION: ${{ inputs.unityVersion }}
           CREATE_TAGS: ${{ inputs.createTags }}
           URP_BRANCH: ${{ inputs.urp }}
           TAGS_ONLY: ${{ inputs.tagsOnly }}
+          MERGE_MASTER: ${{ inputs.mergeMaster }}
           CUSTOM_PARAMETERS: ${{ inputs.customParameters }}
 
       - uses: actions/checkout@v3
@@ -56,6 +64,22 @@ jobs:
           lfs: true
           # Makes sure, that pushing new tags will trigger workflows
           token: ${{ secrets.PR_GITHUB_TOKEN }}
+
+      - name: Set git user
+        run: |
+          git status
+          git config --global user.email "$GIT_USER@users.noreply.github.com"
+          git config --global user.name "$GIT_USER"
+        env:
+          GIT_USER: ${{ github.actor }}
+
+      # Make sure the branch has the latest master changes in
+      - name: Merge master into current branch
+        if: ${{ inputs.mergeMaster }}
+        run: |
+          git fetch origin master --depth=1
+          git merge FETCH_HEAD
+          git push
 
       # Unity 2020 cache is not compatible with older versions
       - name: Unity Library Cache 2020 or higher
@@ -114,14 +138,6 @@ jobs:
       - name: Delete build folder with elevated rights
         if: ${{ !inputs.tagsOnly }}
         run: sudo rm -rf ./build
-
-      - name: Set git user
-        run: |
-          git status
-          git config --global user.email "$GIT_USER@users.noreply.github.com"
-          git config --global user.name "$GIT_USER"
-        env:
-          GIT_USER: ${{ github.actor }}
 
       - name: Render template
         if: ${{ !inputs.tagsOnly }}
