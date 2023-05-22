@@ -74,7 +74,7 @@ jobs:
       - name: Merge master into current branch
         if: ${{ inputs.mergeMaster }}
         run: |
-          git fetch origin master --depth=1
+          git fetch origin master
           git merge FETCH_HEAD
           git push
 
