@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       unityVersion:
-        description: 'Unity Version'
+        description: 'Unity version'
         required: true
         type: string
       createTags:
@@ -44,15 +44,18 @@ jobs:
     steps:
       - name: Log input parameter
         run: |
-          echo "Upgrading to Unity Version: $UNITY_VERSION"
+          echo "Unity version: $UNITY_VERSION"
           echo "Create tags: $CREATE_TAGS"
           echo "URP branch: $URP_BRANCH"
+          echo "Only create tags: $TAGS_ONLY"
+          echo "Merge master into branch: $MERGE_MASTER"
           echo "Custom cli arguments: $CUSTOM_PARAMETERS"
         env:
           UNITY_VERSION: ${{ inputs.unityVersion }}
           CREATE_TAGS: ${{ inputs.createTags }}
           URP_BRANCH: ${{ inputs.urp }}
           TAGS_ONLY: ${{ inputs.tagsOnly }}
+          MERGE_MASTER: ${{ inputs.mergeMaster }}
           CUSTOM_PARAMETERS: ${{ inputs.customParameters }}
 
       - uses: actions/checkout@v3
@@ -74,7 +77,7 @@ jobs:
       - name: Merge master into current branch
         if: ${{ inputs.mergeMaster }}
         run: |
-          git fetch origin master --depth=1
+          git fetch origin master
           git merge FETCH_HEAD
           git push
 

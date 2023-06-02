@@ -108,6 +108,10 @@ namespace UnityBuilderAction
 #else
 							PlayerSettings.WebGL.debugSymbols = true;
 #endif
+
+#if UNITY_2022_2_OR_NEWER
+							PlayerSettings.WebGL.showDiagnostics = true;
+#endif
 							buildPlayerOptions.options |= BuildOptions.Development;
 						}
 						else
