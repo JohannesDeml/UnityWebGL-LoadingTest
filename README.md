@@ -2,9 +2,9 @@
 
 ![Preview](./preview.png)
 
-[![](https://img.shields.io/github/release-date/JohannesDeml/UnityWebGL-LoadingTest.svg)](https://github.com/JohannesDeml/UnityWebGL-LoadingTest/releases) [![Tested up to Unity 2022.2](https://img.shields.io/badge/tested%20up%20to%20unity-2022.2-green.svg?logo=unity&cacheSeconds=2592000)](https://unity3d.com/get-unity/download/archive)
+[![](https://img.shields.io/github/release-date/JohannesDeml/UnityWebGL-LoadingTest.svg)](https://github.com/JohannesDeml/UnityWebGL-LoadingTest/releases) [![Tested up to Unity 2022.3](https://img.shields.io/badge/tested%20up%20to%20unity-2022.3-green.svg?logo=unity&cacheSeconds=2592000)](https://unity3d.com/get-unity/download/archive)
 
-*Testing Unity's WebGL size and loading time for different versions (2018.4 - 2022.2) and platforms*  
+*Testing Unity's WebGL size and loading time for different versions (2018.4 - 2022.3) and platforms*  
 
 * [Unity Forum Thread](https://forum.unity.com/threads/webgl-builds-for-mobile.545877/)
 * [Overview page of all builds](https://deml.io/experiments/unity-webgl/)
