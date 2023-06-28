@@ -41,7 +41,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.rider": {
-      "version": "3.0.22",
+      "version": "3.0.24",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -119,7 +119,7 @@
       }
     },
     "com.unity.test-framework": {
-      "version": "1.3.5",
+      "version": "1.3.7",
       "depth": 0,
       "source": "registry",
       "dependencies": {
