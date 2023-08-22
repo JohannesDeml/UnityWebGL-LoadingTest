@@ -1,3 +1,6 @@
+/// Processes all unity log messages and converts unity rich text to css styled console messages & adds a debug html debug console
+/// from https://github.com/JohannesDeml/UnityWebGL-LoadingTest
+
 let consoleDiv;
 let debugToggle;
 let logCounterDivs = {};
