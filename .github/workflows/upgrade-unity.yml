@@ -124,7 +124,8 @@ jobs:
 
       - name: Build project
         if: ${{ !inputs.tagsOnly }}
-        uses: JohannesDeml/unity-builder@no-quit-parameter
+        # TODO change this back to v3 once manual exit is supported there
+        uses: game-ci/unity-builder@main
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
@@ -134,6 +135,7 @@ jobs:
           targetPlatform: WebGL
           buildName: ${{ needs.variables.outputs.BUILD_NAME }}
           allowDirtyBuild: true
+          manualExit: true
 
       - name: Delete build folder with elevated rights
         if: ${{ !inputs.tagsOnly }}
