@@ -108,7 +108,9 @@ namespace UnityBuilderAction
 
 				string latestVersion = IncludePrereleases ?
 					package.versions.latestCompatible :
-#if UNITY_2019_3_OR_NEWER
+#if UNITY_2022_3_OR_NEWER
+					package.versions.recommended;
+#elif UNITY_2019_3_OR_NEWER
 					package.versions.verified;
 #else
 					package.versions.recommended;
@@ -226,8 +228,24 @@ namespace UnityBuilderAction
 #if UNITY_2020_1_OR_NEWER
 			Progress.Finish(ProgressId, returnValue == 0 ? Progress.Status.Succeeded : Progress.Status.Failed);
 #endif
+			Debug.Log($"Updating unity packages finished with exit code {returnValue}");
+
 			if (Application.isBatchMode)
 			{
+				// Hack for unity-builder v3, since it is expecting a build result output
+				Console.WriteLine(
+					$"{Environment.NewLine}" +
+					$"###########################{Environment.NewLine}" +
+					$"#      Build results      #{Environment.NewLine}" +
+					$"###########################{Environment.NewLine}" +
+					$"{Environment.NewLine}" +
+					$"Duration: 0{Environment.NewLine}" +
+					$"Warnings: 0{Environment.NewLine}" +
+					$"Errors: 0{Environment.NewLine}" +
+					$"Size: 0 bytes{Environment.NewLine}" +
+					$"{Environment.NewLine}"
+				);
+
 				EditorApplication.Exit(returnValue);
 			}
 			else
@@ -236,8 +254,6 @@ namespace UnityBuilderAction
 				{
 					throw new Exception($"BuildScript ended with non-zero exitCode: {returnValue}");
 				}
-
-				Debug.Log($"Successfully updated packages");
 			}
 		}
 	}
