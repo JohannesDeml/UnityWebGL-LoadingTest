@@ -232,6 +232,20 @@ namespace UnityBuilderAction
 
 			if (Application.isBatchMode)
 			{
+				// Hack for unity-builder v3, since it is expecting a build result output
+				Console.WriteLine(
+					$"{Environment.NewLine}" +
+					$"###########################{Environment.NewLine}" +
+					$"#      Build results      #{Environment.NewLine}" +
+					$"###########################{Environment.NewLine}" +
+					$"{Environment.NewLine}" +
+					$"Duration: 0{Environment.NewLine}" +
+					$"Warnings: 0{Environment.NewLine}" +
+					$"Errors: 0{Environment.NewLine}" +
+					$"Size: 0 bytes{Environment.NewLine}" +
+					$"{Environment.NewLine}"
+				);
+
 				EditorApplication.Exit(returnValue);
 			}
 			else
