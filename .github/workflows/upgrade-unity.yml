@@ -164,17 +164,29 @@ jobs:
       - name: Add tags
         if: ${{ inputs.createTags || inputs.tagsOnly }}
         run: |
+          # Extract the first four characters of UNITY_VERSION
+          UNITY_YEAR=${UNITY_VERSION:0:4}
+
           if [[ "$URP_BRANCH" == "true" ]]
           then
-            git tag -a -f $UNITY_VERSION-urp-webgl1 -m "[Automated workflow] Created by upgrade-unity"
+            if [[ "$UNITY_YEAR" < "2023" ]]
+            then
+              git tag -a -f $UNITY_VERSION-urp-webgl1 -m "[Automated workflow] Created by upgrade-unity"
+            fi
             git tag -a -f $UNITY_VERSION-urp-webgl2 -m "[Automated workflow] Created by upgrade-unity"
             git tag -a -f $UNITY_VERSION-urp-webgl2-debug -m "[Automated workflow] Created by upgrade-unity"
           else
-            git tag -a -f $UNITY_VERSION-minsize-webgl1 -m "[Automated workflow] Created by upgrade-unity"
-            git tag -a -f $UNITY_VERSION-webgl1 -m "[Automated workflow] Created by upgrade-unity"
-            git tag -a -f $UNITY_VERSION-webgl2 -m "[Automated workflow] Created by upgrade-unity"
+            if [[ "$UNITY_YEAR" < "2023" ]]
+            then
+              git tag -a -f $UNITY_VERSION-minsize-webgl1 -m "[Automated workflow] Created by upgrade-unity"
+              git tag -a -f $UNITY_VERSION-webgl1 -m "[Automated workflow] Created by upgrade-unity"
+            else
+              git tag -a -f $UNITY_VERSION-minsize-webgl2 -m "[Automated workflow] Created by upgrade-unity"
+            fi
             # Push tags in between - pushing more than 3 tags won't trigger tag workflows
             git push origin -f --tags
+
+            git tag -a -f $UNITY_VERSION-webgl2 -m "[Automated workflow] Created by upgrade-unity"
             git tag -a -f $UNITY_VERSION-webgl2-debug -m "[Automated workflow] Created by upgrade-unity"
           fi
 
