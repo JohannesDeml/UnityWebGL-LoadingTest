@@ -14,11 +14,6 @@ on:
         required: false
         type: boolean
         default: true
-      urp:
-        description: 'URP branch'
-        required: true
-        type: boolean
-        default: false
       tagsOnly:
         description: 'Only create tags'
         required: true
