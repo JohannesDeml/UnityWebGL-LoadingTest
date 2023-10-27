@@ -44,16 +44,23 @@ jobs:
     steps:
       - name: Log input parameter
         run: |
+          BRANCH_NAME=${GITHUB_REF#refs/heads/}
+
+          echo "Branch: $BRANCH_NAME"
           echo "Unity version: $UNITY_VERSION"
           echo "Create tags: $CREATE_TAGS"
-          echo "URP branch: $URP_BRANCH"
           echo "Only create tags: $TAGS_ONLY"
           echo "Merge master into branch: $MERGE_MASTER"
           echo "Custom cli arguments: $CUSTOM_PARAMETERS"
+          if [[ "$BRANCH_NAME" == *"urp"* ]]
+          then
+            echo "urp: true"
+          else
+            echo "urp: false"
+          fi
         env:
           UNITY_VERSION: ${{ inputs.unityVersion }}
           CREATE_TAGS: ${{ inputs.createTags }}
-          URP_BRANCH: ${{ inputs.urp }}
           TAGS_ONLY: ${{ inputs.tagsOnly }}
           MERGE_MASTER: ${{ inputs.mergeMaster }}
           CUSTOM_PARAMETERS: ${{ inputs.customParameters }}
@@ -107,7 +114,8 @@ jobs:
       - name: Set upgrade name
         id: upgrade_name
         run: |
-          if [[ "$URP_BRANCH" == "true" ]]
+          BRANCH_NAME=${GITHUB_REF#refs/heads/}
+          if [[ "$BRANCH_NAME" == *"urp"* ]]
           then
             echo "NAME=$UNITY_VERSION-urp" >> $GITHUB_OUTPUT
           else
@@ -115,7 +123,6 @@ jobs:
           fi
         env:
           UNITY_VERSION: ${{ inputs.unityVersion }}
-          URP_BRANCH: ${{ inputs.urp }}
 
       - name: Log variables
         run: |
@@ -164,22 +171,34 @@ jobs:
       - name: Add tags
         if: ${{ inputs.createTags || inputs.tagsOnly }}
         run: |
-          if [[ "$URP_BRANCH" == "true" ]]
+          # Extract the first four characters of UNITY_VERSION
+          UNITY_YEAR=${UNITY_VERSION:0:4}
+          BRANCH_NAME=${GITHUB_REF#refs/heads/}
+
+          if [[ "$BRANCH_NAME" == *"urp"* ]]
           then
-            git tag -a -f $UNITY_VERSION-urp-webgl1 -m "[Automated workflow] Created by upgrade-unity"
+            if [[ "$UNITY_YEAR" < "2023" ]]
+            then
+              git tag -a -f $UNITY_VERSION-urp-webgl1 -m "[Automated workflow] Created by upgrade-unity"
+            fi
             git tag -a -f $UNITY_VERSION-urp-webgl2 -m "[Automated workflow] Created by upgrade-unity"
             git tag -a -f $UNITY_VERSION-urp-webgl2-debug -m "[Automated workflow] Created by upgrade-unity"
           else
-            git tag -a -f $UNITY_VERSION-minsize-webgl1 -m "[Automated workflow] Created by upgrade-unity"
-            git tag -a -f $UNITY_VERSION-webgl1 -m "[Automated workflow] Created by upgrade-unity"
-            git tag -a -f $UNITY_VERSION-webgl2 -m "[Automated workflow] Created by upgrade-unity"
+            if [[ "$UNITY_YEAR" < "2023" ]]
+            then
+              git tag -a -f $UNITY_VERSION-minsize-webgl1 -m "[Automated workflow] Created by upgrade-unity"
+              git tag -a -f $UNITY_VERSION-webgl1 -m "[Automated workflow] Created by upgrade-unity"
+            else
+              git tag -a -f $UNITY_VERSION-minsize-webgl2 -m "[Automated workflow] Created by upgrade-unity"
+            fi
             # Push tags in between - pushing more than 3 tags won't trigger tag workflows
             git push origin -f --tags
+
+            git tag -a -f $UNITY_VERSION-webgl2 -m "[Automated workflow] Created by upgrade-unity"
             git tag -a -f $UNITY_VERSION-webgl2-debug -m "[Automated workflow] Created by upgrade-unity"
           fi
 
           git push origin -f --tags
         env:
           UNITY_VERSION: ${{ inputs.unityVersion }}
-          URP_BRANCH: ${{ inputs.urp }}
 
