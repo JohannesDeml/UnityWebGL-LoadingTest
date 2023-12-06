@@ -84,11 +84,6 @@ jobs:
           git push
           git log -1
 
-      - name: Checkout latest commit on branch
-        run: |
-          git checkout $(git rev-parse HEAD)
-          git log -1
-
       # Unity 2020 cache is not compatible with older versions
       - name: Unity Library Cache 2020 or higher
         if: ${{ !startsWith(inputs.unityVersion, '201') }}
