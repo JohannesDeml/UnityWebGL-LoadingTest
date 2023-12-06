@@ -25,11 +25,13 @@ namespace UnityBuilderAction
 		{
 			"-projectPath", "",
 			"-buildVersion", PlayerSettings.bundleVersion,
-			"-androidVersionCode", PlayerSettings.Android.bundleVersionCode.ToString(CultureInfo.InvariantCulture)
+			"-androidVersionCode", PlayerSettings.Android.bundleVersionCode.ToString(CultureInfo.InvariantCulture),
 		};
 
+		// Unity 2023.1+ does not support webgl1 anymore
+		#if !UNITY_2023_1_OR_NEWER
 		[MenuItem("Tools/Build WebGL/webgl1")]
-		public static void BuildWebGLDefault()
+		public static void BuildWebGL1()
 		{
 			var parameters = new List<string>(baseParameters);
 			string tag = $"{Application.unityVersion}-webgl1-manualBuild";
@@ -41,11 +43,38 @@ namespace UnityBuilderAction
 			BuildWithParameters(parameters);
 		}
 
-		[MenuItem("Tools/Build WebGL/minsize")]
-		public static void BuildWebGLMinSize()
+		[MenuItem("Tools/Build WebGL/minsize-webgl1")]
+		public static void BuildWebGL1MinSize()
 		{
 			var parameters = new List<string>(baseParameters);
 			string tag = $"{Application.unityVersion}-minsize-webgl1-manualBuild";
+			SetBuildTarget(BuildTarget.WebGL, ref parameters);
+			SetParameterValue("-autorunplayer", "true", ref parameters);
+			SetParameterValue("-tag", tag, ref parameters);
+			SetParameterValue("-customBuildPath", $"Builds/WebGL/{tag}", ref parameters);
+			SetParameterValue("-customBuildName", tag, ref parameters);
+			BuildWithParameters(parameters);
+		}
+		#endif
+
+		[MenuItem("Tools/Build WebGL/webgl2")]
+		public static void BuildWebGL2()
+		{
+			var parameters = new List<string>(baseParameters);
+			string tag = $"{Application.unityVersion}-webgl2-manualBuild";
+			SetBuildTarget(BuildTarget.WebGL, ref parameters);
+			SetParameterValue("-autorunplayer", "true", ref parameters);
+			SetParameterValue("-tag", tag, ref parameters);
+			SetParameterValue("-customBuildPath", $"Builds/WebGL/{tag}", ref parameters);
+			SetParameterValue("-customBuildName", tag, ref parameters);
+			BuildWithParameters(parameters);
+		}
+
+		[MenuItem("Tools/Build WebGL/minsize-webgl2")]
+		public static void BuildWebGL2MinSize()
+		{
+			var parameters = new List<string>(baseParameters);
+			string tag = $"{Application.unityVersion}-minsize-webgl2-manualBuild";
 			SetBuildTarget(BuildTarget.WebGL, ref parameters);
 			SetParameterValue("-autorunplayer", "true", ref parameters);
 			SetParameterValue("-tag", tag, ref parameters);
@@ -59,19 +88,6 @@ namespace UnityBuilderAction
 		{
 			var parameters = new List<string>(baseParameters);
 			string tag = $"{Application.unityVersion}-debug-manualBuild";
-			SetBuildTarget(BuildTarget.WebGL, ref parameters);
-			SetParameterValue("-autorunplayer", "true", ref parameters);
-			SetParameterValue("-tag", tag, ref parameters);
-			SetParameterValue("-customBuildPath", $"Builds/WebGL/{tag}", ref parameters);
-			SetParameterValue("-customBuildName", tag, ref parameters);
-			BuildWithParameters(parameters);
-		}
-
-		[MenuItem("Tools/Build WebGL/webgl2")]
-		public static void BuildWebGLWebGL2()
-		{
-			var parameters = new List<string>(baseParameters);
-			string tag = $"{Application.unityVersion}-webgl2-manualBuild";
 			SetBuildTarget(BuildTarget.WebGL, ref parameters);
 			SetParameterValue("-autorunplayer", "true", ref parameters);
 			SetParameterValue("-tag", tag, ref parameters);
