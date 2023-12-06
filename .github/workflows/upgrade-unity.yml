@@ -82,7 +82,12 @@ jobs:
           git fetch origin master
           git merge FETCH_HEAD
           git push
-          git checkout ${{ github.ref }}
+          git log -1
+
+      - name: Checkout latest commit on branch
+        run: |
+          git checkout $(git rev-parse HEAD)
+          git log -1
 
       # Unity 2020 cache is not compatible with older versions
       - name: Unity Library Cache 2020 or higher
