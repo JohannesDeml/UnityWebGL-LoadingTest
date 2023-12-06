@@ -60,7 +60,7 @@ jobs:
           MERGE_MASTER: ${{ inputs.mergeMaster }}
           CUSTOM_PARAMETERS: ${{ inputs.customParameters }}
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           lfs: true
@@ -126,10 +126,11 @@ jobs:
 
       - name: Build project
         if: ${{ !inputs.tagsOnly }}
-        # TODO change this back to v3 once manual exit is supported there
-        uses: game-ci/unity-builder@main
+        uses: game-ci/unity-builder@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           buildMethod: UnityBuilderAction.UnityPackageScripts.UpgradeAllPackagesToVerifiedVersion
           customParameters: ${{ inputs.customParameters }}
