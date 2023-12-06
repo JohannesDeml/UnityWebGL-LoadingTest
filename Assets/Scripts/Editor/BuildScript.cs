@@ -135,6 +135,13 @@ namespace UnityBuilderAction
 						{
 							PlayerSettings.SetGraphicsAPIs(BuildTarget.WebGL, new[] { GraphicsDeviceType.OpenGLES2, GraphicsDeviceType.OpenGLES3 });
 						}
+
+						#if UNITY_2023_1_OR_NEWER
+						if (tagParameters.Contains("webgl1"))
+						{
+							Log("WebGL1 not supported anymore, choosing WebGL2 instead");
+						}
+						#endif
 					}
 
 					break;
