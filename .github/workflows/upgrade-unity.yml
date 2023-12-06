@@ -82,6 +82,7 @@ jobs:
           git fetch origin master
           git merge FETCH_HEAD
           git push
+          git checkout ${{ github.ref }}
 
       # Unity 2020 cache is not compatible with older versions
       - name: Unity Library Cache 2020 or higher
