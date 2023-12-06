@@ -21,7 +21,11 @@ if (getCookie("addTimestamp") === "false") {
   addTimestamp = false;
 }
 
-initializeToggleButton(false);
+const urlParams = new URLSearchParams(window.location.search);
+const debugParam = urlParams.get('debug');
+const debug = debugParam === 'true';
+
+initializeToggleButton(debug);
 initializeDebugConsole();
 
 

@@ -14,11 +14,6 @@ on:
         required: false
         type: boolean
         default: true
-      urp:
-        description: 'URP branch'
-        required: true
-        type: boolean
-        default: false
       tagsOnly:
         description: 'Only create tags'
         required: true
@@ -44,21 +39,28 @@ jobs:
     steps:
       - name: Log input parameter
         run: |
+          BRANCH_NAME=${GITHUB_REF#refs/heads/}
+
+          echo "Branch: $BRANCH_NAME"
           echo "Unity version: $UNITY_VERSION"
           echo "Create tags: $CREATE_TAGS"
-          echo "URP branch: $URP_BRANCH"
           echo "Only create tags: $TAGS_ONLY"
           echo "Merge master into branch: $MERGE_MASTER"
           echo "Custom cli arguments: $CUSTOM_PARAMETERS"
+          if [[ "$BRANCH_NAME" == *"urp"* ]]
+          then
+            echo "urp: true"
+          else
+            echo "urp: false"
+          fi
         env:
           UNITY_VERSION: ${{ inputs.unityVersion }}
           CREATE_TAGS: ${{ inputs.createTags }}
-          URP_BRANCH: ${{ inputs.urp }}
           TAGS_ONLY: ${{ inputs.tagsOnly }}
           MERGE_MASTER: ${{ inputs.mergeMaster }}
           CUSTOM_PARAMETERS: ${{ inputs.customParameters }}
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           lfs: true
@@ -107,7 +109,8 @@ jobs:
       - name: Set upgrade name
         id: upgrade_name
         run: |
-          if [[ "$URP_BRANCH" == "true" ]]
+          BRANCH_NAME=${GITHUB_REF#refs/heads/}
+          if [[ "$BRANCH_NAME" == *"urp"* ]]
           then
             echo "NAME=$UNITY_VERSION-urp" >> $GITHUB_OUTPUT
           else
@@ -115,7 +118,6 @@ jobs:
           fi
         env:
           UNITY_VERSION: ${{ inputs.unityVersion }}
-          URP_BRANCH: ${{ inputs.urp }}
 
       - name: Log variables
         run: |
@@ -124,10 +126,11 @@ jobs:
 
       - name: Build project
         if: ${{ !inputs.tagsOnly }}
-        # TODO change this back to v3 once manual exit is supported there
-        uses: game-ci/unity-builder@main
+        uses: game-ci/unity-builder@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           buildMethod: UnityBuilderAction.UnityPackageScripts.UpgradeAllPackagesToVerifiedVersion
           customParameters: ${{ inputs.customParameters }}
@@ -166,32 +169,28 @@ jobs:
         run: |
           # Extract the first four characters of UNITY_VERSION
           UNITY_YEAR=${UNITY_VERSION:0:4}
+          BRANCH_NAME=${GITHUB_REF#refs/heads/}
 
-          if [[ "$URP_BRANCH" == "true" ]]
+          TAG_PREFIX=$UNITY_VERSION
+          if [[ "$BRANCH_NAME" == *"urp"* ]]
           then
-            if [[ "$UNITY_YEAR" < "2023" ]]
-            then
-              git tag -a -f $UNITY_VERSION-urp-webgl1 -m "[Automated workflow] Created by upgrade-unity"
-            fi
-            git tag -a -f $UNITY_VERSION-urp-webgl2 -m "[Automated workflow] Created by upgrade-unity"
-            git tag -a -f $UNITY_VERSION-urp-webgl2-debug -m "[Automated workflow] Created by upgrade-unity"
-          else
-            if [[ "$UNITY_YEAR" < "2023" ]]
-            then
-              git tag -a -f $UNITY_VERSION-minsize-webgl1 -m "[Automated workflow] Created by upgrade-unity"
-              git tag -a -f $UNITY_VERSION-webgl1 -m "[Automated workflow] Created by upgrade-unity"
-            else
-              git tag -a -f $UNITY_VERSION-minsize-webgl2 -m "[Automated workflow] Created by upgrade-unity"
-            fi
-            # Push tags in between - pushing more than 3 tags won't trigger tag workflows
-            git push origin -f --tags
-
-            git tag -a -f $UNITY_VERSION-webgl2 -m "[Automated workflow] Created by upgrade-unity"
-            git tag -a -f $UNITY_VERSION-webgl2-debug -m "[Automated workflow] Created by upgrade-unity"
+            TAG_PREFIX=$UNITY_VERSION-urp
           fi
+
+          if [[ "$UNITY_YEAR" < "2023" ]]
+          then
+            git tag -a -f $TAG_PREFIX-minsize-webgl1 -m "[Automated workflow] Created by upgrade-unity"
+            git tag -a -f $TAG_PREFIX-webgl1 -m "[Automated workflow] Created by upgrade-unity"
+          else
+            git tag -a -f $TAG_PREFIX-minsize-webgl2 -m "[Automated workflow] Created by upgrade-unity"
+          fi
+          # Push tags in between - pushing more than 3 tags won't trigger tag workflows
+          git push origin -f --tags
+
+          git tag -a -f $TAG_PREFIX-webgl2 -m "[Automated workflow] Created by upgrade-unity"
+          git tag -a -f $TAG_PREFIX-webgl2-debug -m "[Automated workflow] Created by upgrade-unity"
 
           git push origin -f --tags
         env:
           UNITY_VERSION: ${{ inputs.unityVersion }}
-          URP_BRANCH: ${{ inputs.urp }}
 
