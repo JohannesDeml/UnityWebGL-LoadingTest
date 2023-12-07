@@ -23,8 +23,8 @@ namespace UnityBuilderAction
 	/// <summary>
 	/// Used for building the project through continuous integration (CI) or semi-automated through menu items
 	/// Supports logging in the editor and highly configurable WebGL
-	/// Modified version of <see href="https://github.com/game-ci/documentation/blob/main/example/BuildScript.cs">
-	/// Tailored to the needs for <see href="https://github.com/JohannesDeml/UnityWebGL-LoadingTest">
+	/// Modified version of <see href="https://github.com/game-ci/documentation/blob/main/example/BuildScript.cs" />
+	/// Tailored to the needs for <see href="https://github.com/JohannesDeml/UnityWebGL-LoadingTest" />
 	/// </summary>
 	public static class BuildScript
 	{
@@ -108,6 +108,10 @@ namespace UnityBuilderAction
 #else
 							PlayerSettings.WebGL.debugSymbols = true;
 #endif
+
+#if UNITY_2022_2_OR_NEWER
+							PlayerSettings.WebGL.showDiagnostics = true;
+#endif
 							buildPlayerOptions.options |= BuildOptions.Development;
 						}
 						else
@@ -131,6 +135,13 @@ namespace UnityBuilderAction
 						{
 							PlayerSettings.SetGraphicsAPIs(BuildTarget.WebGL, new[] { GraphicsDeviceType.OpenGLES2, GraphicsDeviceType.OpenGLES3 });
 						}
+
+						#if UNITY_2023_1_OR_NEWER
+						if (tagParameters.Contains("webgl1"))
+						{
+							Log("WebGL1 not supported anymore, choosing WebGL2 instead");
+						}
+						#endif
 					}
 
 					break;
