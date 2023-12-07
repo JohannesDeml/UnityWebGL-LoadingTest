@@ -99,19 +99,21 @@ Version | Size | Link
 
 ## Platform Compatibility
 
-| Platform   | Chrome | Firefox | Edge | Safari | Internet Explorer |
-| ---------- | :----: | :-----: | :--: | :----: | :---------------: |
-| Windows 10 |   ✔️    |    ✔️    |  ✔️   |   ➖    |         ❌         |
-| Linux      |   ✔️    |    ✔️    |  ✔️   |   ➖    |         ➖         |
-| Mac        |   ✔️    |    ✔️    |  ✔️   |   ✔️    |         ➖         |
-| Android    |   ✔️    |    ✔️    |  ✔️   |   ➖    |         ➖         |
-| iOS        |   ✔️    |    ✔️    |  ✔️   |   ✔️    |         ➖         |
+| Platform         | Chrome | Firefox | Edge | Safari | Internet Explorer |
+| ----------       | :----: | :-----: | :--: | :----: | :---------------: |
+| Windows 10       |   ✔️    |    ✔️    |  ✔️   |   ➖    |         ❌         |
+| Linux            |   ✔️    |    ✔️    |  ✔️   |   ➖    |         ➖         |
+| Mac              |   ✔️    |    ✔️    |  ✔️   |   ✔️    |         ➖         |
+| Android          |   ✔️    |    ✔️    |  ✔️   |   ➖    |         ➖         |
+| iOS              |   ✔️    |    ✔️    |  ✔️   |   ✔️    |         ➖         |
+| Android Smart TV |   ✔️    |    ➖    |  ➖   |   ➖    |         ➖         |
 
 ✔️ *: Supported* | ⚠️ *: Warning , see below* | ❌ *: not supported* | ➖ *: Not applicable*
 
 * For older Unity 2019 builds throw an error on **iOS Firefox** (Does not happen for iOS Safari or iOS Chrome): `An error occurred running the Unity content on this page. See you browser JavaScript console for more info. The error: Script error.` - with iOS 16.2 and Firefox 108 I could not reproduce this problem anymore on 2019.4.
 * Internet Explorer does not work for Unity WebGL builds, since it does not support wasm.
 * Previous versions of Firefox on Android had some performance problems, they seemed to have fixed those. In general performance on mobile is by far not as good as a native app build, but should be enough for simple games.
+* For android smart TVs expect longer loading times (up to ~2 minutes)
 
 ## Notes
 
