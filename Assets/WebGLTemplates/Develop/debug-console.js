@@ -1,3 +1,6 @@
+/// Processes all unity log messages and converts unity rich text to css styled console messages & adds a debug html debug console
+/// from https://github.com/JohannesDeml/UnityWebGL-LoadingTest
+
 let consoleDiv;
 let debugToggle;
 let logCounterDivs = {};
@@ -17,10 +20,6 @@ let addTimestamp = true;
 if (getCookie("addTimestamp") === "false") {
   addTimestamp = false;
 }
-
-initializeToggleButton(false);
-initializeDebugConsole();
-
 
 function setCookie(cname, cvalue, exdays) {
   const d = new Date();
@@ -602,3 +601,19 @@ function refreshTrackingDiv() {
   innerHtml += '</dl>';
   trackingDiv.innerHTML = innerHtml;
 }
+
+// Polyfill for older browsers
+if (!String.prototype.replaceAll) {
+  String.prototype.replaceAll = function(str, newStr) {
+    if (str === '?')
+      str = '\\\\?';
+    return this.replace(str instanceof RegExp ? str : new RegExp(str, 'g'), newStr);
+  }
+}
+
+const urlParams = new URLSearchParams(window.location.search);
+const debugParam = urlParams.get('debug');
+const debug = debugParam === 'true';
+
+initializeToggleButton(debug);
+initializeDebugConsole();
