@@ -60,7 +60,26 @@ var WebGlPlugins =
             setInfoPanelVisible(false);
         }
     },
-    
+
+    _GetUserAgent: function () {
+        var userAgent = navigator.userAgent;
+
+        //Get size of the string
+        var bufferSize = lengthBytesUTF8(userAgent) + 1;
+        //Allocate memory space
+        var buffer = _malloc(bufferSize);
+
+        //Copy old data to the new one then return it
+        if(typeof stringToUTF8 !== 'undefined') {
+            stringToUTF8(userAgent, buffer, bufferSize);
+        }
+        else if(typeof writeStringToMemory !== 'undefined') {
+            writeStringToMemory(userAgent, buffer);
+        }
+
+        return buffer;
+    },
+
     _GetTotalMemorySize: function()
     {
         if(typeof TOTAL_MEMORY !== 'undefined') {

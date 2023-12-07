@@ -123,15 +123,27 @@ namespace Supyrb
 		}
 
 		/// <summary>
-		/// Log example messages to see if they are rendered and colored correctly
+		/// Log the user agent of the browser and if this agent is classified as mobile
+		/// Browser Usage: <code>unityGame.SendMessage("WebGL", "LogUserAgent");</code>
+		/// </summary>
+		[WebGlCommand(Description = "Log User Agent and isMobileDevice")]
+		public void LogUserAgent()
+		{
+			string userAgent = WebGlPlugins.GetUserAgent();
+			bool isMobileDevice = WebGlPlugins.IsMobileDevice();
+			Debug.Log($"<color=#4D65A4>User Agent:</color> '{userAgent}', <color=#4D65A4>IsMobileDevice:</color> '{isMobileDevice}'");
+		}
+
+		/// <summary>
+		/// Log example messages to show off unity rich text parsing to html & console styling
 		/// </summary>
 		[WebGlCommand(Description = "Log example messages for Log, warning and error")]
 		[ContextMenu(nameof(LogExampleMessages))]
 		public void LogExampleMessages()
 		{
-			Debug.Log("This is an example <color=#2596be>log</color> message, showing off <color=#ff00ff>rich text support with <color=#ff0000>[nesting (I should be red - not supported yet)]</color></color>!");
-			Debug.LogWarning("This is an example <color=#e28743>warning</color> message!");
-			Debug.LogError("This is an example <color=#d36a33>error</color> message!");
+			Debug.Log("Example unity rich text example with <color=red>red and <color=blue>nested blue</color> color tags</color> and <b>bold</b> + <i>italic</i> tags, and <size=20>custom size with <b><i>bold italic nesting</i></b></size> tag.");
+			Debug.LogWarning("This is an <b>example <color=#e28743>warning</color></b> message!");
+			Debug.LogError("This is an <b>example <color=#b50808>error</color></b> message!");
 		}
 
 		/// <summary>
