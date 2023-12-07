@@ -16,7 +16,7 @@
 * GPU Instancing for materials
 * Shadows
 * Brotli Compression
-* Togglable In-DOM Debug console
+* Toggle-able In-DOM Debug console
   ![Debug Console Screenshot with description of features](./Documentation/DebugConsole.png)
 * Unity Rich text styling support for browser console & debug console
   ![Screenshot of styled unity log message in browser console](./Documentation/UnityRichTextSupport.png)
@@ -109,7 +109,7 @@ Version | Size | Link
 
 ✔️ *: Supported* | ⚠️ *: Warning , see below* | ❌ *: not supported* | ➖ *: Not applicable*
 
-* For older Unity 2019 builds throw an error on **iOS Firefox** (Does not happen for iOS Safari or iOS Chrome): `An error occured running the Unity content on this page. See you browser JavaScript console for more info. The error: Script error.` - with iOS 16.2 and Firefox 108 I could not reproduce this problem anymore on 2019.4.
+* For older Unity 2019 builds throw an error on **iOS Firefox** (Does not happen for iOS Safari or iOS Chrome): `An error occurred running the Unity content on this page. See you browser JavaScript console for more info. The error: Script error.` - with iOS 16.2 and Firefox 108 I could not reproduce this problem anymore on 2019.4.
 * Internet Explorer does not work for Unity WebGL builds, since it does not support wasm.
 * Previous versions of Firefox on Android had some performance problems, they seemed to have fixed those. In general performance on mobile is by far not as good as a native app build, but should be enough for simple games.
 
@@ -118,7 +118,7 @@ Version | Size | Link
 * There are some combinations for **iOS** that have **problems**: With recent versions **URP with WebGL 1** does not work at all and **builtin renderpipeline with WebGL 2** has performance problems or might not load at all. I recommend to either use URP with WebGL2 or builtin with WebGL1, if you are targeting iOS. You can always test the builds on your device, to see which combination might fit your needs: https://deml.io/experiments/unity-webgl/
 * If you want to use this project as a basis for your project, be sure to select the release/branch for your unity version. Beta versions oftentimes have problems, therefore I would recommend to use the latest LTS version to run your project.
 * The server is configured to support wasm streaming and brotli compression, see [.htaccess 2020](./Configuration/2020/.htaccess)  [.htaccess 2019](./Configuration/2019/.htaccess)
-* Some servers (such as itch.io) don't support brotli compression, you should then use gzip compression instead. If brotli is missconfigured or not supported you will get an error along the lines of:
+* Some servers (such as itch.io) don't support brotli compression, you should then use gzip compression instead. If brotli is misconfigured or not supported you will get an error along the lines of:
   ```
   Unable to parse Build/WEBGL.framework.js.br! This can happen if build compression was enabled but web server hosting the content was misconfigured to not serve the file with HTTP Response Header "Content-Encoding: br" present. Check browser Console and Devtools Network tab to debug.
   ```
