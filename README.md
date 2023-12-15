@@ -117,7 +117,7 @@ Version | Size | Link
 
 ## Notes
 
-* There are some combinations for **iOS** that have **problems**: With recent versions **URP with WebGL 1** does not work at all and **builtin renderpipeline with WebGL 2** has performance problems or might not load at all. I recommend to either use URP with WebGL2 or builtin with WebGL1, if you are targeting iOS. You can always test the builds on your device, to see which combination might fit your needs: https://deml.io/experiments/unity-webgl/
+* There are some combinations for **iOS** that have **problems**: With recent versions **URP with WebGL 1** does not work at all and **builtin render pipeline with WebGL 2** has performance problems or might not load at all. I recommend to either use URP with WebGL2 or builtin with WebGL1, if you are targeting iOS. You can always test the builds on your device, to see which combination might fit your needs: https://deml.io/experiments/unity-webgl/
 * If you want to use this project as a basis for your project, be sure to select the release/branch for your unity version. Beta versions oftentimes have problems, therefore I would recommend to use the latest LTS version to run your project.
 * The server is configured to support wasm streaming and brotli compression, see [.htaccess 2020](./Configuration/2020/.htaccess)  [.htaccess 2019](./Configuration/2019/.htaccess)
 * Some servers (such as itch.io) don't support brotli compression, you should then use gzip compression instead. If brotli is misconfigured or not supported you will get an error along the lines of:
@@ -133,7 +133,7 @@ Version | Size | Link
 * Removing the default skybox will save ~30kb.
 * With 2021.2 Unity added the possibility to use different texture formats. The builds use the default DXT format, but since no texture is used this settings does not make any difference in this project.
 
-### URP
+### URP (Universal Render Pipeline)
 * URP adds additional ~2.5 MB file size compared to the builtin render pipeline.
 * In general the performance for URP seems to be better compared to builtin, but it has a larger build size.
 * With Unity 2021.2 there is currently a problem with shader compilation and therefore builds fail:
