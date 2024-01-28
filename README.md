@@ -2,9 +2,9 @@
 
 ![Preview](./preview.png)
 
-[![](https://img.shields.io/github/release-date/JohannesDeml/UnityWebGL-LoadingTest.svg)](https://github.com/JohannesDeml/UnityWebGL-LoadingTest/releases) [![Tested up to Unity 2023.1](https://img.shields.io/badge/tested%20up%20to%20unity-2023.1-green.svg?logo=unity&cacheSeconds=2592000)](https://unity3d.com/get-unity/download/archive)
+[![](https://img.shields.io/github/release-date/JohannesDeml/UnityWebGL-LoadingTest.svg)](https://github.com/JohannesDeml/UnityWebGL-LoadingTest/releases) [![Tested up to Unity 2023.2](https://img.shields.io/badge/tested%20up%20to%20unity-2023.2-green.svg?logo=unity&cacheSeconds=2592000)](https://unity3d.com/get-unity/download/archive)
 
-*Testing Unity's WebGL size and loading time for different versions (2018.4 - 2023.1) and platforms*
+*Testing Unity's WebGL size and loading time for different versions (2018.4 - 2023.2) and platforms*
 
 * [Unity Forum Thread](https://forum.unity.com/threads/webgl-builds-for-mobile.545877/)
 * [Overview page of all builds](https://deml.io/experiments/unity-webgl/)
@@ -185,7 +185,7 @@ unityGame.SendMessage("WebGL", "ToggleInfoPanel"); -> Toggle develop ui visibili
 unityGame.SendMessage("WebGL", "LogExampleMessage"); -> Log an example debug message
 unityGame.SendMessage("WebGL", "LogMessage", "System.String message"); -> Log a custom message
 unityGame.SendMessage("WebGL", "Help"); -> Log all available commands
-```
+  ```
 
 ## Github Build Actions
 
