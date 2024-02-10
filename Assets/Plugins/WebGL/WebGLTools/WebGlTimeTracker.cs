@@ -9,6 +9,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Diagnostics;
 using UnityEngine;
 
 namespace Supyrb
@@ -21,14 +22,24 @@ namespace Supyrb
 	[DefaultExecutionOrder(-100)]
 	public class WebGlTimeTracker : MonoBehaviour
 	{
-		[SerializeField] 
+		[SerializeField]
 		private bool showInfoPanelByDefault = true;
-		
+
 		[SerializeField]
 		private bool trackAwakeTime = true;
-		
+
 		[SerializeField]
 		private bool trackStartTime = true;
+
+		[Header("FPS Tracking")]
+		[SerializeField]
+		private bool trackFps = true;
+
+		[SerializeField]
+		private float updateInterval = 0.5f;
+
+		private Stopwatch stopWatch;
+		private int lastFrameCount;
 
 		private void Awake()
 		{
@@ -40,11 +51,18 @@ namespace Supyrb
 			{
 				WebGlPlugins.HideInfoPanel();
 			}
-			
+
+			if(trackFps)
+			{
+				WebGlPlugins.AddFpsTrackingEvent(0);
+			}
+
 			if (trackAwakeTime)
 			{
 				WebGlPlugins.AddTimeTrackingEvent("Awake");
 			}
+
+			stopWatch = Stopwatch.StartNew();
 		}
 
 		private void Start()
@@ -52,6 +70,33 @@ namespace Supyrb
 			if (trackStartTime)
 			{
 				WebGlPlugins.AddTimeTrackingEvent("Start");
+			}
+		}
+
+		private void Update()
+		{
+			if(!trackFps)
+			{
+				this.enabled = false;
+				return;
+			}
+
+			if(stopWatch.Elapsed.TotalSeconds > updateInterval)
+			{
+				var currentFrameCount = Time.frameCount;
+				var frameCount = currentFrameCount - lastFrameCount;
+				float fps = (float)(frameCount / stopWatch.Elapsed.TotalSeconds);
+				WebGlPlugins.AddFpsTrackingEvent(fps);
+				stopWatch.Restart();
+				lastFrameCount = currentFrameCount;
+			}
+		}
+
+		private void OnApplicationPause(bool pauseStatus) {
+			if (pauseStatus) {
+				stopWatch.Stop();
+			} else {
+				stopWatch.Start();
 			}
 		}
 	}
