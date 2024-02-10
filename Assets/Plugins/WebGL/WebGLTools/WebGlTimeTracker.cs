@@ -52,6 +52,11 @@ namespace Supyrb
 				WebGlPlugins.HideInfoPanel();
 			}
 
+			if(trackFps)
+			{
+				WebGlPlugins.AddFpsTrackingEvent(0);
+			}
+
 			if (trackAwakeTime)
 			{
 				WebGlPlugins.AddTimeTrackingEvent("Awake");
