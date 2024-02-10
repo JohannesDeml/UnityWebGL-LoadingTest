@@ -588,6 +588,11 @@ function onAddTimeTracker(eventName) {
   refreshTrackingDiv();
 }
 
+function onFpsTrackingEvent(fps) {
+  const fpsDiv = getOrCreateInfoEntry('fps');
+  fpsDiv.textContent = `FPS: ${fps.toFixed(1)}`;
+}
+
 function refreshTrackingDiv() {
   const trackingDiv = getOrCreateInfoEntry('tracking');
   let innerHtml = '<dl>';

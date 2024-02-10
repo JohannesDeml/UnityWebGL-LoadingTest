@@ -25,6 +25,8 @@ namespace Supyrb
 		[DllImport("__Internal")]
 		private static extern void _AddTimeTrackingEvent(string eventName);
 		[DllImport("__Internal")]
+		private static extern void _AddFpsTrackingEvent(float fps);
+		[DllImport("__Internal")]
 		private static extern void _ShowInfoPanel();
 		[DllImport("__Internal")]
 		private static extern void _HideInfoPanel();
@@ -65,6 +67,15 @@ namespace Supyrb
 			_AddTimeTrackingEvent(eventName);
 			#else
 			Debug.Log($"{nameof(WebGlPlugins)}.{nameof(AddTimeTrackingEvent)} called with {eventName}");
+			#endif
+		}
+
+		public static void AddFpsTrackingEvent(float fps)
+		{
+			#if UNITY_WEBGL && !UNITY_EDITOR
+			_AddFpsTrackingEvent(fps);
+			#else
+			Debug.Log($"{nameof(WebGlPlugins)}.{nameof(AddFpsTrackingEvent)} called with {fps:0.00}");
 			#endif
 		}
 
