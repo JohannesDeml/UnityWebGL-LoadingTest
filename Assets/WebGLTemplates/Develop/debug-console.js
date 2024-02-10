@@ -21,14 +21,6 @@ if (getCookie("addTimestamp") === "false") {
   addTimestamp = false;
 }
 
-const urlParams = new URLSearchParams(window.location.search);
-const debugParam = urlParams.get('debug');
-const debug = debugParam === 'true';
-
-initializeToggleButton(debug);
-initializeDebugConsole();
-
-
 function setCookie(cname, cvalue, exdays) {
   const d = new Date();
   d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
@@ -596,6 +588,11 @@ function onAddTimeTracker(eventName) {
   refreshTrackingDiv();
 }
 
+function onFpsTrackingEvent(fps) {
+  const fpsDiv = getOrCreateInfoEntry('fps');
+  fpsDiv.textContent = `FPS: ${fps.toFixed(1)}`;
+}
+
 function refreshTrackingDiv() {
   const trackingDiv = getOrCreateInfoEntry('tracking');
   let innerHtml = '<dl>';
@@ -609,3 +606,19 @@ function refreshTrackingDiv() {
   innerHtml += '</dl>';
   trackingDiv.innerHTML = innerHtml;
 }
+
+// Polyfill for older browsers
+if (!String.prototype.replaceAll) {
+  String.prototype.replaceAll = function(str, newStr) {
+    if (str === '?')
+      str = '\\\\?';
+    return this.replace(str instanceof RegExp ? str : new RegExp(str, 'g'), newStr);
+  }
+}
+
+const urlParams = new URLSearchParams(window.location.search);
+const debugParam = urlParams.get('debug');
+const debug = debugParam === 'true';
+
+initializeToggleButton(debug);
+initializeDebugConsole();

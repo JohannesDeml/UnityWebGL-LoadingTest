@@ -16,6 +16,9 @@ using UnityEngine.Rendering;
 
 namespace Supyrb
 {
+	/// <summary>
+	/// Add commands to the WebGL bridge to expose them to the browser console
+	/// </summary>
 	public partial class WebGlBridge
 	{
 		/// <summary>
