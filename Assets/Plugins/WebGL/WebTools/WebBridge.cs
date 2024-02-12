@@ -45,6 +45,11 @@ namespace Supyrb
 				case GraphicsDeviceType.OpenGLES3:
 					webGraphics = "WebGL 2";
 					break;
+#if UNITY_2023_2_OR_NEWER
+				case GraphicsDeviceType.WebGPU:
+					webGraphics = "WebGPU";
+					break;
+#endif
 				default:
 					webGraphics = graphicsDevice.ToString();
 					break;
