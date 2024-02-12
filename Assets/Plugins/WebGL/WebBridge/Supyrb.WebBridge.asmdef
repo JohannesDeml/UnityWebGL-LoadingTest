@@ -1,0 +1,19 @@
+{
+    "name": "Supyrb.WebBridge",
+    "rootNamespace": "",
+    "references": [
+        "GUID:e6be6bd2cac63ce49a95472c9d6e313a"
+    ],
+    "includePlatforms": [
+        "Editor",
+        "WebGL"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

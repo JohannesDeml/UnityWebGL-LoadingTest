@@ -13,7 +13,7 @@ using UnityEngine;
 
 namespace Supyrb
 {
-    public class ObjectSpawnController : MonoBehaviour
+	public class ObjectSpawnController : MonoBehaviour
 	{
 		[SerializeField]
 		private ObjectSpawner objectSpawnerPrefab = null;

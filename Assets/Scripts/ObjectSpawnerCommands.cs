@@ -13,10 +13,10 @@ using UnityEngine;
 
 namespace Supyrb
 {
-    /// <summary>
-    /// Browser commands for spawning cubes
-    /// </summary>
-    public partial class WebBridge
+	/// <summary>
+	/// Browser commands for spawning cubes
+	/// </summary>
+	public class ObjectSpawnerCommands : WebCommands
 	{
 		private ObjectSpawnController _objectSpawnController;
 		private ObjectSpawnController ObjectSpawnController
@@ -32,7 +32,7 @@ namespace Supyrb
 			}
 		}
 
-		[WebGlCommand(Description = "Pause spawning of cubes")]
+		[WebCommand(Description = "Pause spawning of cubes")]
 		public void PauseSpawning()
 		{
 			if (ObjectSpawnController != null)
@@ -41,7 +41,7 @@ namespace Supyrb
 			}
 		}
 
-		[WebGlCommand(Description = "Resume spawning of cubes")]
+		[WebCommand(Description = "Resume spawning of cubes")]
 		public void ResumeSpawning()
 		{
 			if (ObjectSpawnController != null)
@@ -50,7 +50,7 @@ namespace Supyrb
 			}
 		}
 
-		[WebGlCommand(Description = "Add a spawner")]
+		[WebCommand(Description = "Add a spawner")]
 		public void AddSpawner()
 		{
 			if (ObjectSpawnController != null)
@@ -59,7 +59,7 @@ namespace Supyrb
 			}
 		}
 
-		[WebGlCommand(Description = "Remove a spawner")]
+		[WebCommand(Description = "Remove a spawner")]
 		public void RemoveSpawner()
 		{
 			if (ObjectSpawnController != null)
