@@ -25,7 +25,11 @@ namespace Supyrb
 			{
 				if (_objectSpawnController == null)
 				{
+#if UNITY_2023_2_OR_NEWER
+					_objectSpawnController = Object.FindFirstObjectByType<ObjectSpawnController>();
+#else
 					_objectSpawnController = Object.FindObjectOfType<ObjectSpawnController>();
+#endif
 				}
 
 				return _objectSpawnController;
