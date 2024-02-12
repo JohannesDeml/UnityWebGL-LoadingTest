@@ -19,7 +19,7 @@ namespace Supyrb
 	/// <summary>
 	/// Add commands to the WebGL bridge to expose them to the browser console
 	/// </summary>
-	public partial class WebGlBridge
+	public partial class WebBridge
 	{
 		/// <summary>
 		/// Disable capturing all keyboard input, e.g. for using native html input fields
@@ -55,7 +55,7 @@ namespace Supyrb
 		[ContextMenu(nameof(LogMemory))]
 		public void LogMemory()
 		{
-			WebGlPlugins.LogMemory();
+			WebToolPlugins.LogMemory();
 		}
 
 		/// <summary>
@@ -122,7 +122,7 @@ namespace Supyrb
 		[WebGlCommand(Description = "Toggle develop ui visibility of InfoPanel")]
 		public void ToggleInfoPanel()
 		{
-			WebGlPlugins.ToggleInfoPanel();
+			WebToolPlugins.ToggleInfoPanel();
 		}
 
 		/// <summary>
@@ -132,8 +132,8 @@ namespace Supyrb
 		[WebGlCommand(Description = "Log User Agent and isMobileDevice")]
 		public void LogUserAgent()
 		{
-			string userAgent = WebGlPlugins.GetUserAgent();
-			bool isMobileDevice = WebGlPlugins.IsMobileDevice();
+			string userAgent = WebToolPlugins.GetUserAgent();
+			bool isMobileDevice = WebToolPlugins.IsMobileDevice();
 			Debug.Log($"<color=#4D65A4>User Agent:</color> '{userAgent}', <color=#4D65A4>IsMobileDevice:</color> '{isMobileDevice}'");
 		}
 

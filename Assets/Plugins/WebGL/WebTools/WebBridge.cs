@@ -18,41 +18,41 @@ namespace Supyrb
 {
 	/// <summary>
 	/// Bridge to Unity to access unity logic through the browser console
-	/// You can extend your commands by creating a partial class for WebGLBridge, see WebGLBridge.Commands as an example
+	/// You can extend your commands by creating a partial class for WebBridge, see WebBridge.Commands as an example
 	/// </summary>
-	public partial class WebGlBridge : MonoBehaviour
+	public partial class WebBridge : MonoBehaviour
 	{
 #if UNITY_WEBGL
 		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
 		private static void OnBeforeSceneLoadRuntimeMethod()
 		{
 			SetGlobalVariables();
-			var bridgeInstance = new GameObject("WebGL");
+			var bridgeInstance = new GameObject("Web");
 			DontDestroyOnLoad(bridgeInstance);
-			bridgeInstance.AddComponent<WebGlBridge>();
+			bridgeInstance.AddComponent<WebBridge>();
 		}
 #endif
 
 		private static void SetGlobalVariables()
 		{
 			var graphicsDevice = SystemInfo.graphicsDeviceType;
-			string webGl = string.Empty;
+			string webGraphics = string.Empty;
 			switch (graphicsDevice)
 			{
 				case GraphicsDeviceType.OpenGLES2:
-					webGl = "WebGL 1";
+					webGraphics = "WebGL 1";
 					break;
 				case GraphicsDeviceType.OpenGLES3:
-					webGl = "WebGL 2";
+					webGraphics = "WebGL 2";
 					break;
 				default:
-					webGl = graphicsDevice.ToString();
+					webGraphics = graphicsDevice.ToString();
 					break;
 			}
-			WebGlPlugins.SetVariable("webGlVersion", webGl);
-			WebGlPlugins.SetVariable("unityVersion", Application.unityVersion);
+			WebToolPlugins.SetVariable("webGlVersion", webGraphics);
+			WebToolPlugins.SetVariable("unityVersion", Application.unityVersion);
 #if !UNITY_EDITOR && UNITY_WEBGL
-			WebGlPlugins.SetVariable("unityCaptureAllKeyboardInputDefault", WebGLInput.captureAllKeyboardInput?"true":"false");
+			WebToolPlugins.SetVariable("unityCaptureAllKeyboardInputDefault", WebGLInput.captureAllKeyboardInput?"true":"false");
 #endif
 		}
 
