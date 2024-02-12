@@ -13,10 +13,10 @@ using UnityEngine;
 
 namespace Supyrb
 {
-    /// <summary>
-    /// Spawns an object in regular intervals
-    /// </summary>
-    public class ObjectSpawner : MonoBehaviour
+	/// <summary>
+	/// Spawns an object in regular intervals
+	/// </summary>
+	public class ObjectSpawner : MonoBehaviour
 	{
 		[SerializeField]
 		private GameObject prefab = null;
@@ -55,7 +55,6 @@ namespace Supyrb
 			set => maxInstances = value;
 		}
 
-		private int instances = 0;
 		private Queue<GameObject> spawnedObjects = null;
 		/// <summary>
 		/// Time from which the spawn times are calculated

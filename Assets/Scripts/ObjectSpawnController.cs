@@ -9,12 +9,11 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System.Collections.Generic;
-using Supyrb.Attributes;
 using UnityEngine;
 
 namespace Supyrb
 {
-    public class ObjectSpawnController : MonoBehaviour
+	public class ObjectSpawnController : MonoBehaviour
 	{
 		[SerializeField]
 		private ObjectSpawner objectSpawnerPrefab = null;
@@ -95,62 +94,6 @@ namespace Supyrb
 				spawner.transform.localPosition = position;
 				spawner.SpawnCoolDownSeconds = spawnerCoolDown;
 				spawner.SpawnOffsetSeconds = i * coolDownStep;
-			}
-		}
-	}
-
-	/// <summary>
-	/// Browser commands for spawning cubes
-	/// </summary>
-	public partial class WebGlBridge
-	{
-		private ObjectSpawnController _objectSpawnController;
-		private ObjectSpawnController ObjectSpawnController
-		{
-			get
-			{
-				if (_objectSpawnController == null)
-				{
-					_objectSpawnController = Object.FindObjectOfType<ObjectSpawnController>();
-				}
-
-				return _objectSpawnController;
-			}
-		}
-
-		[WebGlCommand(Description = "Pause spawning of cubes")]
-		public void PauseSpawning()
-		{
-			if (ObjectSpawnController != null)
-			{
-				ObjectSpawnController.PauseSpawning();
-			}
-		}
-
-		[WebGlCommand(Description = "Resume spawning of cubes")]
-		public void ResumeSpawning()
-		{
-			if (ObjectSpawnController != null)
-			{
-				ObjectSpawnController.ResumeSpawning();
-			}
-		}
-
-		[WebGlCommand(Description = "Add a spawner")]
-		public void AddSpawner()
-		{
-			if (ObjectSpawnController != null)
-			{
-				ObjectSpawnController.AddSpawner();
-			}
-		}
-
-		[WebGlCommand(Description = "Remove a spawner")]
-		public void RemoveSpawner()
-		{
-			if (ObjectSpawnController != null)
-			{
-				ObjectSpawnController.RemoveSpawner();
 			}
 		}
 	}
