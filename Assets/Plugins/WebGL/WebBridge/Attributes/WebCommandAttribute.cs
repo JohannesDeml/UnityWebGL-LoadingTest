@@ -15,7 +15,7 @@ namespace Supyrb.Attributes
 {
 	[AttributeUsage(AttributeTargets.Method)]
 	[MeansImplicitUse]
-	public class WebGlCommandAttribute : Attribute
+	public class WebCommandAttribute : Attribute
 	{
 		public string Description { get; set; }
 	}

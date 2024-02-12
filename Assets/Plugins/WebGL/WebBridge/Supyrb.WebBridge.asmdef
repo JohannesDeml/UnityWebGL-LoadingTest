@@ -1,7 +1,9 @@
 {
-    "name": "Supyrb.WebGLTools",
+    "name": "Supyrb.WebBridge",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "GUID:e6be6bd2cac63ce49a95472c9d6e313a"
+    ],
     "includePlatforms": [
         "Editor",
         "WebGL"

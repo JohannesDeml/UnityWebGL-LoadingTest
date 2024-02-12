@@ -83,6 +83,34 @@ namespace UnityBuilderAction
 			BuildWithParameters(parameters);
 		}
 
+#if UNITY_2023_2_OR_NEWER
+		[MenuItem("Tools/Build WebGL/webgpu")]
+		public static void BuildWebGpu()
+		{
+			var parameters = new List<string>(baseParameters);
+			string tag = $"{Application.unityVersion}-webgpu-manualBuild";
+			SetBuildTarget(BuildTarget.WebGL, ref parameters);
+			SetParameterValue("-autorunplayer", "true", ref parameters);
+			SetParameterValue("-tag", tag, ref parameters);
+			SetParameterValue("-customBuildPath", $"Builds/WebGL/{tag}", ref parameters);
+			SetParameterValue("-customBuildName", tag, ref parameters);
+			BuildWithParameters(parameters);
+		}
+
+		[MenuItem("Tools/Build WebGL/minsize-webgpu")]
+		public static void BuildWebGpuMinSize()
+		{
+			var parameters = new List<string>(baseParameters);
+			string tag = $"{Application.unityVersion}-minsize-webgpu-manualBuild";
+			SetBuildTarget(BuildTarget.WebGL, ref parameters);
+			SetParameterValue("-autorunplayer", "true", ref parameters);
+			SetParameterValue("-tag", tag, ref parameters);
+			SetParameterValue("-customBuildPath", $"Builds/WebGL/{tag}", ref parameters);
+			SetParameterValue("-customBuildName", tag, ref parameters);
+			BuildWithParameters(parameters);
+		}
+#endif
+
 		[MenuItem("Tools/Build WebGL/debug")]
 		public static void BuildWebGLDebug()
 		{
