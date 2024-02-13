@@ -16,13 +16,16 @@ using UnityEngine.Rendering;
 
 namespace Supyrb
 {
-	public partial class WebGlBridge
+	/// <summary>
+	/// Add commands to the WebGL bridge to expose them to the browser console
+	/// </summary>
+	public class CommonCommands : WebCommands
 	{
 		/// <summary>
 		/// Disable capturing all keyboard input, e.g. for using native html input fields
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL","DisableCaptureAllKeyboardInput");</code>
 		/// </summary>
-		[WebGlCommand(Description = "Disable unity from consuming all keyboard input")]
+		[WebCommand(Description = "Disable unity from consuming all keyboard input")]
 		public void DisableCaptureAllKeyboardInput()
 		{
 #if !UNITY_EDITOR && UNITY_WEBGL
@@ -35,7 +38,7 @@ namespace Supyrb
 		/// Enable capturing all keyboard input, to make sure the game does not miss any key strokes
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL","EnableCaptureAllKeyboardInput");</code>
 		/// </summary>
-		[WebGlCommand(Description = "Enable unity from consuming all keyboard input")]
+		[WebCommand(Description = "Enable unity from consuming all keyboard input")]
 		public void EnableCaptureAllKeyboardInput()
 		{
 #if !UNITY_EDITOR && UNITY_WEBGL
@@ -48,18 +51,18 @@ namespace Supyrb
 		/// Logs the current memory usage
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL","LogMemory");</code>
 		/// </summary>
-		[WebGlCommand(Description = "Logs the current memory")]
+		[WebCommand(Description = "Logs the current memory")]
 		[ContextMenu(nameof(LogMemory))]
 		public void LogMemory()
 		{
-			WebGlPlugins.LogMemory();
+			WebToolPlugins.LogMemory();
 		}
 
 		/// <summary>
 		/// Unloads all unused assets <see cref="Resources.UnloadUnusedAssets"/>
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL","UnloadUnusedAssets");</code>
 		/// </summary>
-		[WebGlCommand(Description = "Resources.UnloadUnusedAssets")]
+		[WebCommand(Description = "Resources.UnloadUnusedAssets")]
 		[ContextMenu(nameof(UnloadUnusedAssets))]
 		public void UnloadUnusedAssets()
 		{
@@ -72,7 +75,7 @@ namespace Supyrb
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL", "SetApplicationRunInBackground", 1);</code>
 		/// </summary>
 		/// <param name="runInBackground">1 if it should run in background</param>
-		[WebGlCommand(Description = "Application.runInBackground")]
+		[WebCommand(Description = "Application.runInBackground")]
 		public void SetApplicationRunInBackground(int runInBackground)
 		{
 			Application.runInBackground = runInBackground == 1;
@@ -83,7 +86,7 @@ namespace Supyrb
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL", "SetApplicationTargetFrameRate", 15);</code>
 		/// </summary>
 		/// <param name="targetFrameRate">frame rate to render in</param>
-		[WebGlCommand(Description = "Application.targetFrameRate")]
+		[WebCommand(Description = "Application.targetFrameRate")]
 		public void SetApplicationTargetFrameRate(int targetFrameRate)
 		{
 			Application.targetFrameRate = targetFrameRate;
@@ -94,7 +97,7 @@ namespace Supyrb
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL", "SetTimeFixedDeltaTime", 0.02);</code>
 		/// </summary>
 		/// <param name="fixedDeltaTime"></param>
-		[WebGlCommand(Description = "Time.fixedDeltaTime")]
+		[WebCommand(Description = "Time.fixedDeltaTime")]
 		public void SetTimeFixedDeltaTime(float fixedDeltaTime)
 		{
 			Time.fixedDeltaTime = fixedDeltaTime;
@@ -106,7 +109,7 @@ namespace Supyrb
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL", "SetTimeTimeScale", 0.2);</code>
 		/// </summary>
 		/// <param name="timeScale">new timescale value</param>
-		[WebGlCommand(Description = "Time.timeScale")]
+		[WebCommand(Description = "Time.timeScale")]
 		public void SetTimeTimeScale(float timeScale)
 		{
 			Time.timeScale = timeScale;
@@ -116,28 +119,28 @@ namespace Supyrb
 		/// Toggle the visibility of the info panel in the top right corner
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL", "ToggleInfoPanel");</code>
 		/// </summary>
-		[WebGlCommand(Description = "Toggle develop ui visibility of InfoPanel")]
+		[WebCommand(Description = "Toggle develop ui visibility of InfoPanel")]
 		public void ToggleInfoPanel()
 		{
-			WebGlPlugins.ToggleInfoPanel();
+			WebToolPlugins.ToggleInfoPanel();
 		}
 
 		/// <summary>
 		/// Log the user agent of the browser and if this agent is classified as mobile
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL", "LogUserAgent");</code>
 		/// </summary>
-		[WebGlCommand(Description = "Log User Agent and isMobileDevice")]
+		[WebCommand(Description = "Log User Agent and isMobileDevice")]
 		public void LogUserAgent()
 		{
-			string userAgent = WebGlPlugins.GetUserAgent();
-			bool isMobileDevice = WebGlPlugins.IsMobileDevice();
+			string userAgent = WebToolPlugins.GetUserAgent();
+			bool isMobileDevice = WebToolPlugins.IsMobileDevice();
 			Debug.Log($"<color=#4D65A4>User Agent:</color> '{userAgent}', <color=#4D65A4>IsMobileDevice:</color> '{isMobileDevice}'");
 		}
 
 		/// <summary>
 		/// Log example messages to show off unity rich text parsing to html & console styling
 		/// </summary>
-		[WebGlCommand(Description = "Log example messages for Log, warning and error")]
+		[WebCommand(Description = "Log example messages for Log, warning and error")]
 		[ContextMenu(nameof(LogExampleMessages))]
 		public void LogExampleMessages()
 		{
@@ -150,7 +153,7 @@ namespace Supyrb
 		/// Log a custom message to test Debug.Log in general
 		/// </summary>
 		/// <param name="message">Message that will be logged</param>
-		[WebGlCommand(Description = "Log a custom message")]
+		[WebCommand(Description = "Log a custom message")]
 		public void LogMessage(string message)
 		{
 			Debug.Log(message);
@@ -159,7 +162,7 @@ namespace Supyrb
 		/// <summary>
 		/// Throw an exception from System namespace to see how stack traces look for that
 		/// </summary>
-		[WebGlCommand(Description = "Throw a dictionary key not found exception")]
+		[WebCommand(Description = "Throw a dictionary key not found exception")]
 		[ContextMenu(nameof(ThrowDictionaryException))]
 		public void ThrowDictionaryException()
 		{
@@ -172,7 +175,7 @@ namespace Supyrb
 		/// Log information of all texture formats that Unity supports, which ones are supported by
 		/// the current platform and browser, and which ones are not supported
 		/// </summary>
-		[WebGlCommand(Description = "Log supported and unsupported texture formats")]
+		[WebCommand(Description = "Log supported and unsupported texture formats")]
 		[ContextMenu(nameof(LogTextureSupport))]
 		public void LogTextureSupport()
 		{
@@ -206,7 +209,7 @@ namespace Supyrb
 		/// <summary>
 		/// Deletes all player prefs <see cref="PlayerPrefs.DeleteAll"/>
 		/// </summary>
-		[WebGlCommand(Description = "PlayerPrefs.DeleteAll")]
+		[WebCommand(Description = "PlayerPrefs.DeleteAll")]
 		[ContextMenu(nameof(DeleteAllPlayerPrefs))]
 		public void DeleteAllPlayerPrefs()
 		{
@@ -218,7 +221,7 @@ namespace Supyrb
 		/// <see cref="GraphicsSettings.logWhenShaderIsCompiled "/>
 		/// </summary>
 		/// <param name="runInBackground">1 if it should run in background</param>
-		[WebGlCommand(Description = "GraphicsSettings.logWhenShaderIsCompiled")]
+		[WebCommand(Description = "GraphicsSettings.logWhenShaderIsCompiled")]
 		[ContextMenu(nameof(LogShaderCompilation))]
 		public void LogShaderCompilation(int enabled)
 		{
