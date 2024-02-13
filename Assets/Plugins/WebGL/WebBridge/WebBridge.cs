@@ -9,6 +9,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using Supyrb.Attributes;
@@ -23,13 +24,15 @@ namespace Supyrb
 	/// </summary>
 	public class WebBridge : WebCommands
 	{
+		private const string WebBridgeGameObjectName = "WebBridge";
+
 		private static GameObject bridgeInstance;
 #if UNITY_WEBGL
 		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
 		private static void OnBeforeSceneLoadRuntimeMethod()
 		{
 			SetGlobalVariables();
-			bridgeInstance = new GameObject("Web");
+			bridgeInstance = new GameObject(WebBridgeGameObjectName);
 			DontDestroyOnLoad(bridgeInstance);
 			AddAllWebCommands();
 		}
@@ -38,6 +41,7 @@ namespace Supyrb
 		private static void AddAllWebCommands()
 		{
 			Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+			List<Type> webCommandTypes = new List<Type>();
 			foreach (var assembly in assemblies)
 			{
 				Type[] types = assembly.GetTypes();
@@ -45,11 +49,17 @@ namespace Supyrb
 				{
 					if (type.IsSubclassOf(typeof(WebCommands)))
 					{
-						bridgeInstance.AddComponent(type);
+						webCommandTypes.Add(type);
 					}
 				}
 			}
 
+			// Sort the commands to make the output deterministic
+			webCommandTypes.Sort((a, b) => a.Name.CompareTo(b.Name));
+			foreach (var webCommandType in webCommandTypes)
+			{
+				bridgeInstance.AddComponent(webCommandType);
+			}
 		}
 
 		private static void SetGlobalVariables()
@@ -82,7 +92,7 @@ namespace Supyrb
 
 		private void Start()
 		{
-			Debug.Log("Unity WebGL Bridge ready -> Run 'unityGame.SendMessage(\"WebGL\", \"Help\")' in the browser console to see usage");
+			Debug.Log($"Unity WebGL Bridge ready -> Run 'runUnityCommand(\"Help\")' in the browser console to see usage");
 		}
 
 		[WebCommand(Description = "Log all available commands")]
@@ -103,7 +113,7 @@ namespace Supyrb
 					WebCommandAttribute commandAttribute = method.GetCustomAttribute<WebCommandAttribute>();
 					if (commandAttribute != null)
 					{
-						sb.Append($"unityGame.SendMessage(\"WebGL\", \"{method.Name}\"");
+						sb.Append($"runUnityCommand(\"{method.Name}\"");
 						ParameterInfo[] parameters = method.GetParameters();
 						for (int j = 0; j < parameters.Length; j++)
 						{
@@ -124,7 +134,7 @@ namespace Supyrb
 
 			}
 
-			sb.AppendLine("\nRun a command with 'unityGame.SendMessage(\"WebGL\", \"COMMAND_NAME\",PARAMETER);'");
+			sb.AppendLine($"\nRun a command with 'runUnityCommand(\"COMMAND_NAME\",PARAMETER);'");
 			Debug.Log(sb.ToString());
 		}
 	}
