@@ -57,7 +57,7 @@ function initializeDebugConsole() {
   var consoleInput = document.createElement("input");
   consoleInput.className = 'console-input';
   consoleInput.type = "text";
-  consoleInput.value = 'unityGame.SendMessage("WebGL", "Help");';
+  consoleInput.value = 'runUnityCommand("Help");';
   debugConsole.appendChild(consoleInput);
 
   consoleInput.onkeydown = function (e) {
@@ -68,6 +68,10 @@ function initializeDebugConsole() {
   };
 
   setupConsoleLogPipe();
+}
+
+function runUnityCommand(...command) {
+  unityGame.SendMessage("WebBridge", ...command);
 }
 
 function addDebugConsoleTopBar(debugConsole) {
@@ -528,15 +532,15 @@ function initializeToggleButton(startActive) {
       return;
     }
     if (event.currentTarget.checked) {
-      unityGame.SendMessage("WebGL", "DisableCaptureAllKeyboardInput");
+      runUnityCommand("DisableCaptureAllKeyboardInput");
       return;
     }
 
     if (typeof unityCaptureAllKeyboardInputDefault !== 'undefined' && unityCaptureAllKeyboardInputDefault === 'false') {
-      unityGame.SendMessage("WebGL", "DisableCaptureAllKeyboardInput");
+      runUnityCommand("DisableCaptureAllKeyboardInput");
     }
     else {
-      unityGame.SendMessage("WebGL", "EnableCaptureAllKeyboardInput");
+      runUnityCommand("EnableCaptureAllKeyboardInput");
     }
   })
 }
