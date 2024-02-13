@@ -49,6 +49,12 @@ var WebGlPlugins =
         console.log('Time tracker event ' +eventNameText +': ' + currentTimeRounded + 'ms');
     },
 
+    _AddFpsTrackingEvent: function(fps) {
+        if(typeof onFpsTrackingEvent !== 'undefined') {
+            onFpsTrackingEvent(fps);
+        }
+    },
+
     _ShowInfoPanel: function () {
         if(typeof setInfoPanelVisible !== 'undefined') {
             setInfoPanelVisible(true);

@@ -1,20 +1,21 @@
 {
-    "files.exclude":
-    {
-        "**/.DS_Store":true,
-        "**/.git":true,
-        "**/.gitmodules":true,
-        "**/*.pidb":true,
-        "**/*.suo":true,
-        "**/*.user":true,
-        "**/*.userprefs":true,
-        "**/*.unityproj":true,
-        "**/*.meta":true,
-        "Library/":true,
-        "library/":true,
-        "obj/":true,
-        "Obj/":true,
-        "temp/":true,
-        "Temp/":true
-    }
+    "files.exclude": {
+        "**/.DS_Store": true,
+        "**/.git": true,
+        "**/.gitmodules": true,
+        "**/*.pidb": true,
+        "**/*.suo": true,
+        "**/*.user": true,
+        "**/*.userprefs": true,
+        "**/*.unityproj": true,
+        "**/*.meta": true,
+        "Library/": true,
+        "library/": true,
+        "obj/": true,
+        "Obj/": true,
+        "temp/": true,
+        "Temp/": true
+    },
+    "dotnet.preferCSharpExtension": true,
+    "dotnet.defaultSolution": "UnityWebGL-LoadingTest.sln"
 }
