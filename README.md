@@ -2,9 +2,9 @@
 
 ![Preview](./preview.png)
 
-[![](https://img.shields.io/github/release-date/JohannesDeml/UnityWebGL-LoadingTest.svg)](https://github.com/JohannesDeml/UnityWebGL-LoadingTest/releases) [![Tested up to Unity 2022.3](https://img.shields.io/badge/tested%20up%20to%20unity-2023.1-green.svg?logo=unity&cacheSeconds=2592000)](https://unity3d.com/get-unity/download/archive)
+[![](https://img.shields.io/github/release-date/JohannesDeml/UnityWebGL-LoadingTest.svg)](https://github.com/JohannesDeml/UnityWebGL-LoadingTest/releases) [![Tested up to Unity 2023.2](https://img.shields.io/badge/tested%20up%20to%20unity-2023.2-green.svg?logo=unity&cacheSeconds=2592000)](https://unity3d.com/get-unity/download/archive)
 
-*Testing Unity's WebGL size and loading time for different versions (2018.4 - 2023.1) and platforms*
+*Testing Unity's WebGL size and loading time for different versions (2018.4 - 2023.2) and platforms*
 
 * [Unity Forum Thread](https://forum.unity.com/threads/webgl-builds-for-mobile.545877/)
 * [Overview page of all builds](https://deml.io/experiments/unity-webgl/)
@@ -16,11 +16,11 @@
 * GPU Instancing for materials
 * Shadows
 * Brotli Compression
-* Togglable In-DOM Debug console
+* Toggle-able In-DOM Debug console
   ![Debug Console Screenshot with description of features](./Documentation/DebugConsole.png)
 * Unity Rich text styling support for browser console & debug console
   ![Screenshot of styled unity log message in browser console](./Documentation/UnityRichTextSupport.png)
-* Easy access to unity functions through the browser console ([Demo](https://deml.io/experiments/unity-webgl/2020.3.23f1/)|[Youtube](https://youtu.be/OjypxsD6XMI))
+* Easy access to unity functions through the browser console ([Youtube](https://youtu.be/OjypxsD6XMI))
 * Handy debug functions for times and memory consumption
 * Responsive template layout for maximum mobile compatibility
 * Github Actions to automatically build the project and deploy it on the server via [Game CI](https://game.ci/)
@@ -29,89 +29,98 @@
 
 ## Live Demos
 
+
 ### Built-in Renderpipeline WebGL2
 Version | Size | Link
 --- | --- | ---
-2022.2.12f1 | 3.04 MB | https://deml.io/experiments/unity-webgl/2022.2.12f1-webgl2
-2022.1.24f1 | 2.80 MB | https://deml.io/experiments/unity-webgl/2022.1.24f1-webgl2
-2021.3.21f1 | 2.75 MB | https://deml.io/experiments/unity-webgl/2021.3.21f1-webgl2
+2023.1.20f1 | 3.09 MB | https://deml.io/experiments/unity-webgl/2023.1.20f1-webgl2
+2022.3.15f1 | 3.06 MB | https://deml.io/experiments/unity-webgl/2022.3.15f1-webgl2
+2022.2.18f1 | 3.05 MB | https://deml.io/experiments/unity-webgl/2022.2.18f1-webgl2
+2022.1.24f1 | 2.81 MB | https://deml.io/experiments/unity-webgl/2022.1.24f1-webgl2
+2021.3.33f1 | 2.76 MB | https://deml.io/experiments/unity-webgl/2021.3.33f1-webgl2
 2021.2.19f1 | 2.74 MB | https://deml.io/experiments/unity-webgl/2021.2.19f1-webgl2
 2021.1.28f1 | 2.94 MB | https://deml.io/experiments/unity-webgl/2021.1.28f1-webgl2
-2020.3.46f1 | 2.94 MB | https://deml.io/experiments/unity-webgl/2020.3.46f1-webgl2
+2020.3.48f1 | 2.95 MB | https://deml.io/experiments/unity-webgl/2020.3.48f1-webgl2
 2019.4.40f1 | 3.05 MB | https://deml.io/experiments/unity-webgl/2019.4.40f1-webgl2
 2018.4.36f1 | 2.84 MB | https://deml.io/experiments/unity-webgl/2018.4.36f1-webgl2
 
 ### Built-in Renderpipeline WebGL1
 Version | Size | Link
 --- | --- | ---
-2022.2.12f1 | 3.02 MB | https://deml.io/experiments/unity-webgl/2022.2.12f1-webgl1
-2022.1.24f1 | 2.78 MB | https://deml.io/experiments/unity-webgl/2022.1.24f1-webgl1
-2021.3.21f1 | 2.73 MB | https://deml.io/experiments/unity-webgl/2021.3.21f1-webgl1
+2022.2.18f1 | 3.03 MB | https://deml.io/experiments/unity-webgl/2022.2.18f1-webgl1
+2022.1.24f1 | 2.79 MB | https://deml.io/experiments/unity-webgl/2022.1.24f1-webgl1
+2021.3.33f1 | 2.74 MB | https://deml.io/experiments/unity-webgl/2021.3.33f1-webgl1
 2021.2.19f1 | 2.72 MB | https://deml.io/experiments/unity-webgl/2021.2.19f1-webgl1
 2021.1.28f1 | 2.92 MB | https://deml.io/experiments/unity-webgl/2021.1.28f1-webgl1
-2020.3.46f1 | 2.92 MB | https://deml.io/experiments/unity-webgl/2020.3.46f1-webgl1
+2020.3.48f1 | 2.93 MB | https://deml.io/experiments/unity-webgl/2020.3.48f1-webgl1
 2019.4.40f1 | 3.01 MB | https://deml.io/experiments/unity-webgl/2019.4.40f1-webgl1
 2018.4.36f1 | 2.82 MB | https://deml.io/experiments/unity-webgl/2018.4.36f1-webgl1
 
 ### Built-in Renderpipeline WebGL1 Minimum size
 Version | Size | Link
 --- | --- | ---
-2022.2.12f1 | 2.67 MB | https://deml.io/experiments/unity-webgl/2022.2.12f1-minsize-webgl1
+2023.1.20f1 | 2.85 MB | https://deml.io/experiments/unity-webgl/2023.1.20f1-minsize-webgl2
+2022.2.18f1 | 2.68 MB | https://deml.io/experiments/unity-webgl/2022.2.18f1-minsize-webgl1
 2022.1.24f1 | 2.63 MB | https://deml.io/experiments/unity-webgl/2022.1.24f1-minsize-webgl1
-2021.3.21f1 | 2.57 MB | https://deml.io/experiments/unity-webgl/2021.3.21f1-minsize-webgl1
+2021.3.33f1 | 2.61 MB | https://deml.io/experiments/unity-webgl/2021.3.33f1-minsize-webgl1
 2021.2.19f1 | 2.56 MB | https://deml.io/experiments/unity-webgl/2021.2.19f1-minsize-webgl1
 2021.1.28f1 | 2.47 MB | https://deml.io/experiments/unity-webgl/2021.1.28f1-minsize-webgl1
-2020.3.46f1 | 2.47 MB | https://deml.io/experiments/unity-webgl/2020.3.46f1-minsize-webgl1
+2020.3.48f1 | 2.48 MB | https://deml.io/experiments/unity-webgl/2020.3.48f1-minsize-webgl1
 2019.4.40f1 | 2.96 MB | https://deml.io/experiments/unity-webgl/2019.4.40f1-minsize-webgl1
 2018.4.36f1 | 2.77 MB | https://deml.io/experiments/unity-webgl/2018.4.36f1-minsize-webgl1
 
 ### URP WebGL2
 Version | Size | Link
 --- | --- | ---
-2022.2.12f1 | 7.16 MB | https://deml.io/experiments/unity-webgl/2022.2.12f1-urp-webgl2
-2022.1.24f1 | 6.44 MB | https://deml.io/experiments/unity-webgl/2022.1.24f1-urp-webgl2
-2021.3.21f1 | 6.24 MB | https://deml.io/experiments/unity-webgl/2021.3.21f1-urp-webgl2
+2023.1.20f1 | 6.05 MB | https://deml.io/experiments/unity-webgl/2023.1.20f1-urp-webgl2
+2022.3.15f1 | 5.70 MB | https://deml.io/experiments/unity-webgl/2022.3.15f1-urp-webgl2
+2022.2.18f1 | 7.21 MB | https://deml.io/experiments/unity-webgl/2022.2.18f1-urp-webgl2
+2022.1.24f1 | 6.45 MB | https://deml.io/experiments/unity-webgl/2022.1.24f1-urp-webgl2
+2021.3.33f1 | 6.30 MB | https://deml.io/experiments/unity-webgl/2021.3.33f1-urp-webgl2
 2021.2.19f1 | 6.17 MB | https://deml.io/experiments/unity-webgl/2021.2.19f1-urp-webgl2
 2021.1.28f1 | 5.81 MB | https://deml.io/experiments/unity-webgl/2021.1.28f1-urp-webgl2
-2020.3.46f1 | 5.59 MB | https://deml.io/experiments/unity-webgl/2020.3.46f1-urp-webgl2
+2020.3.48f1 | 5.59 MB | https://deml.io/experiments/unity-webgl/2020.3.48f1-urp-webgl2
 2019.4.40f1 | 5.56 MB | https://deml.io/experiments/unity-webgl/2019.4.40f1-urp-webgl2
 2018.4.36f1 | 2.81 MB | https://deml.io/experiments/unity-webgl/2018.4.36f1-urp-webgl2
 
 ### URP WebGL1
 Version | Size | Link
 --- | --- | ---
-2022.2.12f1 | 7.02 MB | https://deml.io/experiments/unity-webgl/2022.2.12f1-urp-webgl1
+2022.3.15f1 | 5.67 MB | https://deml.io/experiments/unity-webgl/2022.3.15f1-urp-webgl1
+2022.2.18f1 | 7.08 MB | https://deml.io/experiments/unity-webgl/2022.2.18f1-urp-webgl1
 2022.1.24f1 | 6.30 MB | https://deml.io/experiments/unity-webgl/2022.1.24f1-urp-webgl1
-2021.3.21f1 | 6.07 MB | https://deml.io/experiments/unity-webgl/2021.3.21f1-urp-webgl1
+2021.3.33f1 | 6.12 MB | https://deml.io/experiments/unity-webgl/2021.3.33f1-urp-webgl1
 2021.2.19f1 | 5.99 MB | https://deml.io/experiments/unity-webgl/2021.2.19f1-urp-webgl1
 2021.1.28f1 | 5.57 MB | https://deml.io/experiments/unity-webgl/2021.1.28f1-urp-webgl1
-2020.3.46f1 | 5.42 MB | https://deml.io/experiments/unity-webgl/2020.3.46f1-urp-webgl1
+2020.3.48f1 | 5.43 MB | https://deml.io/experiments/unity-webgl/2020.3.48f1-urp-webgl1
 2019.4.40f1 | 5.51 MB | https://deml.io/experiments/unity-webgl/2019.4.40f1-urp-webgl1
 2018.4.36f1 | 2.80 MB | https://deml.io/experiments/unity-webgl/2018.4.36f1-urp-webgl1
 
 
 ## Platform Compatibility
 
-| Platform   | Chrome | Firefox | Edge | Safari | Internet Explorer |
-| ---------- | :----: | :-----: | :--: | :----: | :---------------: |
-| Windows 10 |   ✔️    |    ✔️    |  ✔️   |   ➖    |         ❌         |
-| Linux      |   ✔️    |    ✔️    |  ✔️   |   ➖    |         ➖         |
-| Mac        |   ✔️    |    ✔️    |  ✔️   |   ✔️    |         ➖         |
-| Android    |   ✔️    |    ✔️    |  ✔️   |   ➖    |         ➖         |
-| iOS        |   ✔️    |    ✔️    |  ✔️   |   ✔️    |         ➖         |
+| Platform         | Chrome | Firefox | Edge | Safari | Internet Explorer |
+| ----------       | :----: | :-----: | :--: | :----: | :---------------: |
+| Windows 10       |   ✔️    |    ✔️    |  ✔️   |   ➖    |         ❌         |
+| Linux            |   ✔️    |    ✔️    |  ✔️   |   ➖    |         ➖         |
+| Mac              |   ✔️    |    ✔️    |  ✔️   |   ✔️    |         ➖         |
+| Android          |   ✔️    |    ✔️    |  ✔️   |   ➖    |         ➖         |
+| iOS              |   ✔️    |    ✔️    |  ✔️   |   ✔️    |         ➖         |
+| Android Smart TV |   ✔️    |    ➖    |  ➖   |   ➖    |         ➖         |
 
 ✔️ *: Supported* | ⚠️ *: Warning , see below* | ❌ *: not supported* | ➖ *: Not applicable*
 
-* For older Unity 2019 builds throw an error on **iOS Firefox** (Does not happen for iOS Safari or iOS Chrome): `An error occured running the Unity content on this page. See you browser JavaScript console for more info. The error: Script error.` - with iOS 16.2 and Firefox 108 I could not reproduce this problem anymore on 2019.4.
+* For older Unity 2019 builds throw an error on **iOS Firefox** (Does not happen for iOS Safari or iOS Chrome): `An error occurred running the Unity content on this page. See you browser JavaScript console for more info. The error: Script error.` - with iOS 16.2 and Firefox 108 I could not reproduce this problem anymore on 2019.4.
 * Internet Explorer does not work for Unity WebGL builds, since it does not support wasm.
 * Previous versions of Firefox on Android had some performance problems, they seemed to have fixed those. In general performance on mobile is by far not as good as a native app build, but should be enough for simple games.
+* For android smart TVs expect longer loading times (up to ~2 minutes)
 
 ## Notes
 
-* There are some combinations for **iOS** that have **problems**: With recent versions **URP with WebGL 1** does not work at all and **builtin renderpipeline with WebGL 2** has performance problems or might not load at all. I recommend to either use URP with WebGL2 or builtin with WebGL1, if you are targeting iOS. You can always test the builds on your device, to see which combination might fit your needs: https://deml.io/experiments/unity-webgl/
+* There are some combinations for **iOS** that have **problems**: With recent versions **URP with WebGL 1** does not work at all and **builtin render pipeline with WebGL 2** has performance problems or might not load at all. I recommend to either use URP with WebGL2 or builtin with WebGL1, if you are targeting iOS. You can always test the builds on your device, to see which combination might fit your needs: https://deml.io/experiments/unity-webgl/
 * If you want to use this project as a basis for your project, be sure to select the release/branch for your unity version. Beta versions oftentimes have problems, therefore I would recommend to use the latest LTS version to run your project.
 * The server is configured to support wasm streaming and brotli compression, see [.htaccess 2020](./Configuration/2020/.htaccess)  [.htaccess 2019](./Configuration/2019/.htaccess)
-* Some servers (such as itch.io) don't support brotli compression, you should then use gzip compression instead. If brotli is missconfigured or not supported you will get an error along the lines of:
+* Some servers (such as itch.io) don't support brotli compression, you should then use gzip compression instead. If brotli is misconfigured or not supported you will get an error along the lines of:
   ```
   Unable to parse Build/WEBGL.framework.js.br! This can happen if build compression was enabled but web server hosting the content was misconfigured to not serve the file with HTTP Response Header "Content-Encoding: br" present. Check browser Console and Devtools Network tab to debug.
   ```
@@ -124,7 +133,7 @@ Version | Size | Link
 * Removing the default skybox will save ~30kb.
 * With 2021.2 Unity added the possibility to use different texture formats. The builds use the default DXT format, but since no texture is used this settings does not make any difference in this project.
 
-### URP
+### URP (Universal Render Pipeline)
 * URP adds additional ~2.5 MB file size compared to the builtin render pipeline.
 * In general the performance for URP seems to be better compared to builtin, but it has a larger build size.
 * With Unity 2021.2 there is currently a problem with shader compilation and therefore builds fail:
@@ -176,7 +185,7 @@ unityGame.SendMessage("WebGL", "ToggleInfoPanel"); -> Toggle develop ui visibili
 unityGame.SendMessage("WebGL", "LogExampleMessage"); -> Log an example debug message
 unityGame.SendMessage("WebGL", "LogMessage", "System.String message"); -> Log a custom message
 unityGame.SendMessage("WebGL", "Help"); -> Log all available commands
-```
+  ```
 
 ## Github Build Actions
 
