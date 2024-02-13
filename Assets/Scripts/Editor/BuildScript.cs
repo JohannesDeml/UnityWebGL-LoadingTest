@@ -121,27 +121,32 @@ namespace UnityBuilderAction
 							SetWebGlOptimization("speed");
 						}
 
-						if (tagParameters.Contains("webgl2") && !tagParameters.Contains("webgl1"))
+						List<GraphicsDeviceType> graphicsAPIs = new List<GraphicsDeviceType>();
+						if (tagParameters.Contains("webgl1"))
 						{
-							PlayerSettings.SetGraphicsAPIs(BuildTarget.WebGL, new[] { GraphicsDeviceType.OpenGLES3 });
+							graphicsAPIs.Add(GraphicsDeviceType.OpenGLES2);
+						}
+						if(tagParameters.Contains("webgl2"))
+						{
+							graphicsAPIs.Add(GraphicsDeviceType.OpenGLES3);
+						}
+						if(tagParameters.Contains("webgpu"))
+						{
+#if UNITY_2023_2_OR_NEWER
+							graphicsAPIs.Add(GraphicsDeviceType.WebGPU);
+#else
+							LogError("WebGPU not supported yet");
+#endif
 						}
 
-						if (tagParameters.Contains("webgl1") && !tagParameters.Contains("webgl2"))
-						{
-							PlayerSettings.SetGraphicsAPIs(BuildTarget.WebGL, new[] { GraphicsDeviceType.OpenGLES2 });
-						}
+						PlayerSettings.SetGraphicsAPIs(BuildTarget.WebGL, graphicsAPIs.ToArray());
 
-						if (tagParameters.Contains("webgl1") && tagParameters.Contains("webgl2"))
-						{
-							PlayerSettings.SetGraphicsAPIs(BuildTarget.WebGL, new[] { GraphicsDeviceType.OpenGLES2, GraphicsDeviceType.OpenGLES3 });
-						}
-
-						#if UNITY_2023_1_OR_NEWER
+#if UNITY_2023_1_OR_NEWER
 						if (tagParameters.Contains("webgl1"))
 						{
 							Log("WebGL1 not supported anymore, choosing WebGL2 instead");
 						}
-						#endif
+#endif
 					}
 
 					break;
