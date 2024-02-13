@@ -22,33 +22,78 @@ namespace Supyrb
 		private GameObject prefab = null;
 
 		[SerializeField]
-		private float spawnCooldownSeconds = 0.5f;
+		private float spawnCoolDownSeconds = 0.5f;
+
+		[SerializeField]
+		private float spawnOffsetSeconds = 0f;
 
 		[SerializeField]
 		private int maxInstances = 200;
 
-		private int instances = 0;
+		public float SpawnCoolDownSeconds
+		{
+			get => spawnCoolDownSeconds;
+			set
+			{
+				spawnTimeBase += (spawnCoolDownSeconds - value) * totalSpawnCount;
+				spawnCoolDownSeconds = value;
+			}
+		}
+
+		public float SpawnOffsetSeconds
+		{
+			get => spawnOffsetSeconds;
+			set
+			{
+				spawnTimeBase += value - spawnOffsetSeconds;
+				spawnOffsetSeconds = value;
+			}
+		}
+		public int MaxInstances
+		{
+			get => maxInstances;
+			set => maxInstances = value;
+		}
+
 		private Queue<GameObject> spawnedObjects = null;
-		private float lastSpawnTime;
+		/// <summary>
+		/// Time from which the spawn times are calculated
+		/// will be set on Awake and updated when the spawner is paused, or spawning values are changed
+		/// </summary>
+		private float spawnTimeBase;
+		private int totalSpawnCount = 0;
+		private float pauseTime = 0f;
 
 		private void Awake()
 		{
 			spawnedObjects = new Queue<GameObject>(maxInstances + 5);
-			lastSpawnTime = Time.time;
+			spawnTimeBase = Time.time + spawnOffsetSeconds;
 		}
 
 		private void Update()
 		{
-			if (lastSpawnTime + spawnCooldownSeconds <= Time.time)
+			float relativeSpawnTime = Time.time - spawnTimeBase;
+			if (Mathf.FloorToInt(relativeSpawnTime / spawnCoolDownSeconds) > totalSpawnCount)
 			{
 				SpawnObject();
-				lastSpawnTime = Time.time;
 			}
+		}
+
+		public void PauseSpawning()
+		{
+			enabled = false;
+			pauseTime = Time.time;
+		}
+
+		public void ResumeSpawning()
+		{
+			enabled = true;
+			spawnTimeBase += Time.time - pauseTime;
 		}
 
 		private void SpawnObject()
 		{
-			if (instances >= maxInstances)
+			if (spawnedObjects.Count >= maxInstances)
 			{
 				var recycleGo = spawnedObjects.Dequeue();
 				recycleGo.transform.localPosition = transform.position;
@@ -59,7 +104,7 @@ namespace Supyrb
 
 			var newGo = Instantiate(prefab, transform.position, transform.rotation);
 			spawnedObjects.Enqueue(newGo);
-			instances++;
+			totalSpawnCount++;
 		}
 
 		#if UNITY_EDITOR
