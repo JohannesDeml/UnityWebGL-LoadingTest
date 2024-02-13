@@ -20,7 +20,7 @@ namespace Supyrb
 	/// is before other scripts with that event function
 	/// </summary>
 	[DefaultExecutionOrder(-100)]
-	public class WebGlTimeTracker : MonoBehaviour
+	public class WebToolTimeTracker : MonoBehaviour
 	{
 		[SerializeField]
 		private bool showInfoPanelByDefault = true;
@@ -45,21 +45,21 @@ namespace Supyrb
 		{
 			if (showInfoPanelByDefault)
 			{
-				WebGlPlugins.ShowInfoPanel();
+				WebToolPlugins.ShowInfoPanel();
 			}
 			else
 			{
-				WebGlPlugins.HideInfoPanel();
+				WebToolPlugins.HideInfoPanel();
 			}
 
 			if(trackFps)
 			{
-				WebGlPlugins.AddFpsTrackingEvent(0);
+				WebToolPlugins.AddFpsTrackingEvent(0);
 			}
 
 			if (trackAwakeTime)
 			{
-				WebGlPlugins.AddTimeTrackingEvent("Awake");
+				WebToolPlugins.AddTimeTrackingEvent("Awake");
 			}
 
 			stopWatch = Stopwatch.StartNew();
@@ -69,7 +69,7 @@ namespace Supyrb
 		{
 			if (trackStartTime)
 			{
-				WebGlPlugins.AddTimeTrackingEvent("Start");
+				WebToolPlugins.AddTimeTrackingEvent("Start");
 			}
 		}
 
@@ -86,7 +86,7 @@ namespace Supyrb
 				var currentFrameCount = Time.frameCount;
 				var frameCount = currentFrameCount - lastFrameCount;
 				float fps = (float)(frameCount / stopWatch.Elapsed.TotalSeconds);
-				WebGlPlugins.AddFpsTrackingEvent(fps);
+				WebToolPlugins.AddFpsTrackingEvent(fps);
 				stopWatch.Restart();
 				lastFrameCount = currentFrameCount;
 			}

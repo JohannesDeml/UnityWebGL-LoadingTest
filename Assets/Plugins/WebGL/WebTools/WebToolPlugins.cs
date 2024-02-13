@@ -17,7 +17,7 @@ using UnityEngine.Rendering;
 
 namespace Supyrb
 {
-	public static class WebGlPlugins
+	public static class WebToolPlugins
 	{
 #if UNITY_WEBGL
 		[DllImport("__Internal")]
@@ -53,7 +53,7 @@ namespace Supyrb
 			#if UNITY_WEBGL && !UNITY_EDITOR
 			_SetStringVariable(variableName, value);
 			#endif
-			Debug.Log($"<color=#00CCCC>{nameof(WebGlPlugins)}.{nameof(SetVariable)} set {variableName}: {value}</color>");
+			Debug.Log($"<color=#00CCCC>{nameof(WebToolPlugins)}.{nameof(SetVariable)} set {variableName}: {value}</color>");
 		}
 
 		/// <summary>
@@ -66,7 +66,7 @@ namespace Supyrb
 			#if UNITY_WEBGL && !UNITY_EDITOR
 			_AddTimeTrackingEvent(eventName);
 			#else
-			Debug.Log($"{nameof(WebGlPlugins)}.{nameof(AddTimeTrackingEvent)} called with {eventName}");
+			Debug.Log($"{nameof(WebToolPlugins)}.{nameof(AddTimeTrackingEvent)} called with {eventName}");
 			#endif
 		}
 
@@ -75,7 +75,7 @@ namespace Supyrb
 			#if UNITY_WEBGL && !UNITY_EDITOR
 			_AddFpsTrackingEvent(fps);
 			#else
-			Debug.Log($"{nameof(WebGlPlugins)}.{nameof(AddFpsTrackingEvent)} called with {fps:0.00}");
+			Debug.Log($"{nameof(WebToolPlugins)}.{nameof(AddFpsTrackingEvent)} called with {fps:0.00}");
 			#endif
 		}
 
@@ -90,7 +90,7 @@ namespace Supyrb
 			#if UNITY_WEBGL && !UNITY_EDITOR
 			_ShowInfoPanel();
 			#else
-			Debug.Log($"{nameof(WebGlPlugins)}.{nameof(ShowInfoPanel)} called");
+			Debug.Log($"{nameof(WebToolPlugins)}.{nameof(ShowInfoPanel)} called");
 			#endif
 		}
 
@@ -105,7 +105,7 @@ namespace Supyrb
 			#if UNITY_WEBGL && !UNITY_EDITOR
 			_HideInfoPanel();
 			#else
-			Debug.Log($"{nameof(WebGlPlugins)}.{nameof(HideInfoPanel)} called");
+			Debug.Log($"{nameof(WebToolPlugins)}.{nameof(HideInfoPanel)} called");
 			#endif
 		}
 
@@ -133,7 +133,7 @@ namespace Supyrb
 			#if UNITY_WEBGL && !UNITY_EDITOR
 			return _GetUserAgent();
 			#else
-			Debug.Log($"{nameof(WebGlPlugins)}.{nameof(GetUserAgent)} called");
+			Debug.Log($"{nameof(WebToolPlugins)}.{nameof(GetUserAgent)} called");
 			return "undefined";
 			#endif
 		}
@@ -161,7 +161,7 @@ namespace Supyrb
 			var bytes = _GetTotalMemorySize();
 			return GetMegaBytes(bytes);
 			#else
-			Debug.Log($"{nameof(WebGlPlugins)}.{nameof(GetTotalMemorySize)} called");
+			Debug.Log($"{nameof(WebToolPlugins)}.{nameof(GetTotalMemorySize)} called");
 			return -1f;
 			#endif
 		}
@@ -177,7 +177,7 @@ namespace Supyrb
 			var total = GetTotalMemorySize();
 			Debug.Log($"Memory stats:\nManaged: {managed:0.00}MB\nNative: {native:0.00}MB\nTotal: {total:0.00}MB");
 #else
-			Debug.Log($"{nameof(WebGlPlugins)}.{nameof(LogMemory)} called");
+			Debug.Log($"{nameof(WebToolPlugins)}.{nameof(LogMemory)} called");
 #endif
 		}
 
@@ -191,7 +191,7 @@ namespace Supyrb
 			var bytes = _GetStaticMemorySize();
 			return GetMegaBytes(bytes);
 			#else
-			Debug.Log($"{nameof(WebGlPlugins)}.{nameof(GetStaticMemorySize)} called");
+			Debug.Log($"{nameof(WebToolPlugins)}.{nameof(GetStaticMemorySize)} called");
 			return -1f;
 			#endif
 		}
@@ -206,7 +206,7 @@ namespace Supyrb
 			var bytes = _GetStaticMemorySize();
 			return GetMegaBytes(bytes);
 			#else
-			Debug.Log($"{nameof(WebGlPlugins)}.{nameof(GetDynamicMemorySize)} called");
+			Debug.Log($"{nameof(WebToolPlugins)}.{nameof(GetDynamicMemorySize)} called");
 			return -1f;
 			#endif
 		}
@@ -220,7 +220,7 @@ namespace Supyrb
 			#if UNITY_WEBGL && !UNITY_EDITOR
 			return GetDynamicMemorySize() + GetStaticMemorySize();
 			#else
-			Debug.Log($"{nameof(WebGlPlugins)}.{nameof(GetNativeMemorySize)} called");
+			Debug.Log($"{nameof(WebToolPlugins)}.{nameof(GetNativeMemorySize)} called");
 			return -1f;
 			#endif
 		}
