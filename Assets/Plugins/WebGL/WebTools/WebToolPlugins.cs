@@ -52,7 +52,6 @@ namespace Supyrb
 		{
 #if UNITY_WEBGL && !UNITY_EDITOR
 			_SetStringVariable(variableName, value);
-			_AddTimeTrackingEvent(eventName);
 #elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
 			Debug.Log($"<color=#00CCCC>{nameof(WebToolPlugins)}.{nameof(SetVariable)} set {variableName}: {value}</color>");
 #endif
@@ -136,8 +135,10 @@ namespace Supyrb
 			return _GetUserAgent();
 #elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
 			Debug.Log($"{nameof(WebToolPlugins)}.{nameof(GetUserAgent)} called");
-#endif
 			return "undefined";
+#else
+			return "undefined";
+#endif
 		}
 
 		/// <summary>
@@ -164,8 +165,10 @@ namespace Supyrb
 			return GetMegaBytes(bytes);
 #elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
 			Debug.Log($"{nameof(WebToolPlugins)}.{nameof(GetTotalMemorySize)} called");
-#endif
 			return -1f;
+#else
+			return -1f;
+#endif
 		}
 
 		/// <summary>
@@ -194,8 +197,10 @@ namespace Supyrb
 			return GetMegaBytes(bytes);
 #elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
 			Debug.Log($"{nameof(WebToolPlugins)}.{nameof(GetStaticMemorySize)} called");
-#endif
 			return -1f;
+#else
+			return -1f;
+#endif
 		}
 
 		/// <summary>
@@ -209,8 +214,10 @@ namespace Supyrb
 			return GetMegaBytes(bytes);
 #elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
 			Debug.Log($"{nameof(WebToolPlugins)}.{nameof(GetDynamicMemorySize)} called");
-#endif
 			return -1f;
+#else
+			return -1f;
+#endif
 		}
 
 		/// <summary>
@@ -223,8 +230,10 @@ namespace Supyrb
 			return GetDynamicMemorySize() + GetStaticMemorySize();
 #elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
 			Debug.Log($"{nameof(WebToolPlugins)}.{nameof(GetNativeMemorySize)} called");
-#endif
 			return -1f;
+#else
+			return -1f;
+#endif
 		}
 
 		/// <summary>
