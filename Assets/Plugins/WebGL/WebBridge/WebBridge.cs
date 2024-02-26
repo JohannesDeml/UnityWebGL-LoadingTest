@@ -92,7 +92,9 @@ namespace Supyrb
 
 		private void Start()
 		{
+#if (!UNITY_EDITOR && UNITY_WEBGL) || UNITY_EDITOR && WEBTOOLS_LOG_CALLS
 			Debug.Log($"Unity WebGL Bridge ready -> Run 'runUnityCommand(\"Help\")' in the browser console to see usage");
+#endif
 		}
 
 		[WebCommand(Description = "Log all available commands")]
