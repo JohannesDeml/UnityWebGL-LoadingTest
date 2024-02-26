@@ -111,7 +111,7 @@ namespace UnityBuilderAction
 #if UNITY_2022_3_OR_NEWER
 					package.versions.recommended;
 #elif UNITY_2019_3_OR_NEWER
-					package.versions.verified;
+					package.versions.recommended;
 #else
 					package.versions.recommended;
 #endif
