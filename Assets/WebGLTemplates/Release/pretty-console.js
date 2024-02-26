@@ -14,7 +14,7 @@ function setupConsoleLogPipe() {
   console.info = (message) => { handleLog(message, 'info', defaultConsoleInfo); };
   console.debug = (message) => { handleLog(message, 'debug', defaultConsoleDebug); };
   console.warn = (message) => { handleLog(message, 'warn', defaultConsoleWarn); };
-  console.error = (message) => { handleLog(message, 'error', defaultConsoleError); errorReceived(); };
+  console.error = (message) => { handleLog(message, 'error', defaultConsoleError); };
 
 
   handleLog = (message, logLevel, consoleLogFunction) => {
