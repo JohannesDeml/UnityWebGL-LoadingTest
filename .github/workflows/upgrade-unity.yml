@@ -87,7 +87,7 @@ jobs:
       # Unity 2020 cache is not compatible with older versions
       - name: Unity Library Cache 2020 or higher
         if: ${{ !startsWith(inputs.unityVersion, '201') }}
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: Library
           key: Library-202x-WebGL
@@ -95,7 +95,7 @@ jobs:
 
       - name: Unity Library Cache 2019 or lower
         if: ${{ startsWith(inputs.unityVersion, '201') }}
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: Library
           key: Library-201x-WebGL
@@ -148,7 +148,7 @@ jobs:
       - name: Render template
         if: ${{ !inputs.tagsOnly }}
         id: template
-        uses: chuhlomin/render-template@v1.4
+        uses: chuhlomin/render-template@v1.9
         with:
           template: .github/templates/upgrade-unity-pr-body.md
           vars: |
