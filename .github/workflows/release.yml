@@ -77,7 +77,7 @@ jobs:
       # Unity 2020 cache is not compatible with older versions
       - name: Unity Library Cache 2020 or higher
         if: ${{ !startsWith(needs.variables.outputs.UNITY_VERSION, '201') }}
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: Library
           key: Library-202x-WebGL
@@ -85,7 +85,7 @@ jobs:
 
       - name: Unity Library Cache 2019 or lower
         if: ${{ startsWith(needs.variables.outputs.UNITY_VERSION, '201') }}
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: Library
           key: Library-201x-WebGL
@@ -103,7 +103,7 @@ jobs:
           targetPlatform: WebGL
           buildName: ${{ needs.variables.outputs.BUILD_NAME }}
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: ${{ needs.variables.outputs.BUILD_NAME }}
           path: build/WebGL
@@ -116,7 +116,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           body: |
             ## Changes
@@ -140,7 +140,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: ${{ needs.variables.outputs.BUILD_NAME }}
           path: build
@@ -150,7 +150,7 @@ jobs:
         working-directory: build/${{ needs.variables.outputs.BUILD_NAME }}
 
       - name: Deploy ⤴
-        uses: SamKirkland/FTP-Deploy-Action@4.3.3
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USER }}
