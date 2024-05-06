@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using JetBrains.Annotations;
 using UnityEditor;
+using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -31,6 +32,25 @@ namespace UnityBuilderAction
 		private static readonly string Eol = Environment.NewLine;
 		private static bool LogVerboseBatchMode = true;
 		private static bool LogVerboseInEditor = false;
+		private const string CodeOptimizationSpeed =
+#if UNITY_2021_3_OR_NEWER
+		"runtimespeedlto";
+#else
+		"speed";
+#endif
+		private const string CodeOptimizationSize =
+#if UNITY_2021_3_OR_NEWER
+		"disksizelto";
+#else
+		"size";
+#endif
+
+		private const string CodeOptimizationBuildTimes =
+#if UNITY_2021_3_OR_NEWER
+		"buildtimes";
+#else
+		"size";
+#endif
 
 		private static readonly string[] Secrets =
 			{ "androidKeystorePass", "androidKeyaliasName", "androidKeyaliasPass" };
@@ -84,6 +104,7 @@ namespace UnityBuilderAction
 #if UNITY_2021_2_OR_NEWER
 					// Use ASTC texture compression, since we are also targeting mobile versions - Don't use this for desktop only targets
 					buildPlayerOptions.subtarget = (int)WebGLTextureSubtarget.ASTC;
+					var namedBuildTarget = NamedBuildTarget.WebGL;
 #endif
 
 					if (options.TryGetValue("tag", out string tagVersion) &&
@@ -93,17 +114,22 @@ namespace UnityBuilderAction
 						if (tagParameters.Contains("minsize"))
 						{
 							PlayerSettings.WebGL.template = "PROJECT:Release";
-							SetWebGlOptimization("size");
+							SetWebGlOptimization(CodeOptimizationSize);
+							buildPlayerOptions.options |= BuildOptions.CompressWithLz4HC;
 							PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.None;
 							PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.WebGL, Il2CppCompilerConfiguration.Master);
+#if UNITY_2021_2_OR_NEWER
+							PlayerSettings.SetIl2CppCodeGeneration(namedBuildTarget, Il2CppCodeGeneration.OptimizeSize);
+#endif
 						}
 						else if (tagParameters.Contains("debug"))
 						{
 							PlayerSettings.WebGL.template = "PROJECT:Develop";
-							SetWebGlOptimization("size");
 							PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.FullWithStacktrace;
 							PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.WebGL, Il2CppCompilerConfiguration.Debug);
+							SetWebGlOptimization(CodeOptimizationBuildTimes);
 #if UNITY_2021_2_OR_NEWER
+							PlayerSettings.SetIl2CppCodeGeneration(namedBuildTarget, Il2CppCodeGeneration.OptimizeSize);
 							PlayerSettings.WebGL.debugSymbolMode = WebGLDebugSymbolMode.Embedded;
 #else
 							PlayerSettings.WebGL.debugSymbols = true;
@@ -117,8 +143,12 @@ namespace UnityBuilderAction
 						else
 						{
 							PlayerSettings.WebGL.template = "PROJECT:Develop";
+							PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.WebGL, Il2CppCompilerConfiguration.Master);
 							// By default use the speed setting
-							SetWebGlOptimization("speed");
+							SetWebGlOptimization(CodeOptimizationSpeed);
+#if UNITY_2021_2_OR_NEWER
+							PlayerSettings.SetIl2CppCodeGeneration(namedBuildTarget, Il2CppCodeGeneration.OptimizeSpeed);
+#endif
 						}
 
 						List<GraphicsDeviceType> graphicsAPIs = new List<GraphicsDeviceType>();
@@ -155,7 +185,7 @@ namespace UnityBuilderAction
 			// Additional options for local builds
 			if (!Application.isBatchMode)
 			{
-				if (options.TryGetValue("autorunplayer", out string autorunplayer))
+				if (options.TryGetValue("autorunplayer", out string _))
 				{
 					buildPlayerOptions.options |= BuildOptions.AutoRunPlayer;
 				}
