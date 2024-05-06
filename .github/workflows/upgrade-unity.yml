@@ -175,7 +175,8 @@ jobs:
             IS_URP=true
           fi
 
-          sh .github/scripts/add-tags.sh $UNITY_VERSION $IS_URP
+          # Run add tags script
+          ./.github/scripts/add-tags.sh "$UNITY_VERSION" "$IS_URP"
         env:
           UNITY_VERSION: ${{ inputs.unityVersion }}
 
