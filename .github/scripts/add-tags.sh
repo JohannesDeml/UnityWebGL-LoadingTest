@@ -7,6 +7,7 @@
 # Input parameters
 UNITY_VERSION=$1
 IS_URP=${2:-"false"}
+echo "Running add_tags.sh with UNITY_VERSION: $UNITY_VERSION, IS_URP: $IS_URP"
 
 # Extract the first four characters of UNITY_VERSION
 MAJOR_VERSION=${UNITY_VERSION:0:4}
