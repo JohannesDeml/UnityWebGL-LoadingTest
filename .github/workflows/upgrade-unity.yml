@@ -137,7 +137,7 @@ jobs:
           customParameters: ${{ inputs.customParameters }}
           unityVersion: ${{ inputs.unityVersion }}
           targetPlatform: WebGL
-          buildName: ${{ needs.variables.outputs.BUILD_NAME }}
+          buildName: ${{ steps.upgrade_name.outputs.NAME }}
           allowDirtyBuild: true
           manualExit: true
 
@@ -169,7 +169,7 @@ jobs:
         if: ${{ inputs.createTags || inputs.tagsOnly }}
         run: |
           # Extract the first four characters of UNITY_VERSION
-          UNITY_YEAR=${UNITY_VERSION:0:4}
+          MAJOR_VERSION=${UNITY_VERSION:0:4}
           BRANCH_NAME=${GITHUB_REF#refs/heads/}
 
           TAG_PREFIX=$UNITY_VERSION
@@ -178,7 +178,7 @@ jobs:
             TAG_PREFIX=$UNITY_VERSION-urp
           fi
 
-          if [[ "$UNITY_YEAR" < "2023" ]]
+          if [[ "$MAJOR_VERSION" < "2023" ]]
           then
             git tag -a -f $TAG_PREFIX-minsize-webgl1 -m "[Automated workflow] Created by upgrade-unity"
             git tag -a -f $TAG_PREFIX-webgl1 -m "[Automated workflow] Created by upgrade-unity"
@@ -190,6 +190,11 @@ jobs:
 
           git tag -a -f $TAG_PREFIX-webgl2 -m "[Automated workflow] Created by upgrade-unity"
           git tag -a -f $TAG_PREFIX-webgl2-debug -m "[Automated workflow] Created by upgrade-unity"
+
+          if [[ "$MAJOR_VERSION" >= "6000" ]]
+          then
+            git tag -a -f $TAG_PREFIX-webgpu -m "[Automated workflow] Created by upgrade-unity"
+          fi
 
           git push origin -f --tags
         env:
