@@ -9,8 +9,8 @@ UNITY_VERSION=$1
 IS_URP=${2:-"false"}
 echo "Running add_tags.sh with UNITY_VERSION: $UNITY_VERSION, IS_URP: $IS_URP"
 
-# Extract the first four characters of UNITY_VERSION
-MAJOR_VERSION=${UNITY_VERSION:0:4}
+# Extract the value before the first dot as an integer
+MAJOR_VERSION=$(echo $UNITY_VERSION | cut -d. -f1)
 BRANCH_NAME=${GITHUB_REF#refs/heads/}
 
 TAG_PREFIX=$UNITY_VERSION
