@@ -168,35 +168,15 @@ jobs:
       - name: Add tags
         if: ${{ inputs.createTags || inputs.tagsOnly }}
         run: |
-          # Extract the first four characters of UNITY_VERSION
-          MAJOR_VERSION=${UNITY_VERSION:0:4}
           BRANCH_NAME=${GITHUB_REF#refs/heads/}
 
-          TAG_PREFIX=$UNITY_VERSION
-          if [[ "$BRANCH_NAME" == *"urp"* ]]
-          then
-            TAG_PREFIX=$UNITY_VERSION-urp
+          IS_URP=false
+          if [[ "$BRANCH_NAME" == *"urp"* ]]; then
+            IS_URP=true
           fi
 
-          if [[ "$MAJOR_VERSION" < "2023" ]]
-          then
-            git tag -a -f $TAG_PREFIX-minsize-webgl1 -m "[Automated workflow] Created by upgrade-unity"
-            git tag -a -f $TAG_PREFIX-webgl1 -m "[Automated workflow] Created by upgrade-unity"
-          else
-            git tag -a -f $TAG_PREFIX-minsize-webgl2 -m "[Automated workflow] Created by upgrade-unity"
-          fi
-          # Push tags in between - pushing more than 3 tags won't trigger tag workflows
-          git push origin -f --tags
-
-          git tag -a -f $TAG_PREFIX-webgl2 -m "[Automated workflow] Created by upgrade-unity"
-          git tag -a -f $TAG_PREFIX-webgl2-debug -m "[Automated workflow] Created by upgrade-unity"
-
-          if [[ "$MAJOR_VERSION" >= "6000" ]]
-          then
-            git tag -a -f $TAG_PREFIX-webgpu -m "[Automated workflow] Created by upgrade-unity"
-          fi
-
-          git push origin -f --tags
+          # Run add tags script
+          ./.github/scripts/add-tags.sh "$UNITY_VERSION" "$IS_URP"
         env:
           UNITY_VERSION: ${{ inputs.unityVersion }}
 
