@@ -101,6 +101,7 @@ jobs:
           buildMethod: UnityBuilderAction.BuildScript.BuildWithCommandlineArgs
           customParameters: -tag ${{ needs.variables.outputs.TAG }}
           targetPlatform: WebGL
+          versioning: None
           buildName: ${{ needs.variables.outputs.BUILD_NAME }}
 
       - uses: actions/upload-artifact@v4
