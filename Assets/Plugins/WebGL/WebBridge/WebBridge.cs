@@ -85,6 +85,7 @@ namespace Supyrb
 			}
 			WebToolPlugins.SetVariable("webGlVersion", webGraphics);
 			WebToolPlugins.SetVariable("unityVersion", Application.unityVersion);
+			WebToolPlugins.SetVariable("applicationVersion", Application.version);
 #if !UNITY_EDITOR && UNITY_WEBGL
 			WebToolPlugins.SetVariable("unityCaptureAllKeyboardInputDefault", WebGLInput.captureAllKeyboardInput?"true":"false");
 #endif
