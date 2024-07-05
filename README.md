@@ -2,9 +2,9 @@
 
 ![Preview](./preview.png)
 
-[![](https://img.shields.io/github/release-date/JohannesDeml/UnityWebGL-LoadingTest.svg)](https://github.com/JohannesDeml/UnityWebGL-LoadingTest/releases) [![Tested up to Unity 2023.2](https://img.shields.io/badge/tested%20up%20to%20unity-2023.2-green.svg?logo=unity&cacheSeconds=2592000)](https://unity3d.com/get-unity/download/archive)
+[![](https://img.shields.io/github/release-date/JohannesDeml/UnityWebGL-LoadingTest.svg)](https://github.com/JohannesDeml/UnityWebGL-LoadingTest/releases) [![Tested up to Unity 6](https://img.shields.io/badge/tested%20up%20to%20unity-6000.0-green.svg?logo=unity&cacheSeconds=2592000)](https://unity3d.com/get-unity/download/archive)
 
-*Testing Unity's WebGL size and loading time for different versions (2018.4 - 2023.2) and platforms*
+*Testing Unity's WebGL size and loading time for different versions (2018.4 - 6000.0) and platforms*
 
 * [Unity Forum Thread](https://forum.unity.com/threads/webgl-builds-for-mobile.545877/)
 * [Overview page of all builds](https://deml.io/experiments/unity-webgl/)
@@ -26,6 +26,7 @@
 * Github Actions to automatically build the project and deploy it on the server via [Game CI](https://game.ci/)
 * Works with [Unity WebGL Publisher](https://play.unity.com/discover/all-showcases) (Use  [2020.3-lts](https://github.com/JohannesDeml/UnityWebGL-LoadingTest/tree/2020-lts) or [2020.3-lts-urp](https://github.com/JohannesDeml/UnityWebGL-LoadingTest/tree/2020-lts-urp) branch)
 * Tracking multiple Unity versions starting from 2018.4
+* Build targets for webgl1, webgl2 and webgpu
 
 ## Live Demos
 
@@ -125,7 +126,7 @@ Version | Size | Link
 * There are some combinations for **iOS** that have **problems**: With recent versions **URP with WebGL 1** does not work at all and **builtin render pipeline with WebGL 2** has performance problems or might not load at all. I recommend to either use URP with WebGL2 or builtin with WebGL1, if you are targeting iOS. You can always test the builds on your device, to see which combination might fit your needs: https://deml.io/experiments/unity-webgl/
 * If you want to use this project as a basis for your project, be sure to select the release/branch for your unity version. Beta versions oftentimes have problems, therefore I would recommend to use the latest LTS version to run your project.
 * The server is configured to support wasm streaming and brotli compression, see [.htaccess 2020](./Configuration/2020/.htaccess)  [.htaccess 2019](./Configuration/2019/.htaccess)
-* Some servers (such as itch.io) don't support brotli compression, you should then use gzip compression instead. If brotli is misconfigured or not supported you will get an error along the lines of:
+* Due to the odd way that Unity does brotli compression, some servers (such as itch.io) don't support it, you should [learn how to manually compress your game](https://miltoncandelero.github.io/unity-webgl-compression) or use gzip compression instead. If brotli is misconfigured or not supported you will get an error along the lines of:
   ```
   Unable to parse Build/WEBGL.framework.js.br! This can happen if build compression was enabled but web server hosting the content was misconfigured to not serve the file with HTTP Response Header "Content-Encoding: br" present. Check browser Console and Devtools Network tab to debug.
   ```
