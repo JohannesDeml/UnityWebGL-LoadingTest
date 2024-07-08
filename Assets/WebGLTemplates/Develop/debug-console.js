@@ -553,9 +553,9 @@ function getInfoPanel() {
     infoPanel.id = 'infoPanel';
     document.body.appendChild(infoPanel);
     var infoHeader = document.createElement('h3');
-    if (typeof unityVersion != `undefined` && typeof webGlVersion != `undefined`) {
+    if (typeof unityVersion != `undefined` && typeof applicationVersion != `undefined` && typeof webGlVersion != `undefined`) {
       // Set by WebGlBridge in Unity
-      infoHeader.textContent = `Unity ${unityVersion} (${webGlVersion})`;
+      infoHeader.textContent = `Unity ${unityVersion}@${applicationVersion} (${webGlVersion})`;
     } else {
       infoHeader.textContent = `Unity InfoPanel`;
     }
