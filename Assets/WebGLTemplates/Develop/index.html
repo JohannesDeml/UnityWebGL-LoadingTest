@@ -4,6 +4,11 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="debug-console.css">
+  <!-- Start loading assets right away, to have them (partly) loaded already when they are requested -->
+  <link rel="preload" href="Build//{{{ DATA_FILENAME }}}" as="fetch" type="application/octet-stream" crossorigin>
+  <link rel="preload" href="Build/{{{ FRAMEWORK_FILENAME }}}" as="script">
+  <link rel="preload" href="Build/{{{ CODE_FILENAME }}}" as="fetch" type="application/wasm" crossorigin>
   <title>{{{ PRODUCT_NAME }}}</title>
   <style>
     * {
@@ -113,7 +118,6 @@
       transition: 400ms linear;
     }
   </style>
-  <link rel="stylesheet" href="debug-console.css">
 </head>
 
 <body>

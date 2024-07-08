@@ -14,7 +14,9 @@ using System.IO;
 using System.Linq;
 using JetBrains.Annotations;
 using UnityEditor;
+using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
+using UnityEditor.Compilation;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -31,6 +33,25 @@ namespace UnityBuilderAction
 		private static readonly string Eol = Environment.NewLine;
 		private static bool LogVerboseBatchMode = true;
 		private static bool LogVerboseInEditor = false;
+		private static readonly string CodeOptimizationSpeed =
+#if UNITY_2021_3_OR_NEWER
+		CodeOptimizationWebGL.RuntimeSpeedLTO.ToString();
+#else
+		"speed";
+#endif
+		private static readonly string  CodeOptimizationSize =
+#if UNITY_2021_3_OR_NEWER
+		CodeOptimizationWebGL.DiskSizeLTO.ToString();
+#else
+		"size";
+#endif
+
+		private static readonly string  CodeOptimizationBuildTimes =
+#if UNITY_2021_3_OR_NEWER
+		CodeOptimizationWebGL.BuildTimes.ToString();
+#else
+		"size";
+#endif
 
 		private static readonly string[] Secrets =
 			{ "androidKeystorePass", "androidKeyaliasName", "androidKeyaliasPass" };
@@ -51,10 +72,16 @@ namespace UnityBuilderAction
 			// Gather values from args
 			Dictionary<string, string> options = GetValidatedOptions(args);
 
-			// Set version for this build
-			PlayerSettings.bundleVersion = options["buildVersion"];
-			PlayerSettings.macOS.buildNumber = options["buildVersion"];
-			PlayerSettings.Android.bundleVersionCode = int.Parse(options["androidVersionCode"]);
+			// Set version for this build if provided
+			if(options.TryGetValue("buildVersion", out string buildVersion) && buildVersion != "none")
+			{
+				PlayerSettings.bundleVersion = buildVersion;
+				PlayerSettings.macOS.buildNumber = buildVersion;
+			}
+			if(options.TryGetValue("androidVersionCode", out string versionCode) && versionCode != "0")
+			{
+				PlayerSettings.Android.bundleVersionCode = int.Parse(options["androidVersionCode"]);
+			}
 
 			// Apply build target
 			var buildTarget = (BuildTarget)Enum.Parse(typeof(BuildTarget), options["buildTarget"]);
@@ -84,6 +111,7 @@ namespace UnityBuilderAction
 #if UNITY_2021_2_OR_NEWER
 					// Use ASTC texture compression, since we are also targeting mobile versions - Don't use this for desktop only targets
 					buildPlayerOptions.subtarget = (int)WebGLTextureSubtarget.ASTC;
+					var namedBuildTarget = NamedBuildTarget.WebGL;
 #endif
 
 					if (options.TryGetValue("tag", out string tagVersion) &&
@@ -93,16 +121,23 @@ namespace UnityBuilderAction
 						if (tagParameters.Contains("minsize"))
 						{
 							PlayerSettings.WebGL.template = "PROJECT:Release";
-							SetWebGlOptimization("size");
+							SetWebGlOptimization(CodeOptimizationSize);
+							buildPlayerOptions.options |= BuildOptions.CompressWithLz4HC;
 							PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.None;
 							PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.WebGL, Il2CppCompilerConfiguration.Master);
+#if UNITY_2022_1_OR_NEWER
+							PlayerSettings.SetIl2CppCodeGeneration(namedBuildTarget, Il2CppCodeGeneration.OptimizeSize);
+#endif
 						}
 						else if (tagParameters.Contains("debug"))
 						{
 							PlayerSettings.WebGL.template = "PROJECT:Develop";
-							SetWebGlOptimization("size");
 							PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.FullWithStacktrace;
 							PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.WebGL, Il2CppCompilerConfiguration.Debug);
+							SetWebGlOptimization(CodeOptimizationBuildTimes);
+#if UNITY_2022_1_OR_NEWER
+							PlayerSettings.SetIl2CppCodeGeneration(namedBuildTarget, Il2CppCodeGeneration.OptimizeSize);
+#endif
 #if UNITY_2021_2_OR_NEWER
 							PlayerSettings.WebGL.debugSymbolMode = WebGLDebugSymbolMode.Embedded;
 #else
@@ -117,8 +152,12 @@ namespace UnityBuilderAction
 						else
 						{
 							PlayerSettings.WebGL.template = "PROJECT:Develop";
+							PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.WebGL, Il2CppCompilerConfiguration.Master);
 							// By default use the speed setting
-							SetWebGlOptimization("speed");
+							SetWebGlOptimization(CodeOptimizationSpeed);
+#if UNITY_2022_1_OR_NEWER
+							PlayerSettings.SetIl2CppCodeGeneration(namedBuildTarget, Il2CppCodeGeneration.OptimizeSpeed);
+#endif
 						}
 
 						List<GraphicsDeviceType> graphicsAPIs = new List<GraphicsDeviceType>();
@@ -155,7 +194,7 @@ namespace UnityBuilderAction
 			// Additional options for local builds
 			if (!Application.isBatchMode)
 			{
-				if (options.TryGetValue("autorunplayer", out string autorunplayer))
+				if (options.TryGetValue("autorunplayer", out string _))
 				{
 					buildPlayerOptions.options |= BuildOptions.AutoRunPlayer;
 				}
