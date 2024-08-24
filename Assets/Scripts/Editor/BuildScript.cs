@@ -16,6 +16,7 @@ using JetBrains.Annotations;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
+using UnityEditor.Compilation;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -32,22 +33,22 @@ namespace UnityBuilderAction
 		private static readonly string Eol = Environment.NewLine;
 		private static bool LogVerboseBatchMode = true;
 		private static bool LogVerboseInEditor = false;
-		private const string CodeOptimizationSpeed =
+		private static readonly string CodeOptimizationSpeed =
 #if UNITY_2021_3_OR_NEWER
-		"runtimespeedlto";
+		CodeOptimizationWebGL.RuntimeSpeedLTO.ToString();
 #else
 		"speed";
 #endif
-		private const string CodeOptimizationSize =
+		private static readonly string  CodeOptimizationSize =
 #if UNITY_2021_3_OR_NEWER
-		"disksizelto";
+		CodeOptimizationWebGL.DiskSizeLTO.ToString();
 #else
 		"size";
 #endif
 
-		private const string CodeOptimizationBuildTimes =
+		private static readonly string  CodeOptimizationBuildTimes =
 #if UNITY_2021_3_OR_NEWER
-		"buildtimes";
+		CodeOptimizationWebGL.BuildTimes.ToString();
 #else
 		"size";
 #endif
@@ -124,7 +125,7 @@ namespace UnityBuilderAction
 							buildPlayerOptions.options |= BuildOptions.CompressWithLz4HC;
 							PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.None;
 							PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.WebGL, Il2CppCompilerConfiguration.Master);
-#if UNITY_2021_2_OR_NEWER
+#if UNITY_2022_1_OR_NEWER
 							PlayerSettings.SetIl2CppCodeGeneration(namedBuildTarget, Il2CppCodeGeneration.OptimizeSize);
 #endif
 						}
@@ -134,8 +135,10 @@ namespace UnityBuilderAction
 							PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.FullWithStacktrace;
 							PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.WebGL, Il2CppCompilerConfiguration.Debug);
 							SetWebGlOptimization(CodeOptimizationBuildTimes);
-#if UNITY_2021_2_OR_NEWER
+#if UNITY_2022_1_OR_NEWER
 							PlayerSettings.SetIl2CppCodeGeneration(namedBuildTarget, Il2CppCodeGeneration.OptimizeSize);
+#endif
+#if UNITY_2021_2_OR_NEWER
 							PlayerSettings.WebGL.debugSymbolMode = WebGLDebugSymbolMode.Embedded;
 #else
 							PlayerSettings.WebGL.debugSymbols = true;
@@ -152,7 +155,7 @@ namespace UnityBuilderAction
 							PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.WebGL, Il2CppCompilerConfiguration.Master);
 							// By default use the speed setting
 							SetWebGlOptimization(CodeOptimizationSpeed);
-#if UNITY_2021_2_OR_NEWER
+#if UNITY_2022_1_OR_NEWER
 							PlayerSettings.SetIl2CppCodeGeneration(namedBuildTarget, Il2CppCodeGeneration.OptimizeSpeed);
 #endif
 						}
