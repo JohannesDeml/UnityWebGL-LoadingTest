@@ -10,7 +10,7 @@
       "url": "https://package.openupm.com"
     },
     "com.unity.ai.navigation": {
-      "version": "2.0.0",
+      "version": "2.0.3",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -75,7 +75,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.test-framework": {
-      "version": "1.4.4",
+      "version": "1.4.5",
       "depth": 0,
       "source": "registry",
       "dependencies": {
