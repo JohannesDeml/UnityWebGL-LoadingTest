@@ -10,7 +10,7 @@
       "url": "https://package.openupm.com"
     },
     "com.unity.burst": {
-      "version": "1.8.17",
+      "version": "1.8.18",
       "depth": 1,
       "source": "registry",
       "dependencies": {
@@ -20,7 +20,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.collab-proxy": {
-      "version": "2.4.4",
+      "version": "2.5.2",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
