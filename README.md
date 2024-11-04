@@ -28,7 +28,7 @@
 * Tracking multiple Unity versions starting from 2018.4
 * Build targets for webgl1, webgl2 and webgpu
 
-## Live Demos
+## Live Demos ([All Builds](https://deml.io/experiments/unity-webgl/))
 
 ### Built-in Renderpipeline WebGL2
 Version | Size | Link
@@ -39,13 +39,6 @@ Version | Size | Link
 2022.3.50f1 | 3.12 MB | https://deml.io/experiments/unity-webgl/2022.3.50f1-webgl2
 2021.3.45f1 | 2.78 MB | https://deml.io/experiments/unity-webgl/2021.3.45f1-webgl2
 2020.3.48f1 | 2.96 MB | https://deml.io/experiments/unity-webgl/2020.3.48f1-webgl2
-
-### Built-in Renderpipeline WebGL1
-Version | Size | Link
---- | --- | ---
-2022.3.50f1 | 3.10 MB | https://deml.io/experiments/unity-webgl/2022.3.50f1-webgl1
-2021.3.45f1 | 2.76 MB | https://deml.io/experiments/unity-webgl/2021.3.45f1-webgl1
-2020.3.48f1 | 2.94 MB | https://deml.io/experiments/unity-webgl/2020.3.48f1-webgl1
 
 ### Built-in Renderpipeline Minimum size
 Version | Size | Link
@@ -66,13 +59,6 @@ Version | Size | Link
 2022.3.50f1 | 5.92 MB | https://deml.io/experiments/unity-webgl/2022.3.50f1-urp-webgl2
 2021.3.45f1 | 6.31 MB | https://deml.io/experiments/unity-webgl/2021.3.45f1-urp-webgl2
 2020.3.48f1 | 5.60 MB | https://deml.io/experiments/unity-webgl/2020.3.48f1-urp-webgl2
-
-### URP WebGL1
-Version | Size | Link
---- | --- | ---
-2022.3.50f1 | 5.90 MB | https://deml.io/experiments/unity-webgl/2022.3.50f1-urp-webgl1
-2021.3.45f1 | 6.13 MB | https://deml.io/experiments/unity-webgl/2021.3.45f1-urp-webgl1
-2020.3.48f1 | 5.44 MB | https://deml.io/experiments/unity-webgl/2020.3.48f1-urp-webgl1
 
 ### URP Minimum Size
 Version | Size | Link
@@ -164,17 +150,33 @@ The script `WebGlBridge` adds an easy to access gameobject that can be called fr
 Currently the following commands are available:
 
 ```javascript
-unityGame.SendMessage("WebGL", "DisableCaptureAllKeyboardInput"); -> Disable unity from consuming all keyboard input
-unityGame.SendMessage("WebGL", "EnableCaptureAllKeyboardInput"); -> Enable unity from consuming all keyboard input
-unityGame.SendMessage("WebGL", "LogMemory"); -> Logs the current memory
-unityGame.SendMessage("WebGL", "SetApplicationRunInBackground", System.Int32 runInBackground); -> Application.runInBackground
-unityGame.SendMessage("WebGL", "SetApplicationTargetFrameRate", System.Int32 targetFrameRate); -> Application.targetFrameRate
-unityGame.SendMessage("WebGL", "SetTimeFixedDeltaTime", System.Single fixedDeltaTime); -> Time.fixedDeltaTime
-unityGame.SendMessage("WebGL", "SetTimeTimeScale", System.Single timeScale); -> Time.timeScale
-unityGame.SendMessage("WebGL", "ToggleInfoPanel"); -> Toggle develop ui visibility of InfoPanel
-unityGame.SendMessage("WebGL", "LogExampleMessage"); -> Log an example debug message
-unityGame.SendMessage("WebGL", "LogMessage", "System.String message"); -> Log a custom message
-unityGame.SendMessage("WebGL", "Help"); -> Log all available commands
+Available commands:
+---CommonCommands---
+runUnityCommand("DisableCaptureAllKeyboardInput"); -> Disable unity from consuming all keyboard input
+runUnityCommand("EnableCaptureAllKeyboardInput"); -> Enable unity from consuming all keyboard input
+runUnityCommand("LogMemory"); -> Logs the current memory
+runUnityCommand("UnloadUnusedAssets"); -> Resources.UnloadUnusedAssets
+runUnityCommand("SetApplicationRunInBackground", System.Int32 runInBackground); -> Application.runInBackground
+runUnityCommand("SetApplicationTargetFrameRate", System.Int32 targetFrameRate); -> Application.targetFrameRate
+runUnityCommand("SetTimeFixedDeltaTime", System.Single fixedDeltaTime); -> Time.fixedDeltaTime
+runUnityCommand("SetTimeTimeScale", System.Single timeScale); -> Time.timeScale
+runUnityCommand("ToggleInfoPanel"); -> Toggle develop ui visibility of InfoPanel
+runUnityCommand("LogUserAgent"); -> Log User Agent and isMobileDevice
+runUnityCommand("LogExampleMessages"); -> Log example messages for Log, warning and error
+runUnityCommand("LogMessage", "System.String message"); -> Log a custom message
+runUnityCommand("ThrowDictionaryException"); -> Throw a dictionary key not found exception
+runUnityCommand("LogTextureSupport"); -> Log supported and unsupported texture formats
+runUnityCommand("DeleteAllPlayerPrefs"); -> PlayerPrefs.DeleteAll
+runUnityCommand("LogShaderCompilation", System.Int32 enabled); -> GraphicsSettings.logWhenShaderIsCompiled
+
+---ObjectSpawnerCommands---
+runUnityCommand("PauseSpawning"); -> Pause spawning of cubes
+runUnityCommand("ResumeSpawning"); -> Resume spawning of cubes
+runUnityCommand("AddSpawner"); -> Add a spawner
+runUnityCommand("RemoveSpawner"); -> Remove a spawner
+
+---WebBridge---
+runUnityCommand("Help"); -> Log all available commands
   ```
 
 ## Github Build Actions
