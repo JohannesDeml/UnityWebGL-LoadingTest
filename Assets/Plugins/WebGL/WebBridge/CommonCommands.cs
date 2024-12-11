@@ -22,6 +22,11 @@ namespace Supyrb
 	public class CommonCommands : WebCommands
 	{
 		/// <summary>
+		/// List that stores allocated byte arrays to prevent them from being garbage collected
+		/// </summary>
+		private List<byte[]> byteArrayMemory = new List<byte[]>();
+
+		/// <summary>
 		/// Disable capturing all keyboard input, e.g. for using native html input fields
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL","DisableCaptureAllKeyboardInput");</code>
 		/// </summary>
@@ -59,6 +64,41 @@ namespace Supyrb
 		}
 
 		/// <summary>
+		/// Allocate memory to test memory usage and limits
+		/// The memory will be stored in a list to prevent it from being garbage collected
+		/// </summary>
+		/// <param name="mb">MB to allocate</param>
+		[WebCommand(Description = "Allocate memory to test memory usage and limits")]
+		public void AllocateByteArrayMemory(int mb)
+		{
+			byte[] memory = new byte[mb * 1024 * 1024];
+			byteArrayMemory.Add(memory);
+			Debug.Log($"Allocated {mb} MB of memory, total memory usage: {WebToolPlugins.GetTotalMemorySize():0.00}MB");
+		}
+
+		/// <summary>
+		/// Release all allocated byte array memory
+		/// </summary>
+		[WebCommand(Description = "Release all allocated byte array memory")]
+		[ContextMenu(nameof(ReleaseByteArrayMemory))]
+		public void ReleaseByteArrayMemory()
+		{
+			byteArrayMemory.Clear();
+			Debug.Log("Released all allocated byte array memory, it can now be garbage collected");
+		}
+
+		/// <summary>
+		/// Trigger garbage collection
+		/// </summary>
+		[WebCommand(Description = "Trigger garbage collection")]
+		[ContextMenu(nameof(TriggerGarbageCollection))]
+		public void TriggerGarbageCollection()
+		{
+			GC.Collect();
+			Debug.Log("Garbage collection triggered");
+		}
+
+		/// <summary>
 		/// Unloads all unused assets <see cref="Resources.UnloadUnusedAssets"/>
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL","UnloadUnusedAssets");</code>
 		/// </summary>
@@ -67,6 +107,7 @@ namespace Supyrb
 		public void UnloadUnusedAssets()
 		{
 			Resources.UnloadUnusedAssets();
+			Debug.Log("Unloaded unused assets");
 		}
 
 		/// <summary>
@@ -79,6 +120,7 @@ namespace Supyrb
 		public void SetApplicationRunInBackground(int runInBackground)
 		{
 			Application.runInBackground = runInBackground == 1;
+			Debug.Log($"Application.runInBackground: {Application.runInBackground}");
 		}
 
 		/// <summary>
@@ -90,6 +132,7 @@ namespace Supyrb
 		public void SetApplicationTargetFrameRate(int targetFrameRate)
 		{
 			Application.targetFrameRate = targetFrameRate;
+			Debug.Log($"Application.targetFrameRate: {Application.targetFrameRate}");
 		}
 
 		/// <summary>
@@ -101,6 +144,7 @@ namespace Supyrb
 		public void SetTimeFixedDeltaTime(float fixedDeltaTime)
 		{
 			Time.fixedDeltaTime = fixedDeltaTime;
+			Debug.Log($"Time.fixedDeltaTime: {Time.fixedDeltaTime}");
 		}
 
 		/// <summary>
@@ -113,6 +157,7 @@ namespace Supyrb
 		public void SetTimeTimeScale(float timeScale)
 		{
 			Time.timeScale = timeScale;
+			Debug.Log($"Time.timeScale: {Time.timeScale}");
 		}
 
 		/// <summary>
@@ -214,6 +259,7 @@ namespace Supyrb
 		public void DeleteAllPlayerPrefs()
 		{
 			PlayerPrefs.DeleteAll();
+			Debug.Log("Deleted all player prefs");
 		}
 
 		/// <summary>
@@ -226,6 +272,7 @@ namespace Supyrb
 		public void LogShaderCompilation(int enabled)
 		{
 			GraphicsSettings.logWhenShaderIsCompiled = enabled == 1;
+			Debug.Log($"GraphicsSettings.logWhenShaderIsCompiled: {GraphicsSettings.logWhenShaderIsCompiled}");
 		}
 	}
 }
