@@ -5,6 +5,8 @@ on:
   push:
     tags:
       - '*'
+    branches:
+      - master
 
 jobs:
   variables:
@@ -28,7 +30,12 @@ jobs:
 
       - name: Set tag
         id: set_tag
-        run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
+        run: |
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
+          else
+            echo "VERSION=${{ steps.set_unity_version.outputs.VERSION }}-webgl2-master" >> $GITHUB_OUTPUT
+          fi
 
       - name: Set target name
         id: set_build_name
@@ -62,8 +69,8 @@ jobs:
 
   buildProject:
     name: Create Unity WebGL Build 🏗
-    # only build with additional parameters, the tag alone should only create a release draft
-    if: ${{ needs.variables.outputs.TAG != needs.variables.outputs.UNITY_VERSION }}
+    # Build if it's a master push or if the tag is not just the unity version
+    if: ${{ github.ref == 'refs/heads/master' || needs.variables.outputs.TAG != needs.variables.outputs.UNITY_VERSION }}
     needs: [ variables ]
     runs-on: ubuntu-latest
     strategy:
@@ -112,7 +119,7 @@ jobs:
   createRelease:
     name: Create Github release 🐙
     # only run for the pure tag without build parameters
-    if: ${{ needs.variables.outputs.TAG == needs.variables.outputs.UNITY_VERSION }}
+    if: ${{ github.ref_type == 'tag' && needs.variables.outputs.TAG == needs.variables.outputs.UNITY_VERSION }}
     needs: [ variables ]
     runs-on: ubuntu-latest
     steps:
