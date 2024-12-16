@@ -9,6 +9,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Supyrb.Attributes;
 using UnityEngine;
@@ -282,19 +283,7 @@ namespace Supyrb
 		[WebCommand(Description = "Copy text to clipboard")]
 		public void CopyToClipboard(string text)
 		{
-			bool success = WebToolPlugins.CopyToClipboard(text);
-			Debug.Log($"Copy to clipboard {(success ? "successful" : "failed")}: {text}");
-		}
-
-		/// <summary>
-		/// Get current clipboard content using the browser's clipboard API
-		/// Note: Requires clipboard-read permission in modern browsers
-		/// </summary>
-		[WebCommand(Description = "Get current clipboard content")]
-		public void GetClipboardContent()
-		{
-			string content = WebToolPlugins.GetClipboardContent();
-			Debug.Log($"Clipboard content: {content}");
+			WebToolPlugins.CopyToClipboard(text);
 		}
 
 		/// <summary>
@@ -323,6 +312,14 @@ namespace Supyrb
 		[WebCommand(Description = "Save current screen as PNG with variable super size")]
 		public void SaveScreenshot(int superSize)
 		{
+			StartCoroutine(CaptureScreenshot(superSize));
+		}
+
+		private IEnumerator CaptureScreenshot(int superSize)
+		{
+			// Wait for the end of frame to ensure everything is rendered
+			yield return new WaitForEndOfFrame();
+
 			string filename = "screenshot.png";
 			try
 			{

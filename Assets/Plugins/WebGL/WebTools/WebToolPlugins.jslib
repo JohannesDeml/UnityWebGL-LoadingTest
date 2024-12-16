@@ -103,27 +103,9 @@ var WebGlPlugins =
         var str = UTF8ToString(text);
         navigator.clipboard.writeText(str)
             .then(function() {
-                console.log('Text copied to clipboard');
-                return true;
             })
             .catch(function(err) {
                 console.error('Failed to copy text: ', err);
-                return false;
-            });
-    },
-
-    _GetClipboardContent: function() {
-        // Note: This requires clipboard-read permission
-        navigator.clipboard.readText()
-            .then(function(text) {
-                var bufferSize = lengthBytesUTF8(text) + 1;
-                var buffer = _malloc(bufferSize);
-                stringToUTF8(text, buffer, bufferSize);
-                return buffer;
-            })
-            .catch(function(err) {
-                console.error('Failed to read clipboard: ', err);
-                return null;
             });
     },
 

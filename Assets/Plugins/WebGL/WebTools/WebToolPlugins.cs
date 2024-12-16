@@ -37,8 +37,6 @@ namespace Supyrb
 		[DllImport("__Internal")]
 		private static extern bool _CopyToClipboard(string text);
 		[DllImport("__Internal")]
-		private static extern string _GetClipboardContent();
-		[DllImport("__Internal")]
 		private static extern int _IsOnline();
 		[DllImport("__Internal")]
 		private static extern void _DownloadFile(string filename, string content);
@@ -218,32 +216,12 @@ namespace Supyrb
 		/// </summary>
 		/// <param name="text">The text to copy to the clipboard</param>
 		/// <returns>True if the copy operation was successful, false otherwise</returns>
-		public static bool CopyToClipboard(string text)
+		public static void CopyToClipboard(string text)
 		{
 			#if UNITY_WEBGL && !UNITY_EDITOR
-				return _CopyToClipboard(text);
+				_CopyToClipboard(text);
 			#elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
 				Debug.Log($"{nameof(WebToolPlugins)}.{nameof(CopyToClipboard)} called with: {text}");
-				return false;
-			#else
-				return false;
-			#endif
-		}
-
-		/// <summary>
-		/// Retrieves the current content from the system clipboard using the browser's clipboard API.
-		/// Only works in WebGL builds and requires clipboard-read permission in modern browsers.
-		/// </summary>
-		/// <returns>The clipboard content as string, or empty string if clipboard is empty or access was denied</returns>
-		public static string GetClipboardContent()
-		{
-			#if UNITY_WEBGL && !UNITY_EDITOR
-				return _GetClipboardContent();
-			#elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
-				Debug.Log($"{nameof(WebToolPlugins)}.{nameof(GetClipboardContent)} called");
-				return string.Empty;
-			#else
-				return string.Empty;
 			#endif
 		}
 
