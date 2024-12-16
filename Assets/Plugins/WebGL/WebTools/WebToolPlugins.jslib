@@ -88,41 +88,53 @@ var WebGlPlugins =
 
     _GetTotalMemorySize: function()
     {
-        if(typeof TOTAL_MEMORY !== 'undefined') {
+        if(typeof HEAP8 !== 'undefined') {
+            return HEAP8.length;
+        }
+        if(typeof TOTAL_MEMORY !== 'undefined') {  // Legacy support
             return TOTAL_MEMORY;
         }
 
-        console.warn("Problem with retrieving unity value. TOTAL_MEMORY: " + typeof TOTAL_MEMORY);
+        console.warn("Problem with retrieving total memory size");
         return -1;
     },
 
     _GetTotalStackSize: function()
     {
-        if(typeof TOTAL_STACK !== 'undefined') {
+        if(typeof Module !== 'undefined' && typeof Module.STACK_SIZE !== 'undefined') {
+            return Module.STACK_SIZE;
+        }
+        if(typeof TOTAL_STACK !== 'undefined') {  // Legacy support
             return TOTAL_STACK;
         }
 
-        console.warn("Problem with retrieving unity value. TOTAL_STACK: " + typeof TOTAL_STACK);
+        console.warn("Problem with retrieving stack size");
         return -1;
     },
 
     _GetStaticMemorySize: function()
     {
-        if(typeof STATICTOP !== 'undefined' && typeof STATIC_BASE !== 'undefined') {
+        if(typeof Module !== 'undefined' && typeof Module.staticAlloc !== 'undefined') {
+            return Module.staticAlloc;
+        }
+        if(typeof STATICTOP !== 'undefined' && typeof STATIC_BASE !== 'undefined') {  // Legacy support
             return STATICTOP - STATIC_BASE;
         }
 
-        console.warn("Problem with retrieving unity value. STATICTOP: " + typeof STATICTOP + ", STATIC_BASE: " + typeof STATIC_BASE);
+        console.warn("Problem with retrieving static memory size");
         return -1;
     },
 
     _GetDynamicMemorySize: function()
     {
-        if(typeof HEAP32 !== 'undefined' && typeof DYNAMICTOP_PTR !== 'undefined' && typeof DYNAMIC_BASE !== 'undefined') {
+        if(typeof Module !== 'undefined' && typeof Module.dynamicAlloc !== 'undefined') {
+            return Module.dynamicAlloc;
+        }
+        if(typeof HEAP32 !== 'undefined' && typeof DYNAMICTOP_PTR !== 'undefined' && typeof DYNAMIC_BASE !== 'undefined') {  // Legacy support
             return HEAP32[DYNAMICTOP_PTR >> 2] - DYNAMIC_BASE;
         }
 
-        console.warn("Problem with retrieving unity value. HEAP32: " + typeof HEAP32 + ", DYNAMICTOP_PTR: " + typeof DYNAMICTOP_PTR + ", DYNAMIC_BASE: " + typeof DYNAMIC_BASE);
+        console.warn("Problem with retrieving dynamic memory size");
         return -1;
     }
 };
