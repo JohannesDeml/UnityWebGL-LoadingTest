@@ -34,6 +34,17 @@ namespace Supyrb
 		private static extern string _GetUserAgent();
 		[DllImport("__Internal")]
 		private static extern uint _GetTotalMemorySize();
+		[DllImport("__Internal")]
+		private static extern bool _CopyToClipboard(string text);
+		[DllImport("__Internal")]
+		private static extern string _GetClipboardContent();
+		[DllImport("__Internal")]
+		private static extern int _IsOnline();
+		[DllImport("__Internal")]
+		private static extern void _DownloadFile(string filename, string content);
+		[DllImport("__Internal")]
+		private static extern void _DownloadBlob(string filename, byte[] byteArray, int byteLength, string mimeType);
+
 #endif
 
 		private static bool _infoPanelVisible = false;
@@ -199,6 +210,96 @@ namespace Supyrb
 		private static float GetMegaBytes(uint bytes)
 		{
 			return (float)bytes / (1024 * 1024);
+		}
+
+		/// <summary>
+		/// Copies the specified text to the system clipboard using the browser's clipboard API.
+		/// Only works in WebGL builds and requires clipboard-write permission in modern browsers.
+		/// </summary>
+		/// <param name="text">The text to copy to the clipboard</param>
+		/// <returns>True if the copy operation was successful, false otherwise</returns>
+		public static bool CopyToClipboard(string text)
+		{
+			#if UNITY_WEBGL && !UNITY_EDITOR
+				return _CopyToClipboard(text);
+			#elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
+				Debug.Log($"{nameof(WebToolPlugins)}.{nameof(CopyToClipboard)} called with: {text}");
+				return false;
+			#else
+				return false;
+			#endif
+		}
+
+		/// <summary>
+		/// Retrieves the current content from the system clipboard using the browser's clipboard API.
+		/// Only works in WebGL builds and requires clipboard-read permission in modern browsers.
+		/// </summary>
+		/// <returns>The clipboard content as string, or empty string if clipboard is empty or access was denied</returns>
+		public static string GetClipboardContent()
+		{
+			#if UNITY_WEBGL && !UNITY_EDITOR
+				return _GetClipboardContent();
+			#elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
+				Debug.Log($"{nameof(WebToolPlugins)}.{nameof(GetClipboardContent)} called");
+				return string.Empty;
+			#else
+				return string.Empty;
+			#endif
+		}
+
+		/// <summary>
+		/// Checks if the browser currently has an internet connection using the navigator.onLine property.
+		/// </summary>
+		/// <returns>True if the browser is online, false if it's offline</returns>
+		public static bool IsOnline()
+		{
+			#if UNITY_WEBGL && !UNITY_EDITOR
+				return _IsOnline() == 1;
+			#elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
+				Debug.Log($"{nameof(WebToolPlugins)}.{nameof(IsOnline)} called");
+				return true;
+			#else
+				return true;
+			#endif
+		}
+
+		/// <summary>
+		/// Downloads a text file through the browser with the specified filename and content.
+		/// Creates a temporary anchor element to trigger the download.
+		/// </summary>
+		/// <param name="filename">The name of the file to be downloaded</param>
+		/// <param name="content">The text content to be saved in the file</param>
+		public static void DownloadTextFile(string filename, string content)
+		{
+			#if UNITY_WEBGL && !UNITY_EDITOR
+				_DownloadFile(filename, content);
+			#elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
+				Debug.Log($"{nameof(WebToolPlugins)}.{nameof(DownloadTextFile)} called with filename: {filename}");
+			#endif
+		}
+
+		/// <summary>
+		/// Downloads a binary file through the browser with the specified filename and data.
+		/// Creates a Blob with the specified MIME type and triggers the download.
+		/// </summary>
+		/// <param name="filename">The name of the file to be downloaded</param>
+		/// <param name="data">The binary data to be saved in the file</param>
+		/// <param name="mimeType">The MIME type of the file (defaults to "application/octet-stream")</param>
+		/// <example>
+		/// <code>
+		/// // Example: Save a Texture2D as PNG
+		/// Texture2D texture;
+		/// byte[] pngData = texture.EncodeToPNG();
+		/// WebToolPlugins.DownloadBinaryFile("texture.png", pngData, "image/png");
+		/// </code>
+		/// </example>
+		public static void DownloadBinaryFile(string filename, byte[] data, string mimeType = "application/octet-stream")
+		{
+			#if UNITY_WEBGL && !UNITY_EDITOR
+				_DownloadBlob(filename, data, data.Length, mimeType);
+			#elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
+				Debug.Log($"{nameof(WebToolPlugins)}.{nameof(DownloadBinaryFile)} called with filename: {filename}");
+			#endif
 		}
 	}
 }
