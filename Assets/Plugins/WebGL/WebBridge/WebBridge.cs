@@ -109,6 +109,7 @@ namespace Supyrb
 			{
 				sb.AppendLine($"<b>---{webCommand.GetType().Name}---</b>");
 				MethodInfo[] methods = webCommand.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance);
+				Array.Sort(methods, (a, b) => string.Compare(a.Name, b.Name));
 
 				for (int i = 0; i < methods.Length; i++)
 				{
@@ -123,11 +124,11 @@ namespace Supyrb
 							var parameter = parameters[j];
 							if (parameter.ParameterType == typeof(string))
 							{
-								sb.Append($", \"{parameter.ParameterType} {parameter.Name}\"");
+								sb.Append($", \"{GetFriendlyTypeName(parameter.ParameterType)} {parameter.Name}\"");
 							}
 							else
 							{
-								sb.Append($", {parameter.ParameterType} {parameter.Name}");
+								sb.Append($", {GetFriendlyTypeName(parameter.ParameterType)} {parameter.Name}");
 							}
 						}
 
@@ -139,6 +140,17 @@ namespace Supyrb
 
 			sb.AppendLine($"\nRun a command with 'runUnityCommand(\"COMMAND_NAME\",PARAMETER);'");
 			Debug.Log(sb.ToString());
+		}
+
+		private string GetFriendlyTypeName(Type type)
+		{
+			if (type == typeof(int)) return "int";
+			if (type == typeof(long)) return "long";
+			if (type == typeof(float)) return "float";
+			if (type == typeof(double)) return "double";
+			if (type == typeof(bool)) return "bool";
+			if (type == typeof(string)) return "string";
+			return type.Name;
 		}
 	}
 }
