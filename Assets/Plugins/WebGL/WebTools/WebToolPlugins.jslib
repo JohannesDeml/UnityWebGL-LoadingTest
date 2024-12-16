@@ -46,7 +46,7 @@ var WebGlPlugins =
         }
 
         var currentTimeRounded = currentTime.toFixed(2);
-        console.log('Time tracker event ' +eventNameText +': ' + currentTimeRounded + 'ms');
+        console.log('Time tracker event ' + eventNameText + ': ' + currentTimeRounded + 'ms');
     },
 
     _AddFpsTrackingEvent: function(fps) {
@@ -96,45 +96,6 @@ var WebGlPlugins =
         }
 
         console.warn("Problem with retrieving total memory size");
-        return -1;
-    },
-
-    _GetTotalStackSize: function()
-    {
-        if(typeof Module !== 'undefined' && typeof Module.STACK_SIZE !== 'undefined') {
-            return Module.STACK_SIZE;
-        }
-        if(typeof TOTAL_STACK !== 'undefined') {  // Legacy support
-            return TOTAL_STACK;
-        }
-
-        console.warn("Problem with retrieving stack size");
-        return -1;
-    },
-
-    _GetStaticMemorySize: function()
-    {
-        if(typeof Module !== 'undefined' && typeof Module.staticAlloc !== 'undefined') {
-            return Module.staticAlloc;
-        }
-        if(typeof STATICTOP !== 'undefined' && typeof STATIC_BASE !== 'undefined') {  // Legacy support
-            return STATICTOP - STATIC_BASE;
-        }
-
-        console.warn("Problem with retrieving static memory size");
-        return -1;
-    },
-
-    _GetDynamicMemorySize: function()
-    {
-        if(typeof Module !== 'undefined' && typeof Module.dynamicAlloc !== 'undefined') {
-            return Module.dynamicAlloc;
-        }
-        if(typeof HEAP32 !== 'undefined' && typeof DYNAMICTOP_PTR !== 'undefined' && typeof DYNAMIC_BASE !== 'undefined') {  // Legacy support
-            return HEAP32[DYNAMICTOP_PTR >> 2] - DYNAMIC_BASE;
-        }
-
-        console.warn("Problem with retrieving dynamic memory size");
         return -1;
     }
 };

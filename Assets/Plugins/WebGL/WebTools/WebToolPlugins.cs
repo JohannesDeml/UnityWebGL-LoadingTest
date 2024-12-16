@@ -34,10 +34,6 @@ namespace Supyrb
 		private static extern string _GetUserAgent();
 		[DllImport("__Internal")]
 		private static extern uint _GetTotalMemorySize();
-		[DllImport("__Internal")]
-		private static extern uint _GetStaticMemorySize();
-		[DllImport("__Internal")]
-		private static extern uint _GetDynamicMemorySize();
 #endif
 
 		private static bool _infoPanelVisible = false;
@@ -155,6 +151,20 @@ namespace Supyrb
 		}
 
 		/// <summary>
+		/// Log all current memory data in MB
+		/// </summary>
+		public static void LogMemory()
+		{
+#if UNITY_WEBGL && !UNITY_EDITOR
+			var managed = GetManagedMemorySize();
+			var total = GetTotalMemorySize();
+			Debug.Log($"Memory stats:\nManaged: {managed:0.00}MB\nTotal: {total:0.00}MB");
+#elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
+			Debug.Log($"{nameof(WebToolPlugins)}.{nameof(LogMemory)} called");
+#endif
+		}
+
+		/// <summary>
 		/// Get the total memory size used by the application in MB
 		/// </summary>
 		/// <returns>Size in MB</returns>
@@ -165,71 +175,6 @@ namespace Supyrb
 			return GetMegaBytes(bytes);
 #elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
 			Debug.Log($"{nameof(WebToolPlugins)}.{nameof(GetTotalMemorySize)} called");
-			return -1f;
-#else
-			return -1f;
-#endif
-		}
-
-		/// <summary>
-		/// Log all current memory data in MB
-		/// </summary>
-		public static void LogMemory()
-		{
-#if UNITY_WEBGL && !UNITY_EDITOR
-			var managed = GetManagedMemorySize();
-			var native = GetNativeMemorySize();
-			var total = GetTotalMemorySize();
-			Debug.Log($"Memory stats:\nManaged: {managed:0.00}MB\nNative: {native:0.00}MB\nTotal: {total:0.00}MB");
-#elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
-			Debug.Log($"{nameof(WebToolPlugins)}.{nameof(LogMemory)} called");
-#endif
-		}
-
-		/// <summary>
-		/// Get the static memory size used by the application in MB
-		/// </summary>
-		/// <returns>Size in MB</returns>
-		public static float GetStaticMemorySize()
-		{
-#if UNITY_WEBGL && !UNITY_EDITOR
-			var bytes = _GetStaticMemorySize();
-			return GetMegaBytes(bytes);
-#elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
-			Debug.Log($"{nameof(WebToolPlugins)}.{nameof(GetStaticMemorySize)} called");
-			return -1f;
-#else
-			return -1f;
-#endif
-		}
-
-		/// <summary>
-		/// Get the dynamic memory size used by the application in MB
-		/// </summary>
-		/// <returns>Size in MB</returns>
-		public static float GetDynamicMemorySize()
-		{
-#if UNITY_WEBGL && !UNITY_EDITOR
-			var bytes = _GetStaticMemorySize();
-			return GetMegaBytes(bytes);
-#elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
-			Debug.Log($"{nameof(WebToolPlugins)}.{nameof(GetDynamicMemorySize)} called");
-			return -1f;
-#else
-			return -1f;
-#endif
-		}
-
-		/// <summary>
-		/// Get the native memory size used by the application in MB (Static + Dynamic memory)
-		/// </summary>
-		/// <returns>Size in MB</returns>
-		public static float GetNativeMemorySize()
-		{
-#if UNITY_WEBGL && !UNITY_EDITOR
-			return GetDynamicMemorySize() + GetStaticMemorySize();
-#elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
-			Debug.Log($"{nameof(WebToolPlugins)}.{nameof(GetNativeMemorySize)} called");
 			return -1f;
 #else
 			return -1f;
