@@ -302,7 +302,7 @@ namespace Supyrb
 		[WebCommand(Description = "Save current screen as PNG")]
 		public void SaveScreenshot()
 		{
-			SaveScreenshot(1);
+			SaveScreenshotSuperSize(1);
 		}
 
 		/// <summary>
@@ -310,7 +310,7 @@ namespace Supyrb
 		/// </summary>
 		/// <param name="superSize">1 for normal size, 2 for double size, 4 for quadruple size</param>
 		[WebCommand(Description = "Save current screen as PNG with variable super size")]
-		public void SaveScreenshot(int superSize)
+		public void SaveScreenshotSuperSize(int superSize)
 		{
 			StartCoroutine(CaptureScreenshot(superSize));
 		}
@@ -324,7 +324,7 @@ namespace Supyrb
 			try
 			{
 				// Capture the screen
-				var screenshot = ScreenCapture.CaptureScreenshotAsTexture(superSize);
+				Texture2D screenshot = ScreenCapture.CaptureScreenshotAsTexture(superSize);
 
 				try
 				{
@@ -334,7 +334,7 @@ namespace Supyrb
 					// Download through browser
 					WebToolPlugins.DownloadBinaryFile(filename, pngData, "image/png");
 
-					Debug.Log($"Screenshot saved as {filename}");
+					Debug.Log($"Screenshot saved as {filename} ({screenshot.width}x{screenshot.height}) with size {pngData.Length} bytes");
 				}
 				finally
 				{
