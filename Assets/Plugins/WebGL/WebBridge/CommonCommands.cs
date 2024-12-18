@@ -9,6 +9,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Supyrb.Attributes;
 using UnityEngine;
@@ -273,6 +274,85 @@ namespace Supyrb
 		{
 			GraphicsSettings.logWhenShaderIsCompiled = enabled == 1;
 			Debug.Log($"GraphicsSettings.logWhenShaderIsCompiled: {GraphicsSettings.logWhenShaderIsCompiled}");
+		}
+
+		/// <summary>
+		/// Copy text to clipboard using the browser's clipboard API
+		/// </summary>
+		/// <param name="text">Text to copy to clipboard</param>
+		[WebCommand(Description = "Copy text to clipboard")]
+		public void CopyToClipboard(string text)
+		{
+			WebToolPlugins.CopyToClipboard(text);
+		}
+
+		/// <summary>
+		/// Check if the browser has an internet connection
+		/// </summary>
+		[WebCommand(Description = "Check if browser is online")]
+		public void CheckOnlineStatus()
+		{
+			bool isOnline = WebToolPlugins.IsOnline();
+			Debug.Log($"<color=#4D65A4>Online Status:</color> {(isOnline ? "<color=#3bb508>Connected</color>" : "<color=#b50808>Disconnected</color>")}");
+		}
+
+		/// <summary>
+		/// Captures the current screen and saves it as a PNG file.
+		/// </summary>
+		[WebCommand(Description = "Save current screen as PNG")]
+		public void SaveScreenshot()
+		{
+			SaveScreenshotSuperSize(1);
+		}
+
+		/// <summary>
+		/// Captures the current screen and saves it as a PNG file.
+		/// </summary>
+		/// <param name="superSize">1 for normal size, 2 for double size, 4 for quadruple size</param>
+		[WebCommand(Description = "Save current screen as PNG with variable super size")]
+		public void SaveScreenshotSuperSize(int superSize)
+		{
+			StartCoroutine(CaptureScreenshot(superSize));
+		}
+
+		private IEnumerator CaptureScreenshot(int superSize)
+		{
+			// Wait for the end of frame to ensure everything is rendered
+			yield return new WaitForEndOfFrame();
+
+			string filename = "screenshot.png";
+			try
+			{
+				// Capture the screen
+				Texture2D screenshot = ScreenCapture.CaptureScreenshotAsTexture(superSize);
+
+				try
+				{
+					// Convert to PNG
+					byte[] pngData = screenshot.EncodeToPNG();
+
+					// Download through browser
+					WebToolPlugins.DownloadBinaryFile(filename, pngData, "image/png");
+
+					Debug.Log($"Screenshot saved as {filename} ({screenshot.width}x{screenshot.height}) with size {pngData.Length} bytes");
+				}
+				finally
+				{
+					// Clean up the texture
+					if (Application.isPlaying)
+					{
+						Destroy(screenshot);
+					}
+					else
+					{
+						DestroyImmediate(screenshot);
+					}
+				}
+			}
+			catch (System.Exception e)
+			{
+				Debug.LogError($"Failed to save screenshot: {e.Message}");
+			}
 		}
 	}
 }
