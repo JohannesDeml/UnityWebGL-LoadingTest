@@ -18,10 +18,10 @@ namespace Supyrb
 	public class WebEventListeners : MonoBehaviour
 	{
 
-		#if UNITY_WEBGL
+#if UNITY_WEBGL && !UNITY_EDITOR
 		[DllImport("__Internal")]
 		private static extern void _AddJsEventListener(string eventName);
-		#endif
+#endif
 		private const string GameObjectName = "WebEventListeners";
 
 		private Dictionary<string, WebEventListener> eventListeners = new Dictionary<string, WebEventListener>();
@@ -55,9 +55,11 @@ namespace Supyrb
 				eventListeners[eventName] = eventComponent;
 				eventComponent.OnEvent += callback;
 
-#if UNITY_WEBGL
+#if UNITY_WEBGL && !UNITY_EDITOR
 				// Add event listener on javascript side
 				_AddJsEventListener(eventName);
+#elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
+			Debug.Log($"<color=#00CCCC>{nameof(WebEventListeners)}.{nameof(AddEventListenerInternal)} add callback for {eventName}</color>");
 #endif
 			}
 		}

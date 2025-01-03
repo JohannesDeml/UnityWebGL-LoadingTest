@@ -19,7 +19,7 @@ namespace Supyrb
 {
 	public static class WebToolPlugins
 	{
-#if UNITY_WEBGL
+#if UNITY_WEBGL && !UNITY_EDITOR
 		[DllImport("__Internal")]
 		private static extern void _SetStringVariable(string variableName, string variableValue);
 		[DllImport("__Internal")]
