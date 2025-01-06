@@ -149,35 +149,46 @@ The script `WebGlBridge` adds an easy to access gameobject that can be called fr
 
 Currently the following commands are available:
 
+### CommonCommands
 ```javascript
-Available commands:
----CommonCommands---
+runUnityCommand("AllocateByteArrayMemory", int mb); -> Allocate memory to test memory usage and limits
+runUnityCommand("CheckOnlineStatus"); -> Check if browser is online
+runUnityCommand("CopyToClipboard", "string text"); -> Copy text to clipboard
+runUnityCommand("DeleteAllPlayerPrefs"); -> PlayerPrefs.DeleteAll
 runUnityCommand("DisableCaptureAllKeyboardInput"); -> Disable unity from consuming all keyboard input
 runUnityCommand("EnableCaptureAllKeyboardInput"); -> Enable unity from consuming all keyboard input
-runUnityCommand("LogMemory"); -> Logs the current memory
-runUnityCommand("UnloadUnusedAssets"); -> Resources.UnloadUnusedAssets
-runUnityCommand("SetApplicationRunInBackground", System.Int32 runInBackground); -> Application.runInBackground
-runUnityCommand("SetApplicationTargetFrameRate", System.Int32 targetFrameRate); -> Application.targetFrameRate
-runUnityCommand("SetTimeFixedDeltaTime", System.Single fixedDeltaTime); -> Time.fixedDeltaTime
-runUnityCommand("SetTimeTimeScale", System.Single timeScale); -> Time.timeScale
-runUnityCommand("ToggleInfoPanel"); -> Toggle develop ui visibility of InfoPanel
-runUnityCommand("LogUserAgent"); -> Log User Agent and isMobileDevice
 runUnityCommand("LogExampleMessages"); -> Log example messages for Log, warning and error
-runUnityCommand("LogMessage", "System.String message"); -> Log a custom message
-runUnityCommand("ThrowDictionaryException"); -> Throw a dictionary key not found exception
+runUnityCommand("LogMemory"); -> Logs the current memory
+runUnityCommand("LogMessage", "string message"); -> Log a custom message
+runUnityCommand("LogShaderCompilation", int enabled); -> GraphicsSettings.logWhenShaderIsCompiled
 runUnityCommand("LogTextureSupport"); -> Log supported and unsupported texture formats
-runUnityCommand("DeleteAllPlayerPrefs"); -> PlayerPrefs.DeleteAll
-runUnityCommand("LogShaderCompilation", System.Int32 enabled); -> GraphicsSettings.logWhenShaderIsCompiled
+runUnityCommand("LogUserAgent"); -> Log User Agent and isMobileDevice
+runUnityCommand("ReleaseByteArrayMemory"); -> Release all allocated byte array memory
+runUnityCommand("SaveScreenshot"); -> Save current screen as PNG
+runUnityCommand("SaveScreenshotSuperSize", int superSize); -> Save current screen as PNG with variable super size
+runUnityCommand("SetApplicationRunInBackground", int runInBackground); -> Application.runInBackground
+runUnityCommand("SetApplicationTargetFrameRate", int targetFrameRate); -> Application.targetFrameRate
+runUnityCommand("SetTimeFixedDeltaTime", float fixedDeltaTime); -> Time.fixedDeltaTime
+runUnityCommand("SetTimeTimeScale", float timeScale); -> Time.timeScale
+runUnityCommand("ThrowDictionaryException"); -> Throw a dictionary key not found exception
+runUnityCommand("ToggleInfoPanel"); -> Toggle develop ui visibility of InfoPanel
+runUnityCommand("TriggerGarbageCollection"); -> Trigger garbage collection
+runUnityCommand("UnloadUnusedAssets"); -> Resources.UnloadUnusedAssets
+  ```
 
----ObjectSpawnerCommands---
-runUnityCommand("PauseSpawning"); -> Pause spawning of cubes
-runUnityCommand("ResumeSpawning"); -> Resume spawning of cubes
+### ObjectSpawnerCommands
+```javascript
 runUnityCommand("AddSpawner"); -> Add a spawner
+runUnityCommand("PauseSpawning"); -> Pause spawning of cubes
 runUnityCommand("RemoveSpawner"); -> Remove a spawner
+runUnityCommand("ResumeSpawning"); -> Resume spawning of cubes
+  ```
 
----WebBridge---
+### WebBridge
+```javascript
 runUnityCommand("Help"); -> Log all available commands
   ```
+
 
 ## Github Build Actions
 
