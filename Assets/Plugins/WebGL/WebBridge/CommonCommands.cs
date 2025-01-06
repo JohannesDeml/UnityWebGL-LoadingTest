@@ -11,6 +11,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using Supyrb.Attributes;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -159,6 +161,47 @@ namespace Supyrb
 		{
 			Time.timeScale = timeScale;
 			Debug.Log($"Time.timeScale: {Time.timeScale}");
+		}
+
+		/// <summary>
+		/// Finds GameObject(s) by name and logs the found GameObject(s) and their components
+		/// </summary>
+		/// <param name="name">The name of the GameObject to find</param>
+		[WebCommand(Description = "Find GameObject by name and log its components")]
+		[ContextMenu(nameof(FindGameObjectByName))]
+		public void FindGameObjectByName(string name)
+		{
+			var gameObjects = GameObject.FindObjectsOfType<GameObject>().Where(go => go.name == name).ToArray();
+			if (gameObjects.Length == 0)
+			{
+				Debug.Log($"No GameObject found with the name: {name}");
+			}
+			else
+			{
+				StringBuilder sb = new StringBuilder();
+				foreach (var go in gameObjects)
+				{
+					int pathStartIndex = 0;
+					var currentTransform = go.transform;
+					sb.Insert(pathStartIndex, currentTransform.name);
+					currentTransform = currentTransform.parent;
+					while (currentTransform != null)
+					{
+						sb.Insert(pathStartIndex, currentTransform.name + "/");
+						currentTransform = currentTransform.parent;
+					}
+
+					sb.AppendLine($", Tag: {go.tag}, Layer: {go.layer}, ActiveSelf: {go.activeSelf}, ActiveInHierarchy: {go.activeInHierarchy}");
+					sb.AppendLine("Attached Components:");
+					var components = go.GetComponents<Component>();
+					foreach (var component in components)
+					{
+						sb.AppendLine($"- {component.GetType().Name}");
+					}
+					Debug.Log(sb.ToString());
+					sb.Clear();
+				}
+			}
 		}
 
 		/// <summary>
