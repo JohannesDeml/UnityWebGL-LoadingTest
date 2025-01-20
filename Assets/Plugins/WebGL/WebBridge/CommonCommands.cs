@@ -11,6 +11,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using Supyrb.Attributes;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -162,6 +164,68 @@ namespace Supyrb
 		}
 
 		/// <summary>
+		/// Log information about when the WebBridge was initialized
+		/// </summary>
+		[WebCommand(Description = "Log initialization time information")]
+		[ContextMenu(nameof(LogInitializationTime))]
+		public void LogInitializationTime()
+		{
+			var currentUnityTime = Time.realtimeSinceStartupAsDouble;
+			var currentUtcTime = DateTime.UtcNow;
+
+			var unityTimeSinceInit = currentUnityTime - WebBridge.InitializationUnityTime;
+			var utcTimeSinceInit = currentUtcTime - WebBridge.InitializationUtcTime;
+
+			var timeComparison = unityTimeSinceInit > utcTimeSinceInit.TotalSeconds
+				? "future"
+				: "past";
+
+			Debug.Log($"Unity Time since init: {unityTimeSinceInit:F2}s\n" +
+					  $"UTC Time since init: {utcTimeSinceInit.TotalSeconds:F2}s\n" +
+					  $"Unity time lies {Math.Abs(unityTimeSinceInit - utcTimeSinceInit.TotalSeconds):F2}s in the {timeComparison} compared to UTC");
+		}
+
+		/// <summary>
+		/// Finds GameObject(s) by name and logs the found GameObject(s) and their components
+		/// </summary>
+		/// <param name="name">The name of the GameObject to find</param>
+		[WebCommand(Description = "Find GameObject by name and log its components")]
+		public void FindGameObjectByName(string name)
+		{
+			var gameObjects = GameObject.FindObjectsOfType<GameObject>().Where(go => go.name == name).ToArray();
+			if (gameObjects.Length == 0)
+			{
+				Debug.Log($"No GameObject found with the name: {name}");
+			}
+			else
+			{
+				StringBuilder sb = new StringBuilder();
+				foreach (var go in gameObjects)
+				{
+					int pathStartIndex = 0;
+					var currentTransform = go.transform;
+					sb.Insert(pathStartIndex, currentTransform.name);
+					currentTransform = currentTransform.parent;
+					while (currentTransform != null)
+					{
+						sb.Insert(pathStartIndex, currentTransform.name + "/");
+						currentTransform = currentTransform.parent;
+					}
+
+					sb.AppendLine($", Tag: {go.tag}, Layer: {go.layer}, ActiveSelf: {go.activeSelf}, ActiveInHierarchy: {go.activeInHierarchy}");
+					sb.AppendLine("Attached Components:");
+					var components = go.GetComponents<Component>();
+					foreach (var component in components)
+					{
+						sb.AppendLine($"- {component.GetType().Name}");
+					}
+					Debug.Log(sb.ToString());
+					sb.Clear();
+				}
+			}
+		}
+
+		/// <summary>
 		/// Toggle the visibility of the info panel in the top right corner
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL", "ToggleInfoPanel");</code>
 		/// </summary>
@@ -269,7 +333,6 @@ namespace Supyrb
 		/// </summary>
 		/// <param name="runInBackground">1 if it should run in background</param>
 		[WebCommand(Description = "GraphicsSettings.logWhenShaderIsCompiled")]
-		[ContextMenu(nameof(LogShaderCompilation))]
 		public void LogShaderCompilation(int enabled)
 		{
 			GraphicsSettings.logWhenShaderIsCompiled = enabled == 1;

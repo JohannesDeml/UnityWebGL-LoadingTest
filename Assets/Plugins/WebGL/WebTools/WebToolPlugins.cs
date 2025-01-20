@@ -19,7 +19,7 @@ namespace Supyrb
 {
 	public static class WebToolPlugins
 	{
-#if UNITY_WEBGL
+#if UNITY_WEBGL && !UNITY_EDITOR
 		[DllImport("__Internal")]
 		private static extern void _SetStringVariable(string variableName, string variableValue);
 		[DllImport("__Internal")]
@@ -81,7 +81,8 @@ namespace Supyrb
 #if UNITY_WEBGL && !UNITY_EDITOR
 			_AddFpsTrackingEvent(fps);
 #elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
-			Debug.Log($"{nameof(WebToolPlugins)}.{nameof(AddFpsTrackingEvent)} called with {fps:0.00}");
+			// This is called often, so it can spam the console, uncomment if needed
+			//Debug.Log($"{nameof(WebToolPlugins)}.{nameof(AddFpsTrackingEvent)} called with {fps:0.00}");
 #endif
 		}
 
