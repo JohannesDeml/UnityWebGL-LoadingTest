@@ -164,11 +164,32 @@ namespace Supyrb
 		}
 
 		/// <summary>
+		/// Log information about when the WebBridge was initialized
+		/// </summary>
+		[WebCommand(Description = "Log initialization time information")]
+		[ContextMenu(nameof(LogInitializationTime))]
+		public void LogInitializationTime()
+		{
+			var currentUnityTime = Time.realtimeSinceStartupAsDouble;
+			var currentUtcTime = DateTime.UtcNow;
+
+			var unityTimeSinceInit = currentUnityTime - WebBridge.InitializationUnityTime;
+			var utcTimeSinceInit = currentUtcTime - WebBridge.InitializationUtcTime;
+
+			var timeComparison = unityTimeSinceInit > utcTimeSinceInit.TotalSeconds
+				? "future"
+				: "past";
+
+			Debug.Log($"Unity Time since init: {unityTimeSinceInit:F2}s\n" +
+					  $"UTC Time since init: {utcTimeSinceInit.TotalSeconds:F2}s\n" +
+					  $"Unity time lies {Math.Abs(unityTimeSinceInit - utcTimeSinceInit.TotalSeconds):F2}s in the {timeComparison} compared to UTC");
+		}
+
+		/// <summary>
 		/// Finds GameObject(s) by name and logs the found GameObject(s) and their components
 		/// </summary>
 		/// <param name="name">The name of the GameObject to find</param>
 		[WebCommand(Description = "Find GameObject by name and log its components")]
-		[ContextMenu(nameof(FindGameObjectByName))]
 		public void FindGameObjectByName(string name)
 		{
 			var gameObjects = GameObject.FindObjectsOfType<GameObject>().Where(go => go.name == name).ToArray();
@@ -312,7 +333,6 @@ namespace Supyrb
 		/// </summary>
 		/// <param name="runInBackground">1 if it should run in background</param>
 		[WebCommand(Description = "GraphicsSettings.logWhenShaderIsCompiled")]
-		[ContextMenu(nameof(LogShaderCompilation))]
 		public void LogShaderCompilation(int enabled)
 		{
 			GraphicsSettings.logWhenShaderIsCompiled = enabled == 1;
