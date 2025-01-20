@@ -48,3 +48,4 @@ MonoBehaviour:
   spawnCoolDownSeconds: 0.4
   spawnOffsetSeconds: 0
   maxInstances: 1000
+  spawnSceneName: Cubes
