@@ -26,12 +26,16 @@ namespace Supyrb
 	public class WebBridge : WebCommands
 	{
 		private const string GameObjectName = "WebBridge";
+		public static double InitializationUnityTime {get; private set;}
+		public static DateTime InitializationUtcTime {get; private set;}
 
 		private static GameObject instance;
 #if UNITY_WEBGL
 		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
 		private static void OnBeforeSceneLoadRuntimeMethod()
 		{
+			InitializationUnityTime = Time.realtimeSinceStartupAsDouble;
+			InitializationUtcTime = DateTime.UtcNow;
 			SetGlobalVariables();
 			instance = new GameObject(GameObjectName);
 			DontDestroyOnLoad(instance);
