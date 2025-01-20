@@ -8,8 +8,10 @@
 // </author>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Supyrb
 {
@@ -29,6 +31,10 @@ namespace Supyrb
 
 		[SerializeField]
 		private int maxInstances = 200;
+
+		[SerializeField]
+		[Tooltip("If set, the object will be spawned in the scene with the given name")]
+		private string spawnSceneName = string.Empty;
 
 		public float SpawnCoolDownSeconds
 		{
@@ -102,12 +108,35 @@ namespace Supyrb
 				return;
 			}
 
-			var newGo = Instantiate(prefab, transform.position, transform.rotation);
+			var newGo = InstantiatePrefab();
 			spawnedObjects.Enqueue(newGo);
 			totalSpawnCount++;
 		}
 
-		#if UNITY_EDITOR
+		private GameObject InstantiatePrefab()
+		{
+			var lastActiveScene = SceneManager.GetActiveScene();
+			if(!string.IsNullOrEmpty(spawnSceneName))
+			{
+				var spawnScene = SceneManager.GetSceneByName(spawnSceneName);
+				if(!spawnScene.IsValid())
+				{
+					spawnScene = SceneManager.CreateScene(spawnSceneName);
+				}
+				SceneManager.SetActiveScene(spawnScene);
+			}
+
+			var newGo = Instantiate(prefab, transform.position, transform.rotation);
+
+			if(!string.IsNullOrEmpty(spawnSceneName))
+			{
+				SceneManager.SetActiveScene(lastActiveScene);
+			}
+
+			return newGo;
+		}
+
+#if UNITY_EDITOR
 		private void OnDrawGizmos()
 		{
 			Gizmos.DrawWireSphere(transform.position, 0.5f);
