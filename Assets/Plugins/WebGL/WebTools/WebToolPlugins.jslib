@@ -46,7 +46,7 @@ var WebGlPlugins =
         }
 
         var currentTimeRounded = currentTime.toFixed(2);
-        console.log('Time tracker event ' +eventNameText +': ' + currentTimeRounded + 'ms');
+        console.log('Time tracker event ' + eventNameText + ': ' + currentTimeRounded + 'ms');
     },
 
     _AddFpsTrackingEvent: function(fps) {
@@ -88,42 +88,64 @@ var WebGlPlugins =
 
     _GetTotalMemorySize: function()
     {
-        if(typeof TOTAL_MEMORY !== 'undefined') {
+        if(typeof HEAP8 !== 'undefined') {
+            return HEAP8.length;
+        }
+        if(typeof TOTAL_MEMORY !== 'undefined') {  // Legacy support
             return TOTAL_MEMORY;
         }
 
-        console.warn("Problem with retrieving unity value. TOTAL_MEMORY: " + typeof TOTAL_MEMORY);
+        console.warn("Problem with retrieving total memory size");
         return -1;
     },
 
-    _GetTotalStackSize: function()
-    {
-        if(typeof TOTAL_STACK !== 'undefined') {
-            return TOTAL_STACK;
-        }
-
-        console.warn("Problem with retrieving unity value. TOTAL_STACK: " + typeof TOTAL_STACK);
-        return -1;
+    _CopyToClipboard: function(text) {
+        var str = UTF8ToString(text);
+        navigator.clipboard.writeText(str)
+            .then(function() {
+            })
+            .catch(function(err) {
+                console.error('Failed to copy text: ', err);
+            });
     },
 
-    _GetStaticMemorySize: function()
-    {
-        if(typeof STATICTOP !== 'undefined' && typeof STATIC_BASE !== 'undefined') {
-            return STATICTOP - STATIC_BASE;
-        }
-
-        console.warn("Problem with retrieving unity value. STATICTOP: " + typeof STATICTOP + ", STATIC_BASE: " + typeof STATIC_BASE);
-        return -1;
+    _IsOnline: function() {
+        return navigator.onLine ? 1 : 0;
     },
 
-    _GetDynamicMemorySize: function()
-    {
-        if(typeof HEAP32 !== 'undefined' && typeof DYNAMICTOP_PTR !== 'undefined' && typeof DYNAMIC_BASE !== 'undefined') {
-            return HEAP32[DYNAMICTOP_PTR >> 2] - DYNAMIC_BASE;
+    _DownloadFile: function(filename, content) {
+        var filenameStr = UTF8ToString(filename);
+        var contentStr = UTF8ToString(content);
+
+        var element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(contentStr));
+        element.setAttribute('download', filenameStr);
+        element.style.display = 'none';
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+    },
+
+    _DownloadBlob: function(filename, byteArray, byteLength, mimeType) {
+        var filenameStr = UTF8ToString(filename);
+        var mimeTypeStr = UTF8ToString(mimeType);
+
+        var data = new Uint8Array(byteLength);
+        for (var i = 0; i < byteLength; i++) {
+            data[i] = HEAPU8[byteArray + i];
         }
 
-        console.warn("Problem with retrieving unity value. HEAP32: " + typeof HEAP32 + ", DYNAMICTOP_PTR: " + typeof DYNAMICTOP_PTR + ", DYNAMIC_BASE: " + typeof DYNAMIC_BASE);
-        return -1;
+        var blob = new Blob([data], { type: mimeTypeStr });
+        var url = URL.createObjectURL(blob);
+
+        var element = document.createElement('a');
+        element.setAttribute('href', url);
+        element.setAttribute('download', filenameStr);
+        element.style.display = 'none';
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+        URL.revokeObjectURL(url);
     }
 };
 

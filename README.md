@@ -4,7 +4,7 @@
 
 [![](https://img.shields.io/github/release-date/JohannesDeml/UnityWebGL-LoadingTest.svg)](https://github.com/JohannesDeml/UnityWebGL-LoadingTest/releases) [![Tested up to Unity 6](https://img.shields.io/badge/tested%20up%20to%20unity-6000.0-green.svg?logo=unity&cacheSeconds=2592000)](https://unity3d.com/get-unity/download/archive)
 
-*Testing Unity's WebGL size and loading time for different versions (2018.4 - 6000.0) and platforms*
+*Testing Unity's WebGL size and loading time for different versions (2018.4 - 6000.0) and settings*
 
 * [Unity Forum Thread](https://forum.unity.com/threads/webgl-builds-for-mobile.545877/)
 * [Overview page of all builds](https://deml.io/experiments/unity-webgl/)
@@ -28,79 +28,49 @@
 * Tracking multiple Unity versions starting from 2018.4
 * Build targets for webgl1, webgl2 and webgpu
 
-## Live Demos
-
+## Live Demos ([All Builds](https://deml.io/experiments/unity-webgl/))
 
 ### Built-in Renderpipeline WebGL2
 Version | Size | Link
 --- | --- | ---
-2023.2.10f1 | 3.19 MB | https://deml.io/experiments/unity-webgl/2023.2.10f1-webgl2
-2023.1.20f1 | 3.10 MB | https://deml.io/experiments/unity-webgl/2023.1.20f1-webgl2
-2022.3.20f1 | 3.08 MB | https://deml.io/experiments/unity-webgl/2022.3.20f1-webgl2
-2022.2.18f1 | 3.06 MB | https://deml.io/experiments/unity-webgl/2022.2.18f1-webgl2
-2022.1.24f1 | 2.82 MB | https://deml.io/experiments/unity-webgl/2022.1.24f1-webgl2
-2021.3.35f1 | 2.77 MB | https://deml.io/experiments/unity-webgl/2021.3.35f1-webgl2
+6000.0.25f1 | 3.32 MB | https://deml.io/experiments/unity-webgl/6000.0.25f1-webgl2
+2023.2.20f1 | 3.23 MB | https://deml.io/experiments/unity-webgl/2023.2.20f1-webgl2
+2023.1.20f1 | 3.14 MB | https://deml.io/experiments/unity-webgl/2023.1.20f1-webgl2
+2022.3.50f1 | 3.12 MB | https://deml.io/experiments/unity-webgl/2022.3.50f1-webgl2
+2021.3.45f1 | 2.78 MB | https://deml.io/experiments/unity-webgl/2021.3.45f1-webgl2
 2020.3.48f1 | 2.96 MB | https://deml.io/experiments/unity-webgl/2020.3.48f1-webgl2
-2019.4.40f1 | 3.05 MB | https://deml.io/experiments/unity-webgl/2019.4.40f1-webgl2
-2018.4.36f1 | 2.84 MB | https://deml.io/experiments/unity-webgl/2018.4.36f1-webgl2
-
-### Built-in Renderpipeline WebGL1
-Version | Size | Link
---- | --- | ---
-2022.3.20f1 | 3.06 MB | https://deml.io/experiments/unity-webgl/2022.3.20f1-webgl1
-2022.2.18f1 | 3.04 MB | https://deml.io/experiments/unity-webgl/2022.2.18f1-webgl1
-2022.1.24f1 | 2.80 MB | https://deml.io/experiments/unity-webgl/2022.1.24f1-webgl1
-2021.3.35f1 | 2.76 MB | https://deml.io/experiments/unity-webgl/2021.3.35f1-webgl1
-2020.3.48f1 | 2.94 MB | https://deml.io/experiments/unity-webgl/2020.3.48f1-webgl1
-2019.4.40f1 | 3.01 MB | https://deml.io/experiments/unity-webgl/2019.4.40f1-webgl1
-2018.4.36f1 | 2.82 MB | https://deml.io/experiments/unity-webgl/2018.4.36f1-webgl1
 
 ### Built-in Renderpipeline Minimum size
 Version | Size | Link
 --- | --- | ---
-2023.2.10f1 | 3.02 MB | https://deml.io/experiments/unity-webgl/2023.2.10f1-minsize-webgl2
-2023.1.20f1 | 2.86 MB | https://deml.io/experiments/unity-webgl/2023.1.20f1-minsize-webgl2
-2022.3.20f1 | 2.84 MB | https://deml.io/experiments/unity-webgl/2022.3.20f1-minsize-webgl1
-2022.2.18f1 | 2.69 MB | https://deml.io/experiments/unity-webgl/2022.2.18f1-minsize-webgl1
-2022.1.24f1 | 2.64 MB | https://deml.io/experiments/unity-webgl/2022.1.24f1-minsize-webgl1
-2021.3.35f1 | 2.60 MB | https://deml.io/experiments/unity-webgl/2021.3.35f1-minsize-webgl1
+6000.0.25f1 | 2.92 MB | https://deml.io/experiments/unity-webgl/6000.0.25f1-minsize-webgl2
+2023.2.20f1 | 2.85 MB | https://deml.io/experiments/unity-webgl/2023.2.20f1-minsize-webgl2
+2023.1.20f1 | 2.72 MB | https://deml.io/experiments/unity-webgl/2023.1.20f1-minsize-webgl2
+2022.3.50f1 | 2.69 MB | https://deml.io/experiments/unity-webgl/2022.3.50f1-minsize-webgl1
+2021.3.45f1 | 2.74 MB | https://deml.io/experiments/unity-webgl/2021.3.45f1-minsize-webgl1
 2020.3.48f1 | 2.48 MB | https://deml.io/experiments/unity-webgl/2020.3.48f1-minsize-webgl1
-2019.4.40f1 | 2.96 MB | https://deml.io/experiments/unity-webgl/2019.4.40f1-minsize-webgl1
-2018.4.36f1 | 2.77 MB | https://deml.io/experiments/unity-webgl/2018.4.36f1-minsize-webgl1
 
 ### URP WebGL2
 Version | Size | Link
 --- | --- | ---
-2023.2.10f1 | 6.66 MB | https://deml.io/experiments/unity-webgl/2023.2.10f1-urp-webgl2
-2023.1.20f1 | 6.06 MB | https://deml.io/experiments/unity-webgl/2023.1.20f1-urp-webgl2
-2022.3.20f1 | 5.76 MB | https://deml.io/experiments/unity-webgl/2022.3.20f1-urp-webgl2
-2022.2.18f1 | 7.22 MB | https://deml.io/experiments/unity-webgl/2022.2.18f1-urp-webgl2
-2022.1.24f1 | 6.47 MB | https://deml.io/experiments/unity-webgl/2022.1.24f1-urp-webgl2
-2021.3.35f1 | 6.30 MB | https://deml.io/experiments/unity-webgl/2021.3.35f1-urp-webgl2
+6000.0.25f1 | 7.82 MB | https://deml.io/experiments/unity-webgl/6000.0.25f1-urp-webgl2
+2023.2.20f1 | 6.87 MB | https://deml.io/experiments/unity-webgl/2023.2.20f1-urp-webgl2
+2023.1.20f1 | 6.25 MB | https://deml.io/experiments/unity-webgl/2023.1.20f1-urp-webgl2
+2022.3.50f1 | 5.92 MB | https://deml.io/experiments/unity-webgl/2022.3.50f1-urp-webgl2
+2021.3.45f1 | 6.31 MB | https://deml.io/experiments/unity-webgl/2021.3.45f1-urp-webgl2
 2020.3.48f1 | 5.60 MB | https://deml.io/experiments/unity-webgl/2020.3.48f1-urp-webgl2
-2019.4.40f1 | 5.56 MB | https://deml.io/experiments/unity-webgl/2019.4.40f1-urp-webgl2
-2018.4.36f1 | 2.81 MB | https://deml.io/experiments/unity-webgl/2018.4.36f1-urp-webgl2
-
-### URP WebGL1
-Version | Size | Link
---- | --- | ---
-2022.3.20f1 | 5.73 MB | https://deml.io/experiments/unity-webgl/2022.3.20f1-urp-webgl1
-2022.2.18f1 | 7.08 MB | https://deml.io/experiments/unity-webgl/2022.2.18f1-urp-webgl1
-2022.1.24f1 | 6.33 MB | https://deml.io/experiments/unity-webgl/2022.1.24f1-urp-webgl1
-2021.3.35f1 | 6.12 MB | https://deml.io/experiments/unity-webgl/2021.3.35f1-urp-webgl1
-2020.3.48f1 | 5.44 MB | https://deml.io/experiments/unity-webgl/2020.3.48f1-urp-webgl1
-2019.4.40f1 | 5.51 MB | https://deml.io/experiments/unity-webgl/2019.4.40f1-urp-webgl1
-2018.4.36f1 | 2.80 MB | https://deml.io/experiments/unity-webgl/2018.4.36f1-urp-webgl1
 
 ### URP Minimum Size
 Version | Size | Link
 --- | --- | ---
-2023.2.10f1 | 6.38 MB | https://deml.io/experiments/unity-webgl/2023.2.10f1-urp-minsize-webgl2
+6000.0.25f1 | 6.05 MB | https://deml.io/experiments/unity-webgl/6000.0.25f1-urp-minsize-webgl2
+2023.2.20f1 | 5.30 MB | https://deml.io/experiments/unity-webgl/2023.2.20f1-urp-minsize-webgl2
 2023.1.20f1 | 5.71 MB | https://deml.io/experiments/unity-webgl/2023.1.20f1-urp-minsize-webgl2
-2022.3.20f1 | 5.38 MB | https://deml.io/experiments/unity-webgl/2022.3.20f1-urp-minsize-webgl1
-2022.1.24f1 | 6.06 MB | https://deml.io/experiments/unity-webgl/2022.1.24f1-urp-minsize-webgl1
-2021.3.35f1 | 5.87 MB | https://deml.io/experiments/unity-webgl/2021.3.35f1-urp-minsize-webgl1
+2022.3.50f1 | 4.65 MB | https://deml.io/experiments/unity-webgl/2022.3.50f1-urp-minsize-webgl1
+2021.3.45f1 | 6.11 MB | https://deml.io/experiments/unity-webgl/2021.3.45f1-urp-minsize-webgl1
 2020.3.48f1 | 4.86 MB | https://deml.io/experiments/unity-webgl/2020.3.48f1-urp-minsize-webgl1
+
+
 
 
 ## Platform Compatibility
@@ -179,19 +149,46 @@ The script `WebGlBridge` adds an easy to access gameobject that can be called fr
 
 Currently the following commands are available:
 
+### CommonCommands
 ```javascript
-unityGame.SendMessage("WebGL", "DisableCaptureAllKeyboardInput"); -> Disable unity from consuming all keyboard input
-unityGame.SendMessage("WebGL", "EnableCaptureAllKeyboardInput"); -> Enable unity from consuming all keyboard input
-unityGame.SendMessage("WebGL", "LogMemory"); -> Logs the current memory
-unityGame.SendMessage("WebGL", "SetApplicationRunInBackground", System.Int32 runInBackground); -> Application.runInBackground
-unityGame.SendMessage("WebGL", "SetApplicationTargetFrameRate", System.Int32 targetFrameRate); -> Application.targetFrameRate
-unityGame.SendMessage("WebGL", "SetTimeFixedDeltaTime", System.Single fixedDeltaTime); -> Time.fixedDeltaTime
-unityGame.SendMessage("WebGL", "SetTimeTimeScale", System.Single timeScale); -> Time.timeScale
-unityGame.SendMessage("WebGL", "ToggleInfoPanel"); -> Toggle develop ui visibility of InfoPanel
-unityGame.SendMessage("WebGL", "LogExampleMessage"); -> Log an example debug message
-unityGame.SendMessage("WebGL", "LogMessage", "System.String message"); -> Log a custom message
-unityGame.SendMessage("WebGL", "Help"); -> Log all available commands
+runUnityCommand("AllocateByteArrayMemory", int mb); -> Allocate memory to test memory usage and limits
+runUnityCommand("CheckOnlineStatus"); -> Check if browser is online
+runUnityCommand("CopyToClipboard", "string text"); -> Copy text to clipboard
+runUnityCommand("DeleteAllPlayerPrefs"); -> PlayerPrefs.DeleteAll
+runUnityCommand("DisableCaptureAllKeyboardInput"); -> Disable unity from consuming all keyboard input
+runUnityCommand("EnableCaptureAllKeyboardInput"); -> Enable unity from consuming all keyboard input
+runUnityCommand("LogExampleMessages"); -> Log example messages for Log, warning and error
+runUnityCommand("LogMemory"); -> Logs the current memory
+runUnityCommand("LogMessage", "string message"); -> Log a custom message
+runUnityCommand("LogShaderCompilation", int enabled); -> GraphicsSettings.logWhenShaderIsCompiled
+runUnityCommand("LogTextureSupport"); -> Log supported and unsupported texture formats
+runUnityCommand("LogUserAgent"); -> Log User Agent and isMobileDevice
+runUnityCommand("ReleaseByteArrayMemory"); -> Release all allocated byte array memory
+runUnityCommand("SaveScreenshot"); -> Save current screen as PNG
+runUnityCommand("SaveScreenshotSuperSize", int superSize); -> Save current screen as PNG with variable super size
+runUnityCommand("SetApplicationRunInBackground", int runInBackground); -> Application.runInBackground
+runUnityCommand("SetApplicationTargetFrameRate", int targetFrameRate); -> Application.targetFrameRate
+runUnityCommand("SetTimeFixedDeltaTime", float fixedDeltaTime); -> Time.fixedDeltaTime
+runUnityCommand("SetTimeTimeScale", float timeScale); -> Time.timeScale
+runUnityCommand("ThrowDictionaryException"); -> Throw a dictionary key not found exception
+runUnityCommand("ToggleInfoPanel"); -> Toggle develop ui visibility of InfoPanel
+runUnityCommand("TriggerGarbageCollection"); -> Trigger garbage collection
+runUnityCommand("UnloadUnusedAssets"); -> Resources.UnloadUnusedAssets
   ```
+
+### ObjectSpawnerCommands
+```javascript
+runUnityCommand("AddSpawner"); -> Add a spawner
+runUnityCommand("PauseSpawning"); -> Pause spawning of cubes
+runUnityCommand("RemoveSpawner"); -> Remove a spawner
+runUnityCommand("ResumeSpawning"); -> Resume spawning of cubes
+  ```
+
+### WebBridge
+```javascript
+runUnityCommand("Help"); -> Log all available commands
+  ```
+
 
 ## Github Build Actions
 
