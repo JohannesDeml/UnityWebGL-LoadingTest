@@ -32,7 +32,7 @@ on:
 
 jobs:
   upgrade-unity-version:
-    name: Upgrade Unity version and packages
+    name: Upgrade Unity version and packages to ${{ inputs.unityVersion }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -106,6 +106,13 @@ jobs:
         run: |
           LAST_UNITY_VERSION=$(sed -n 's/^\m_EditorVersion: //p'< ./ProjectSettings/ProjectVersion.txt)
           echo "VERSION=$LAST_UNITY_VERSION" >> $GITHUB_OUTPUT
+          BRANCH_NAME=${GITHUB_REF#refs/heads/}
+          if [[ "$BRANCH_NAME" == *"urp"* ]]
+          then
+            echo "NAME=$LAST_UNITY_VERSION-urp" >> $GITHUB_OUTPUT
+          else
+            echo "NAME=$LAST_UNITY_VERSION" >> $GITHUB_OUTPUT
+          fi
 
       - name: Set upgrade name
         id: upgrade_name
@@ -123,6 +130,7 @@ jobs:
       - name: Log variables
         run: |
           echo "last_unity_version -> ${{ steps.last_unity_version.outputs.VERSION }}"
+          echo "last_unity_name -> ${{ steps.last_unity_version.outputs.NAME }}"
           echo "upgrade_name -> ${{ steps.upgrade_name.outputs.NAME }}"
 
       - name: Build project
@@ -159,10 +167,10 @@ jobs:
         uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ secrets.PR_GITHUB_TOKEN }}
-          commit-message: "[Automated workflow] upgrade-unity from ${{steps.last_unity_version.outputs.VERSION}} to ${{ inputs.unityVersion }}"
-          branch: "ci/upgrade-unity/from-${{steps.last_unity_version.outputs.VERSION}}-to-${{ steps.upgrade_name.outputs.NAME }}"
+          commit-message: "[Automated workflow] upgrade-unity from ${{steps.last_unity_version.outputs.NAME}} to ${{ inputs.unityVersion }}"
+          branch: "ci/upgrade-unity/from-${{steps.last_unity_version.outputs.NAME}}-to-${{ steps.upgrade_name.outputs.NAME }}"
           delete-branch: true
-          title: "[Automated workflow] upgrade-unity from ${{steps.last_unity_version.outputs.VERSION}} to ${{ steps.upgrade_name.outputs.NAME }}"
+          title: "[Automated workflow] upgrade-unity from ${{steps.last_unity_version.outputs.NAME}} to ${{ steps.upgrade_name.outputs.NAME }}"
           body: ${{ steps.template.outputs.result }}
 
       - name: Add tags

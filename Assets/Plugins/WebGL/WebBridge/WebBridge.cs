@@ -18,22 +18,27 @@ using UnityEngine.Rendering;
 
 namespace Supyrb
 {
+
 	/// <summary>
 	/// Bridge to Unity to access unity logic through the browser console
 	/// You can extend your commands by creating a partial class for WebBridge, see WebBridge.Commands as an example
 	/// </summary>
 	public class WebBridge : WebCommands
 	{
-		private const string WebBridgeGameObjectName = "WebBridge";
+		private const string GameObjectName = "WebBridge";
+		public static double InitializationUnityTime {get; private set;}
+		public static DateTime InitializationUtcTime {get; private set;}
 
-		private static GameObject bridgeInstance;
+		private static GameObject instance;
 #if UNITY_WEBGL
 		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
 		private static void OnBeforeSceneLoadRuntimeMethod()
 		{
+			InitializationUnityTime = Time.realtimeSinceStartupAsDouble;
+			InitializationUtcTime = DateTime.UtcNow;
 			SetGlobalVariables();
-			bridgeInstance = new GameObject(WebBridgeGameObjectName);
-			DontDestroyOnLoad(bridgeInstance);
+			instance = new GameObject(GameObjectName);
+			DontDestroyOnLoad(instance);
 			AddAllWebCommands();
 		}
 #endif
@@ -58,7 +63,7 @@ namespace Supyrb
 			webCommandTypes.Sort((a, b) => a.Name.CompareTo(b.Name));
 			foreach (var webCommandType in webCommandTypes)
 			{
-				bridgeInstance.AddComponent(webCommandType);
+				instance.AddComponent(webCommandType);
 			}
 		}
 
