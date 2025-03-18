@@ -6,16 +6,13 @@
 
 *Testing Unity's WebGL size and loading time for different versions (2018.4 - 6000.0) and settings*
 
-* [Unity Forum Thread](https://forum.unity.com/threads/webgl-builds-for-mobile.545877/)
 * [Overview page of all builds](https://deml.io/experiments/unity-webgl/)
+* [Implementation in Godot](https://github.com/JohannesDeml/Godot-Web-LoadingTest)
+* [Unity Forum Thread](https://forum.unity.com/threads/webgl-builds-for-mobile.545877/)
 
 
 ## Features
 
-* Physics
-* GPU Instancing for materials
-* Shadows
-* Brotli Compression
 * Toggle-able In-DOM Debug console
   ![Debug Console Screenshot with description of features](./Documentation/DebugConsole.png)
 * Unity Rich text styling support for browser console & debug console
@@ -24,8 +21,8 @@
 * Handy debug functions for times and memory consumption
 * Responsive template layout for maximum mobile compatibility
 * Github Actions to automatically build the project and deploy it on the server via [Game CI](https://game.ci/)
-* Works with [Unity WebGL Publisher](https://play.unity.com/discover/all-showcases) (Use  [2020.3-lts](https://github.com/JohannesDeml/UnityWebGL-LoadingTest/tree/2020-lts) or [2020.3-lts-urp](https://github.com/JohannesDeml/UnityWebGL-LoadingTest/tree/2020-lts-urp) branch)
 * Tracking multiple Unity versions starting from 2018.4
+* Brotli Compression
 * Build targets for webgl1, webgl2 and webgpu
 
 ## Live Demos ([All Builds](https://deml.io/experiments/unity-webgl/))
