@@ -189,8 +189,10 @@ namespace UnityBuilderAction
 						{
 #if UNITY_2023_2_OR_NEWER
 							graphicsAPIs.Add(GraphicsDeviceType.WebGPU);
+	#if UNITY_6000_0_OR_NEWER
 							// Enable wasm2023 for WebGPU, since if webGPU is supported everything from 2023 is supported as well
 							PlayerSettings.WebGL.wasm2023 = true;
+	#endif
 #else
 							LogError("WebGPU not supported yet");
 #endif
