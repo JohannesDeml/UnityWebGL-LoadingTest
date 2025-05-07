@@ -1,0 +1,21 @@
+{
+    "m_Dictionary": {
+        "m_DictionaryValues": [
+            {
+                "type": "System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+                "key": "StrippingProjectSettings.ActiveSettings.AssetPath",
+                "value": "{\"m_Value\":\"Assets/DefaultSubmoduleStrippingSettings.asset\"}"
+            },
+            {
+                "type": "System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+                "key": "StrippingProjectSettings.ActiveSettings.AssetData",
+                "value": "{\"m_Value\":\"{\\\"MonoBehaviour\\\":{\\\"m_Enabled\\\":true,\\\"m_EditorHideFlags\\\":0,\\\"m_Name\\\":\\\"DefaultSubmoduleStrippingSettings\\\",\\\"m_EditorClassIdentifier\\\":\\\"\\\",\\\"OptimizeCodeAfterStripping\\\":false,\\\"RemoveEmbeddedDebugSymbols\\\":false,\\\"MissingSubmoduleErrorHandling\\\":0,\\\"SubmodulesToStrip\\\":[]}}\"}"
+            },
+            {
+                "type": "System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+                "key": "StrippingProjectSettings.StripAutomaticallyAfterBuild",
+                "value": "{\"m_Value\":false}"
+            }
+        ]
+    }
+}
