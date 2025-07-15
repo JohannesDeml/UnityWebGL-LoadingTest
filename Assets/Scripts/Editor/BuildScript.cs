@@ -110,8 +110,12 @@ namespace UnityBuilderAction
 					break;
 				}
 				case BuildTarget.StandaloneOSX:
+#if UNITY_2021_2_OR_NEWER
+					PlayerSettings.SetScriptingBackend(NamedBuildTarget.Standalone, ScriptingImplementation.Mono2x);
+#else
 					PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.Mono2x);
-					break;
+#endif					
+				break;
 				case BuildTarget.WebGL:
 #if UNITY_2021_2_OR_NEWER
 					// Use ASTC texture compression, since we are also targeting mobile versions - Don't use this for desktop only targets
@@ -228,7 +232,7 @@ namespace UnityBuilderAction
 			if (tagParameters.Contains("webgl1"))
 			{
 #if !UNITY_2023_1_OR_NEWER
-							graphicsAPIs.Add(GraphicsDeviceType.OpenGLES2);
+				graphicsAPIs.Add(GraphicsDeviceType.OpenGLES2);
 #else
 				LogWarning("WebGL1 not supported anymore, choosing WebGL2 instead");
 				graphicsAPIs.Add(GraphicsDeviceType.OpenGLES3);
@@ -391,10 +395,31 @@ namespace UnityBuilderAction
 					var webBuild = WebBuildReportList.Instance.GetBuild(buildSummary.outputPath);
 					
 					var settings = StrippingProjectSettings.ActiveSettings;
+					Log($"Using stripping settings {settings.name} with modules to strip: {string.Join(", ", settings.SubmodulesToStrip)}");
 					var successfulStripping = WebBuildProcessor.StripBuild(webBuild, settings);
 					if (successfulStripping)
 					{
 						Log("The build was stripped successfully.");
+						string functionsJsonPath = Path.Combine(buildSummary.outputPath, "Build", "functions.json");
+						if (File.Exists(functionsJsonPath))
+						{
+							File.Delete(functionsJsonPath);
+							Log($"Deleted functions.json at {functionsJsonPath}");
+						}
+						else
+						{
+							LogWarning($"Could not find file to delete: {functionsJsonPath}");
+						}
+						string labelsJsonPath = Path.Combine(buildSummary.outputPath, "Build", "labels.json");
+						if (File.Exists(labelsJsonPath))
+						{
+							File.Delete(labelsJsonPath);
+							Log($"Deleted labels.json at {labelsJsonPath}");
+						}
+						else
+						{
+							LogWarning($"Could not find file to delete: {labelsJsonPath}");
+						}
 					}
 					else
 					{
