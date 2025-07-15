@@ -13,14 +13,16 @@ MonoBehaviour:
   m_Name: DefaultSubmoduleStrippingSettings
   m_EditorClassIdentifier: 
   OptimizeCodeAfterStripping: 1
-  RemoveEmbeddedDebugSymbols: 0
-  MissingSubmoduleErrorHandling: 2
+  RemoveEmbeddedDebugSymbols: 1
+  MissingSubmoduleErrorHandling: 1
   SubmodulesToStrip:
   - 2D Rendering
   - Freetype2
-  - GPU Instancing
   - IMGUI
-  - ParticleSystem
   - System.Xml
   - TetGen
+  - Text Rendering
+  - Texture Decompression BC
+  - Texture Decompression ETC
+  - Texture Decompression Crunch
   - UI Toolkit

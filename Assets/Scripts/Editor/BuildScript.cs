@@ -19,6 +19,9 @@ using UnityEditor.Build.Reporting;
 using UnityEditor.Compilation;
 using UnityEngine;
 using UnityEngine.Rendering;
+#if UNITY_6000_1_OR_NEWER
+using Unity.Web.Stripping.Editor;
+#endif
 
 namespace UnityBuilderAction
 {
@@ -118,87 +121,7 @@ namespace UnityBuilderAction
 					if (options.TryGetValue("tag", out string tagVersion) &&
 						!string.IsNullOrEmpty(tagVersion))
 					{
-						string[] tagParameters = tagVersion.Split('-');
-						if (tagParameters.Contains("minsize"))
-						{
-							PlayerSettings.WebGL.template = "PROJECT:Release";
-							buildPlayerOptions.options |= BuildOptions.CompressWithLz4HC;
-							PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.None;
-							SetWebGlOptimization(CodeOptimizationSize);
-#if UNITY_2022_1_OR_NEWER
-							PlayerSettings.SetIl2CppCodeGeneration(namedBuildTarget, Il2CppCodeGeneration.OptimizeSize);
-#endif
-#if UNITY_2021_2_OR_NEWER
-							PlayerSettings.SetIl2CppCompilerConfiguration(namedBuildTarget, Il2CppCompilerConfiguration.Master);
-#else
-							PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.WebGL, Il2CppCompilerConfiguration.Master);
-#endif
-						}
-						else if (tagParameters.Contains("debug"))
-						{
-							PlayerSettings.WebGL.template = "PROJECT:Develop";
-							PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.FullWithStacktrace;
-							// For debug builds this setting will always be build times no matter what is set, setting this more as a documentation of the behavior
-							SetWebGlOptimization(CodeOptimizationBuildTimes);
-#if UNITY_2022_1_OR_NEWER
-							PlayerSettings.SetIl2CppCodeGeneration(namedBuildTarget, Il2CppCodeGeneration.OptimizeSize);
-#endif
-#if UNITY_2021_2_OR_NEWER
-							PlayerSettings.SetIl2CppCompilerConfiguration(namedBuildTarget, Il2CppCompilerConfiguration.Debug);
-							PlayerSettings.WebGL.debugSymbolMode = WebGLDebugSymbolMode.Embedded;
-#else
-							PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.WebGL, Il2CppCompilerConfiguration.Debug);
-							PlayerSettings.WebGL.debugSymbols = true;
-#endif
-
-#if UNITY_2022_2_OR_NEWER
-							PlayerSettings.WebGL.showDiagnostics = true;
-#endif
-							buildPlayerOptions.options |= BuildOptions.Development;
-						}
-						else
-						{
-							PlayerSettings.WebGL.template = "PROJECT:Develop";
-							// By default use the speed setting
-							SetWebGlOptimization(CodeOptimizationSpeed);
-#if UNITY_2022_1_OR_NEWER
-							PlayerSettings.SetIl2CppCodeGeneration(namedBuildTarget, Il2CppCodeGeneration.OptimizeSpeed);
-#endif
-#if UNITY_2021_2_OR_NEWER
-							PlayerSettings.SetIl2CppCompilerConfiguration(namedBuildTarget, Il2CppCompilerConfiguration.Master);
-#else
-							PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.WebGL, Il2CppCompilerConfiguration.Master);
-#endif
-						}
-
-						List<GraphicsDeviceType> graphicsAPIs = new List<GraphicsDeviceType>();
-						if (tagParameters.Contains("webgl1"))
-						{
-#if !UNITY_2023_1_OR_NEWER
-							graphicsAPIs.Add(GraphicsDeviceType.OpenGLES2);
-#else
-							LogWarning("WebGL1 not supported anymore, choosing WebGL2 instead");
-							graphicsAPIs.Add(GraphicsDeviceType.OpenGLES3);
-#endif
-						}
-						if(tagParameters.Contains("webgl2"))
-						{
-							graphicsAPIs.Add(GraphicsDeviceType.OpenGLES3);
-						}
-						if(tagParameters.Contains("webgpu"))
-						{
-#if UNITY_2023_2_OR_NEWER
-							graphicsAPIs.Add(GraphicsDeviceType.WebGPU);
-	#if UNITY_6000_0_OR_NEWER
-							// Enable wasm2023 for WebGPU, since if webGPU is supported everything from 2023 is supported as well
-							PlayerSettings.WebGL.wasm2023 = true;
-	#endif
-#else
-							LogError("WebGPU not supported yet");
-#endif
-						}
-
-						PlayerSettings.SetGraphicsAPIs(BuildTarget.WebGL, graphicsAPIs.ToArray());
+						HandleTagParameters(tagVersion, namedBuildTarget);
 					}
 
 					break;
@@ -223,7 +146,115 @@ namespace UnityBuilderAction
 			Build(buildTarget, options["customBuildPath"]);
 		}
 
-        private static void OnLogMessageReceived(string logString, string stackTrace, LogType type)
+		private static void HandleTagParameters(string tagVersion, NamedBuildTarget namedBuildTarget)
+		{
+			string[] tagParameters = tagVersion.Split('-');
+			if (tagParameters.Contains("minsize"))
+			{
+				PlayerSettings.WebGL.template = "PROJECT:Release";
+				buildPlayerOptions.options |= BuildOptions.CompressWithLz4HC;
+				PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.None;
+				SetWebGlOptimization(CodeOptimizationSize);
+#if UNITY_2022_1_OR_NEWER
+				PlayerSettings.SetIl2CppCodeGeneration(namedBuildTarget, Il2CppCodeGeneration.OptimizeSize);
+#endif
+#if UNITY_2021_2_OR_NEWER
+				PlayerSettings.SetIl2CppCompilerConfiguration(namedBuildTarget, Il2CppCompilerConfiguration.Master);
+#else
+							PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.WebGL, Il2CppCompilerConfiguration.Master);
+#endif
+			}
+			else if (tagParameters.Contains("debug"))
+			{
+				PlayerSettings.WebGL.template = "PROJECT:Develop";
+				PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.FullWithStacktrace;
+				// For debug builds this setting will always be build times no matter what is set, setting this more as a documentation of the behavior
+				SetWebGlOptimization(CodeOptimizationBuildTimes);
+#if UNITY_2022_1_OR_NEWER
+				PlayerSettings.SetIl2CppCodeGeneration(namedBuildTarget, Il2CppCodeGeneration.OptimizeSize);
+#endif
+#if UNITY_2021_2_OR_NEWER
+				PlayerSettings.SetIl2CppCompilerConfiguration(namedBuildTarget, Il2CppCompilerConfiguration.Debug);
+				PlayerSettings.WebGL.debugSymbolMode = WebGLDebugSymbolMode.Embedded;
+#else
+							PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.WebGL, Il2CppCompilerConfiguration.Debug);
+							PlayerSettings.WebGL.debugSymbols = true;
+#endif
+
+#if UNITY_2022_2_OR_NEWER
+				PlayerSettings.WebGL.showDiagnostics = true;
+#endif
+				buildPlayerOptions.options |= BuildOptions.Development;
+			}
+			else
+			{
+				PlayerSettings.WebGL.template = "PROJECT:Develop";
+				// By default use the speed setting
+				SetWebGlOptimization(CodeOptimizationSpeed);
+#if UNITY_2022_1_OR_NEWER
+				PlayerSettings.SetIl2CppCodeGeneration(namedBuildTarget, Il2CppCodeGeneration.OptimizeSpeed);
+#endif
+#if UNITY_2021_2_OR_NEWER
+				PlayerSettings.SetIl2CppCompilerConfiguration(namedBuildTarget, Il2CppCompilerConfiguration.Master);
+#else
+							PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.WebGL, Il2CppCompilerConfiguration.Master);
+#endif
+			}
+			
+			HandleSubmoduleStrippingParameters(tagParameters);
+			SetGraphicsApi(tagParameters);
+		}
+
+		private static void HandleSubmoduleStrippingParameters(string[] tagParameters)
+		{
+#if UNITY_6000_1_OR_NEWER
+			bool enableStripping = tagParameters.Contains("minsize") || tagParameters.Contains("stripping");
+			PlayerSettings.WebGL.enableSubmoduleStrippingCompatibility = enableStripping;
+
+			if (enableStripping)
+			{
+				PlayerSettings.WebGL.debugSymbolMode = WebGLDebugSymbolMode.Embedded;
+			}
+			StrippingProjectSettings.StripAutomaticallyAfterBuild = enableStripping;
+			Log("Web submodule stripping is set to " + enableStripping);
+#else
+			Log("Skipping Web submodule stripping since is not supported in this Unity version");
+#endif
+		}
+
+		private static void SetGraphicsApi(string[] tagParameters)
+		{
+			List<GraphicsDeviceType> graphicsAPIs = new List<GraphicsDeviceType>();
+			if (tagParameters.Contains("webgl1"))
+			{
+#if !UNITY_2023_1_OR_NEWER
+							graphicsAPIs.Add(GraphicsDeviceType.OpenGLES2);
+#else
+				LogWarning("WebGL1 not supported anymore, choosing WebGL2 instead");
+				graphicsAPIs.Add(GraphicsDeviceType.OpenGLES3);
+#endif
+			}
+			if(tagParameters.Contains("webgl2"))
+			{
+				graphicsAPIs.Add(GraphicsDeviceType.OpenGLES3);
+			}
+			if(tagParameters.Contains("webgpu"))
+			{
+#if UNITY_2023_2_OR_NEWER
+				graphicsAPIs.Add(GraphicsDeviceType.WebGPU);
+#if UNITY_6000_0_OR_NEWER
+				// Enable wasm2023 for WebGPU, since if webGPU is supported everything from 2023 is supported as well
+				PlayerSettings.WebGL.wasm2023 = true;
+#endif
+#else
+							LogError("WebGPU not supported yet");
+#endif
+			}
+
+			PlayerSettings.SetGraphicsAPIs(BuildTarget.WebGL, graphicsAPIs.ToArray());
+		}
+
+		private static void OnLogMessageReceived(string logString, string stackTrace, LogType type)
         {
             if(type == LogType.Error || type == LogType.Exception)
 			{
