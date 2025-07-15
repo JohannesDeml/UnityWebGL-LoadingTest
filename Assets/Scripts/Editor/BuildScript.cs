@@ -213,7 +213,7 @@ namespace UnityBuilderAction
 		private static void HandleSubmoduleStrippingParameters(string[] tagParameters)
 		{
 #if UNITY_6000_1_OR_NEWER
-			isSubmoduleStrippingEnabled = tagParameters.Contains("minsize") || tagParameters.Contains("stripping");
+			isSubmoduleStrippingEnabled = tagParameters.Contains("stripping");
 			PlayerSettings.WebGL.enableSubmoduleStrippingCompatibility = isSubmoduleStrippingEnabled;
 
 			if (isSubmoduleStrippingEnabled)
