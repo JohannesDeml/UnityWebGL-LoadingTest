@@ -61,6 +61,7 @@ namespace UnityBuilderAction
 
 		private static BuildPlayerOptions buildPlayerOptions;
 		private static List<string> errorLogMessages = new List<string>();
+		private static bool isSubmoduleStrippingEnabled = false;
 
 		[UsedImplicitly]
 		public static void BuildWithCommandlineArgs()
@@ -208,18 +209,17 @@ namespace UnityBuilderAction
 		private static void HandleSubmoduleStrippingParameters(string[] tagParameters)
 		{
 #if UNITY_6000_1_OR_NEWER
-			bool enableStripping = tagParameters.Contains("minsize") || tagParameters.Contains("stripping");
-			PlayerSettings.WebGL.enableSubmoduleStrippingCompatibility = enableStripping;
+			isSubmoduleStrippingEnabled = tagParameters.Contains("minsize") || tagParameters.Contains("stripping");
+			PlayerSettings.WebGL.enableSubmoduleStrippingCompatibility = isSubmoduleStrippingEnabled;
 
-			if (enableStripping)
+			if (isSubmoduleStrippingEnabled)
 			{
 				PlayerSettings.WebGL.debugSymbolMode = WebGLDebugSymbolMode.Embedded;
 			}
-			StrippingProjectSettings.StripAutomaticallyAfterBuild = enableStripping;
-			Log("Web submodule stripping is set to " + enableStripping);
 #else
-			Log("Skipping Web submodule stripping since is not supported in this Unity version");
+			isSubmoduleStrippingEnabled = false;
 #endif
+			Log($"Web submodule stripping is set to {isSubmoduleStrippingEnabled}");
 		}
 
 		private static void SetGraphicsApi(string[] tagParameters)
@@ -381,6 +381,33 @@ namespace UnityBuilderAction
 
 			BuildSummary buildSummary = BuildPipeline.BuildPlayer(buildPlayerOptions).summary;
 			ReportSummary(buildSummary);
+
+#if UNITY_6000_1_OR_NEWER
+			if (buildTarget == BuildTarget.WebGL && isSubmoduleStrippingEnabled)
+			{
+				if (buildSummary.result == BuildResult.Succeeded)
+				{
+					Log("Run Submodule Stripping for WebGL build...");
+					var webBuild = WebBuildReportList.Instance.GetBuild(buildSummary.outputPath);
+					
+					var settings = StrippingProjectSettings.ActiveSettings;
+					var successfulStripping = WebBuildProcessor.StripBuild(webBuild, settings);
+					if (successfulStripping)
+					{
+						Log("The build was stripped successfully.");
+					}
+					else
+					{
+						LogError("Failed to strip the build.");
+					}
+				}
+				else
+				{
+					LogWarning("Skipping WebGL submodule stripping, since build failed.");
+				}
+			}
+#endif
+			
 			ExitWithResult(buildSummary.result);
 		}
 
