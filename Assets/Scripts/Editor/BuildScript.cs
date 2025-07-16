@@ -21,6 +21,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 #if UNITY_6000_1_OR_NEWER
 using Unity.Web.Stripping.Editor;
+using UnityEngine.Assertions;
 #endif
 
 namespace UnityBuilderAction
@@ -395,7 +396,9 @@ namespace UnityBuilderAction
 					var webBuild = WebBuildReportList.Instance.GetBuild(buildSummary.outputPath);
 					
 					var settings = StrippingProjectSettings.ActiveSettings;
+					Assert.IsNotNull(settings, "Could not find active stripping settings for WebGL build.");
 					Log($"Using stripping settings {settings.name} with modules to strip: {string.Join(", ", settings.SubmodulesToStrip)}");
+					
 					var successfulStripping = WebBuildProcessor.StripBuild(webBuild, settings);
 					if (successfulStripping)
 					{
