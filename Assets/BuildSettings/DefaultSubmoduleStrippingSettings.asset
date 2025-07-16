@@ -16,7 +16,6 @@ MonoBehaviour:
   RemoveEmbeddedDebugSymbols: 1
   MissingSubmoduleErrorHandling: 1
   SubmodulesToStrip:
-  - 2D Rendering
   - Freetype2
   - IMGUI
   - System.Xml
