@@ -19,6 +19,7 @@ using UnityEditor.Build.Reporting;
 using UnityEditor.Compilation;
 using UnityEngine;
 using UnityEngine.Rendering;
+using Object = UnityEngine.Object;
 #if UNITY_6000_1_OR_NEWER
 using Unity.Web.Stripping.Editor;
 using UnityEngine.Assertions;
@@ -252,7 +253,7 @@ namespace UnityBuilderAction
 				PlayerSettings.WebGL.wasm2023 = true;
 #endif
 #else
-							LogError("WebGPU not supported yet");
+				LogError("WebGPU not supported yet");
 #endif
 			}
 
@@ -394,16 +395,31 @@ namespace UnityBuilderAction
 				{
 					Log("Run Submodule Stripping for WebGL build...");
 					var webBuild = WebBuildReportList.Instance.GetBuild(buildSummary.outputPath);
+
+					var baseSettings = BuildSettingsData.Instance.WebSubmoduleStrippingSettings;
+					Assert.IsNotNull(baseSettings, "Could not find stripping settings in BuildSettingsData.");
+					var settings = Object.Instantiate(baseSettings);
+					var graphicsAPIs = PlayerSettings.GetGraphicsAPIs(buildTarget);
+					if (graphicsAPIs.All(api => api != GraphicsDeviceType.WebGPU))
+					{
+						Log("WebGPU is not used, stripping WebGPU support.");
+						settings.SubmodulesToStrip.Add("WebGPU Support");
+					}
+					if (graphicsAPIs.All(api => api != GraphicsDeviceType.OpenGLES3 ))
+					{
+						Log("WebGL is not used, stripping WebGL support.");
+						settings.SubmodulesToStrip.Add("WebGL Support");
+					}
 					
-					var settings = StrippingProjectSettings.ActiveSettings;
-					Assert.IsNotNull(settings, "Could not find active stripping settings for WebGL build.");
 					Log($"Using stripping settings {settings.name} with modules to strip: {string.Join(", ", settings.SubmodulesToStrip)}");
 					
 					var successfulStripping = WebBuildProcessor.StripBuild(webBuild, settings);
 					if (successfulStripping)
 					{
 						Log("The build was stripped successfully.");
-						string functionsJsonPath = Path.Combine(buildSummary.outputPath, "Build", "functions.json");
+						// Apparently the json files are read by unity,
+						// it will work without them but the console is full of errors then
+						/*string functionsJsonPath = Path.Combine(buildSummary.outputPath, "Build", "functions.json");
 						if (File.Exists(functionsJsonPath))
 						{
 							File.Delete(functionsJsonPath);
@@ -422,7 +438,7 @@ namespace UnityBuilderAction
 						else
 						{
 							LogWarning($"Could not find file to delete: {labelsJsonPath}");
-						}
+						}*/
 					}
 					else
 					{

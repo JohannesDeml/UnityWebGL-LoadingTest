@@ -16,7 +16,7 @@ using UnityEngine;
 namespace UnityBuilderAction
 {
 	/// <summary>
-	/// Menu items for <see cref="BuildScript"> to build the project in the editor
+	/// Menu items for <see cref="BuildScript" /> to build the project in the editor
 	/// Helpful for testing the CI behavior and semi-automated builds
 	/// </summary>
 	public class BuildScriptMenu
@@ -55,10 +55,10 @@ namespace UnityBuilderAction
 			BuildWebGL($"{Application.unityVersion}-minsize-webgl2-manualBuild");
 		}
 		
-		[MenuItem("Tools/Build WebGL/minsize-stripped-webgl2")]
-		public static void BuildWebGL2MinSizeStripped()
+		[MenuItem("Tools/Build WebGL/minsize-stripping-webgl2")]
+		public static void BuildWebGL2MinSizeStripping()
 		{
-			BuildWebGL($"{Application.unityVersion}-minsize-stripped-webgl2-manualBuild");
+			BuildWebGL($"{Application.unityVersion}-minsize-stripping-webgl2-manualBuild");
 		}
 
 #if UNITY_2023_2_OR_NEWER
