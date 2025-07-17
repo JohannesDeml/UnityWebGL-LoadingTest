@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3efdd41947995b14ea6378b017ee4784, type: 3}
+  m_Name: DefaultSubmoduleStrippingSettings
+  m_EditorClassIdentifier: 
+  OptimizeCodeAfterStripping: 1
+  RemoveEmbeddedDebugSymbols: 1
+  MissingSubmoduleErrorHandling: 0
+  SubmodulesToStrip:
+  - 2D Rendering Common
+  - 2D Rendering Sorting
+  - 2D Rendering Sprite Tiling
+  - Advanced Text Generator Support
+  - Freetype2
+  - IMGUI
+  - System.Xml
+  - Mesh Async Upload
+  - Mesh Blend Shapes
+  - Mesh Combiner
+  - Mesh Compression
+  - Mesh Optimizer
+  - Mesh Script Bindings
+  - Mesh Skinning
+  - ParticleSystem
+  - TetGen
+  - Text Rendering
+  - Texture Decompression
+  - Texture Decompression Crunch
+  - UI Toolkit
+  - Unity UI
