@@ -40,20 +40,20 @@ namespace UnityBuilderAction
 		private static bool LogVerboseInEditor = false;
 		private static readonly string CodeOptimizationSpeed =
 #if UNITY_2021_3_OR_NEWER
-		CodeOptimizationWebGL.RuntimeSpeedLTO.ToString();
+		nameof(CodeOptimizationWebGL.RuntimeSpeedLTO);
 #else
 		"speed";
 #endif
 		private static readonly string  CodeOptimizationSize =
 #if UNITY_2021_3_OR_NEWER
-		CodeOptimizationWebGL.DiskSizeLTO.ToString();
+		nameof(CodeOptimizationWebGL.DiskSizeLTO);
 #else
 		"size";
 #endif
 
 		private static readonly string  CodeOptimizationBuildTimes =
 #if UNITY_2021_3_OR_NEWER
-		CodeOptimizationWebGL.BuildTimes.ToString();
+		nameof(CodeOptimizationWebGL.BuildTimes);
 #else
 		"size";
 #endif
@@ -215,7 +215,8 @@ namespace UnityBuilderAction
 		private static void HandleSubmoduleStrippingParameters(string[] tagParameters)
 		{
 #if UNITY_6000_1_OR_NEWER
-			isSubmoduleStrippingEnabled = tagParameters.Contains("stripping");
+			isSubmoduleStrippingEnabled = !tagParameters.Contains("nostripping") 
+			                              && (tagParameters.Contains("stripping") || tagParameters.Contains("minsize"));
 			PlayerSettings.WebGL.enableSubmoduleStrippingCompatibility = isSubmoduleStrippingEnabled;
 
 			if (isSubmoduleStrippingEnabled)

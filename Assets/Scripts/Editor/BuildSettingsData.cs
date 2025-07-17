@@ -1,13 +1,15 @@
 using System.Linq;
 using NUnit.Framework;
+#if UNITY_6000_1_OR_NEWER
 using Unity.Web.Stripping.Editor;
+#endif
 using UnityEditor;
 using UnityEngine;
 
 namespace UnityBuilderAction
 {
     
-    [CreateAssetMenu(menuName = "Create BuildSettingsData", fileName = "BuildSettingsData", order = 0)]
+    [CreateAssetMenu(menuName = "BuildSettingsData", fileName = "BuildSettingsData", order = 0)]
     public class BuildSettingsData : ScriptableObject
     {
         private static BuildSettingsData _instance;
@@ -27,9 +29,11 @@ namespace UnityBuilderAction
             }
         }
         
+#if UNITY_6000_1_OR_NEWER
         [SerializeField]
         private SubmoduleStrippingSettings webSubmoduleStrippingSettings;
 		
         public SubmoduleStrippingSettings WebSubmoduleStrippingSettings => webSubmoduleStrippingSettings;
+#endif
     }
 }
