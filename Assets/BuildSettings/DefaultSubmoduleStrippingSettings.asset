@@ -16,12 +16,24 @@ MonoBehaviour:
   RemoveEmbeddedDebugSymbols: 1
   MissingSubmoduleErrorHandling: 0
   SubmodulesToStrip:
+  - 2D Rendering Common
+  - 2D Rendering Sorting
+  - 2D Rendering Sprite Tiling
+  - Advanced Text Generator Support
   - Freetype2
   - IMGUI
   - System.Xml
+  - Mesh Async Upload
+  - Mesh Blend Shapes
+  - Mesh Combiner
+  - Mesh Compression
+  - Mesh Optimizer
+  - Mesh Script Bindings
+  - Mesh Skinning
+  - ParticleSystem
   - TetGen
   - Text Rendering
-  - Texture Decompression BC
-  - Texture Decompression ETC
+  - Texture Decompression
   - Texture Decompression Crunch
   - UI Toolkit
+  - Unity UI
