@@ -411,34 +411,12 @@ namespace UnityBuilderAction
 						settings.SubmodulesToStrip.Add("WebGL Support");
 					}
 					
-					Log($"Using stripping settings {settings.name} with modules to strip: {string.Join(", ", settings.SubmodulesToStrip)}");
+					Log($"Using stripping settings {settings.name} with {settings.SubmodulesToStrip.Count} modules to strip: {string.Join(", ", settings.SubmodulesToStrip)}");
 					
 					var successfulStripping = WebBuildProcessor.StripBuild(webBuild, settings);
 					if (successfulStripping)
 					{
 						Log("The build was stripped successfully.");
-						// Apparently the json files are read by unity,
-						// it will work without them but the console is full of errors then
-						/*string functionsJsonPath = Path.Combine(buildSummary.outputPath, "Build", "functions.json");
-						if (File.Exists(functionsJsonPath))
-						{
-							File.Delete(functionsJsonPath);
-							Log($"Deleted functions.json at {functionsJsonPath}");
-						}
-						else
-						{
-							LogWarning($"Could not find file to delete: {functionsJsonPath}");
-						}
-						string labelsJsonPath = Path.Combine(buildSummary.outputPath, "Build", "labels.json");
-						if (File.Exists(labelsJsonPath))
-						{
-							File.Delete(labelsJsonPath);
-							Log($"Deleted labels.json at {labelsJsonPath}");
-						}
-						else
-						{
-							LogWarning($"Could not find file to delete: {labelsJsonPath}");
-						}*/
 					}
 					else
 					{

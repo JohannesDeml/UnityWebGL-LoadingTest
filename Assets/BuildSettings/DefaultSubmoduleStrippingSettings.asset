@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OptimizeCodeAfterStripping: 1
   RemoveEmbeddedDebugSymbols: 1
-  MissingSubmoduleErrorHandling: 1
+  MissingSubmoduleErrorHandling: 0
   SubmodulesToStrip:
   - Freetype2
   - IMGUI
