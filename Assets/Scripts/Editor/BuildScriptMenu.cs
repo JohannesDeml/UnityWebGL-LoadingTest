@@ -55,11 +55,13 @@ namespace UnityBuilderAction
 			BuildWebGL($"{Application.unityVersion}-minsize-webgl2-manualBuild");
 		}
 		
-		[MenuItem("Tools/Build WebGL/minsize-stripping-webgl2")]
-		public static void BuildWebGL2MinSizeStripping()
+#if UNITY_6000_1_OR_NEWER
+		[MenuItem("Tools/Build WebGL/minsize-nostripping-webgl2")]
+		public static void BuildWebGL2MinSizeNoStripping()
 		{
-			BuildWebGL($"{Application.unityVersion}-minsize-stripping-webgl2-manualBuild");
+			BuildWebGL($"{Application.unityVersion}-minsize-nostripping-webgl2-manualBuild");
 		}
+#endif
 
 #if UNITY_2023_2_OR_NEWER
 		[MenuItem("Tools/Build WebGL/webgpu")]
@@ -72,6 +74,14 @@ namespace UnityBuilderAction
 		public static void BuildWebGpuMinSize()
 		{
 			BuildWebGL($"{Application.unityVersion}-minsize-webgpu-manualBuild");
+		}
+#endif
+		
+#if UNITY_6000_1_OR_NEWER
+		[MenuItem("Tools/Build WebGL/minsize-nostripping-webgpu")]
+		public static void BuildWebGpuMinSizeNoStripping()
+		{
+			BuildWebGL($"{Application.unityVersion}-minsize-nostripping-webgpu-manualBuild");
 		}
 #endif
 
