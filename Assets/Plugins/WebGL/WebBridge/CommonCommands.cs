@@ -192,7 +192,11 @@ namespace Supyrb
 		[WebCommand(Description = "Find GameObject by name and log its components")]
 		public void FindGameObjectByName(string name)
 		{
+#if UNITY_6000_0_OR_NEWER
+			var gameObjects = GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None).Where(go => go.name == name).ToArray();
+#else
 			var gameObjects = GameObject.FindObjectsOfType<GameObject>().Where(go => go.name == name).ToArray();
+#endif
 			if (gameObjects.Length == 0)
 			{
 				Debug.Log($"No GameObject found with the name: {name}");
