@@ -61,6 +61,7 @@ MonoBehaviour:
       - rid: 1833072967897317379
       - rid: 9045634188000624640
       - rid: 9045634188000624641
+      - rid: 1290112394661462016
     m_RuntimeSettings:
       m_List: []
   m_AssetVersion: 8
@@ -97,7 +98,7 @@ MonoBehaviour:
       type: {class: RenderGraphSettings, ns: UnityEngine.Rendering.Universal, asm: Unity.RenderPipelines.Universal.Runtime}
       data:
         m_Version: 0
-        m_EnableRenderCompatibilityMode: 1
+        m_EnableRenderCompatibilityMode: 0
     - rid: 774585207205396481
       type: {class: UniversalRenderPipelineRuntimeXRResources, ns: UnityEngine.Rendering.Universal,
         asm: Unity.RenderPipelines.Universal.Runtime}
@@ -217,12 +218,6 @@ MonoBehaviour:
         m_AutodeskInteractiveTransparent: {fileID: 4800000, guid: 5c81372d981403744adbdda4433c9c11,
           type: 3}
         m_AutodeskInteractiveMasked: {fileID: 4800000, guid: 80aa867ac363ac043847b06ad71604cd,
-          type: 3}
-        m_TerrainDetailLit: {fileID: 4800000, guid: f6783ab646d374f94b199774402a5144,
-          type: 3}
-        m_TerrainDetailGrassBillboard: {fileID: 4800000, guid: 29868e73b638e48ca99a19ea58c48d90,
-          type: 3}
-        m_TerrainDetailGrass: {fileID: 4800000, guid: e507fdfead5ca47e8b9a768b51c291a1,
           type: 3}
         m_DefaultSpeedTree7Shader: {fileID: 4800000, guid: 0f4122b9a743b744abe2fb6a0a88868b,
           type: 3}
@@ -348,6 +343,11 @@ MonoBehaviour:
         m_version: 0
         m_EnableCompilationCaching: 1
         m_EnableValidityChecks: 1
+    - rid: 1290112394661462016
+      type: {class: RenderingDebuggerRuntimeResources, ns: UnityEngine.Rendering,
+        asm: Unity.RenderPipelines.Core.Runtime}
+      data:
+        m_version: 0
     - rid: 1833072967897317376
       type: {class: ScreenSpaceAmbientOcclusionDynamicResources, ns: UnityEngine.Rendering.Universal,
         asm: Unity.RenderPipelines.Universal.Runtime}
