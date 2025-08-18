@@ -105,8 +105,8 @@
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.nuget.newtonsoft-json": "3.2.1",
-        "com.unity.settings-manager": "2.0.1"
+        "com.unity.settings-manager": "2.0.1",
+        "com.unity.nuget.newtonsoft-json": "3.2.1"
       },
       "url": "https://packages.unity.com"
     },
@@ -235,7 +235,8 @@
         "com.unity.modules.ui": "1.0.0",
         "com.unity.modules.imgui": "1.0.0",
         "com.unity.modules.jsonserialize": "1.0.0",
-        "com.unity.modules.hierarchycore": "1.0.0"
+        "com.unity.modules.hierarchycore": "1.0.0",
+        "com.unity.modules.physics": "1.0.0"
       }
     },
     "com.unity.modules.umbra": {
