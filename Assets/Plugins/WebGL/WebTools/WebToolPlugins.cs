@@ -35,6 +35,8 @@ namespace Supyrb
 		[DllImport("__Internal")]
 		private static extern uint _GetTotalMemorySize();
 		[DllImport("__Internal")]
+		private static extern uint _GetDeviceMemorySize();
+		[DllImport("__Internal")]
 		private static extern bool _CopyToClipboard(string text);
 		[DllImport("__Internal")]
 		private static extern int _IsOnline();
@@ -185,6 +187,29 @@ namespace Supyrb
 			return GetMegaBytes(bytes);
 #elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
 			Debug.Log($"{nameof(WebToolPlugins)}.{nameof(GetTotalMemorySize)} called");
+			return -1f;
+#else
+			return -1f;
+#endif
+		}
+
+		/// <summary>
+		/// Get the device memory size in MB if supported by the browser
+		/// Uses navigator.deviceMemory which is supported by chromium based browsers
+		/// <see href="https://developer.mozilla.org/en-US/docs/Web/API/Navigator/deviceMemory"/>
+		/// </summary>
+		/// <returns>Size in MB or -1 if not supported</returns>
+		public static float GetDeviceMemory()
+		{
+#if UNITY_WEBGL && !UNITY_EDITOR
+			var gb = _GetDeviceMemorySize();
+			if (gb > 0)
+			{
+				return gb * 1024f; // convert to MB
+			}
+			return -1f;
+#elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
+			Debug.Log($"{nameof(WebToolPlugins)}.{nameof(GetDeviceMemory)} called");
 			return -1f;
 #else
 			return -1f;

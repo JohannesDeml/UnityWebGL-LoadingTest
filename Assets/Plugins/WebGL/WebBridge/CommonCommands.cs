@@ -67,6 +67,25 @@ namespace Supyrb
 		}
 
 		/// <summary>
+		/// Logs the rough device memory capped between 0.25 and 8 GB
+		/// Browser Usage: <code>unityGame.SendMessage("WebGL","LogDeviceMemory");</code>
+		/// </summary>
+		[WebCommand(Description = "Logs the device memory")]
+		[ContextMenu(nameof(LogDeviceMemory))]
+		public void LogDeviceMemory()
+		{
+			float deviceMemoryInMb = WebToolPlugins.GetDeviceMemory();
+			if (deviceMemoryInMb > 0)
+			{
+				Debug.Log($"Device Memory: {deviceMemoryInMb} GB");
+			}
+			else
+			{
+				Debug.Log("Device Memory information is not available on this device or browser.");
+			}
+		}
+
+		/// <summary>
 		/// Allocate memory to test memory usage and limits
 		/// The memory will be stored in a list to prevent it from being garbage collected
 		/// </summary>
