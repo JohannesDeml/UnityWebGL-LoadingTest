@@ -121,6 +121,17 @@ jobs:
           versioning: None
           buildName: ${{ needs.variables.outputs.BUILD_NAME }}
 
+      - name: Check Disk Space After Build
+        run: |
+          echo "Disk space after build:"
+          df -h
+          AVAILABLE=$(df / | tail -1 | awk '{print $4}')
+          AVAILABLE_GB=$(echo $AVAILABLE | sed 's/G//')
+          echo "Available space: ${AVAILABLE_GB}GB"
+          if (( $(echo "$AVAILABLE_GB < 1" | bc -l) )); then
+            echo "::warning::Low disk space! Less than 1GB remaining."
+          fi
+
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ needs.variables.outputs.BUILD_NAME }}
