@@ -70,12 +70,14 @@ namespace Supyrb
 		private static void SetGlobalVariables()
 		{
 			var graphicsDevice = SystemInfo.graphicsDeviceType;
-			string webGraphics = string.Empty;
+			string webGraphics;
 			switch (graphicsDevice)
 			{
+#if !UNITY_2023_1_OR_NEWER
 				case GraphicsDeviceType.OpenGLES2:
 					webGraphics = "WebGL 1";
 					break;
+#endif
 				case GraphicsDeviceType.OpenGLES3:
 					webGraphics = "WebGL 2";
 					break;

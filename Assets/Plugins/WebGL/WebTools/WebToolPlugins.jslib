@@ -99,6 +99,14 @@ var WebGlPlugins =
         return -1;
     },
 
+    _GetDeviceMemorySize: function()
+    {
+        if(navigator.deviceMemory) {
+            return navigator.deviceMemory;
+        }
+        return -1;
+    },
+
     _CopyToClipboard: function(text) {
         var str = UTF8ToString(text);
         navigator.clipboard.writeText(str)
