@@ -10,7 +10,7 @@
       "url": "https://package.openupm.com"
     },
     "com.unity.connect.share": {
-      "version": "4.2.3",
+      "version": "4.2.4",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -34,7 +34,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.rider": {
-      "version": "3.0.34",
+      "version": "3.0.38",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -43,11 +43,11 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.visualstudio": {
-      "version": "2.0.22",
+      "version": "2.0.25",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.test-framework": "1.1.9"
+        "com.unity.test-framework": "1.1.31"
       },
       "url": "https://packages.unity.com"
     },
