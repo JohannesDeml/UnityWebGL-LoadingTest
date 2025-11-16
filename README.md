@@ -2,9 +2,9 @@
 
 ![Preview](./preview.png)
 
-[![](https://img.shields.io/github/release-date/JohannesDeml/UnityWebGL-LoadingTest.svg)](https://github.com/JohannesDeml/UnityWebGL-LoadingTest/releases) [![Tested up to Unity 6.1](https://img.shields.io/badge/tested%20up%20to%20unity-6000.1-green.svg?logo=unity&cacheSeconds=2592000)](https://unity3d.com/get-unity/download/archive)
+[![](https://img.shields.io/github/release-date/JohannesDeml/UnityWebGL-LoadingTest.svg)](https://github.com/JohannesDeml/UnityWebGL-LoadingTest/releases) [![Tested up to Unity 6.2](https://img.shields.io/badge/tested%20up%20to%20unity-6000.1-green.svg?logo=unity&cacheSeconds=2592000)](https://unity3d.com/get-unity/download/archive)
 
-*Testing Unity's WebGL size and loading time for different versions (2018.4 - 6000.1) and settings*
+*Testing Unity's WebGL size and loading time for different versions (2018.4 - 6000.2) and settings*
 
 * [Overview page of all builds](https://deml.io/experiments/unity-webgl/)
 * [Implementation in Godot](https://github.com/JohannesDeml/Godot-Web-LoadingTest)
@@ -13,17 +13,16 @@
 
 ## Features
 
-* Toggle-able In-DOM Debug console
-  ![Debug Console Screenshot with description of features](./Documentation/DebugConsole.png)
-* Unity Rich text styling support for browser console & debug console
-  ![Screenshot of styled unity log message in browser console](./Documentation/UnityRichTextSupport.png)
+* [Toggle-able In-DOM Debug console](./Documentation/DebugConsole.png)
+* [Unity Rich text styling support for browser console & debug console](./Documentation/UnityRichTextSupport.png)
 * Easy access to unity functions through the browser console ([Youtube](https://youtu.be/OjypxsD6XMI))
 * Handy debug functions for times and memory consumption
-* Responsive template layout for maximum mobile compatibility
+* Responsive template layout for maximum mobile compatibility and smooth transition to the game after loading finished
 * Github Actions to automatically build the project and deploy it on the server via [Game CI](https://game.ci/)
-* Tracking multiple Unity versions starting from 2018.4
+  * Action to upgrade a branch automatically to a new Unity version with automated builds and a PR
+* Tracking differnt Unity versions starting from 2018.4 (over 700 live demo builds for you to evaluate)
 * Brotli Compression
-* Build targets for webgl1, webgl2 and webgpu
+* Build targets for webgl1, webgl2 and webgpu with BiRP and URP
 
 ## Live Demos ([All Builds](https://deml.io/experiments/unity-webgl/))
 
