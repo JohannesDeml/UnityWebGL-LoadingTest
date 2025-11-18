@@ -2,7 +2,7 @@
 
 ![Preview](./preview.png)
 
-[![](https://img.shields.io/github/release-date/JohannesDeml/UnityWebGL-LoadingTest.svg)](https://github.com/JohannesDeml/UnityWebGL-LoadingTest/releases) [![Tested up to Unity 6.2](https://img.shields.io/badge/tested%20up%20to%20unity-6000.1-green.svg?logo=unity&cacheSeconds=2592000)](https://unity3d.com/get-unity/download/archive)
+[![](https://img.shields.io/github/release-date/JohannesDeml/UnityWebGL-LoadingTest.svg)](https://github.com/JohannesDeml/UnityWebGL-LoadingTest/releases) [![Tested up to Unity 6.2](https://img.shields.io/badge/tested%20up%20to%20unity-6000.2-green.svg?logo=unity&cacheSeconds=2592000)](https://unity3d.com/get-unity/download/archive)
 
 *Testing Unity's WebGL size and loading time for different versions (2018.4 - 6000.2) and settings*
 
