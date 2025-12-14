@@ -17,5 +17,5 @@
         "Temp/": true
     },
     "dotnet.preferCSharpExtension": true,
-    "dotnet.defaultSolution": "UnityWebGL-LoadingTest.sln"
+    "dotnet.defaultSolution": "UnityWebGL-LoadingTest.slnx"
 }
