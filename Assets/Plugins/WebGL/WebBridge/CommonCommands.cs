@@ -383,6 +383,17 @@ namespace Supyrb
 		}
 
 		/// <summary>
+		/// Sets the CSS cursor style for the Unity canvas element.
+		/// Browser Usage: <code>unityGame.SendMessage("WebGL", "SetCursor", "pointer");</code>
+		/// </summary>
+		/// <param name="cursorName">CSS cursor value (e.g., "default", "pointer", "grab", "crosshair", "text")</param>
+		[WebCommand(Description = "Set the CSS cursor style")]
+		public void SetCursor(string cursorName)
+		{
+			WebToolPlugins.SetCursor(cursorName);
+		}
+
+		/// <summary>
 		/// Captures the current screen and saves it as a PNG file.
 		/// </summary>
 		[WebCommand(Description = "Save current screen as PNG")]
