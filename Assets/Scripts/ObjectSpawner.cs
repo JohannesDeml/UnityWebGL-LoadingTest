@@ -102,10 +102,23 @@ namespace Supyrb
 			if (spawnedObjects.Count >= maxInstances)
 			{
 				var recycleGo = spawnedObjects.Dequeue();
-				recycleGo.transform.localPosition = transform.position;
-				recycleGo.transform.localRotation = transform.localRotation;
-				spawnedObjects.Enqueue(recycleGo);
-				return;
+				if(recycleGo == null)
+				{
+					// If the spawned object was destroyed, we create a new one
+					// Decrement spawn count since it will be incremented when created below
+					totalSpawnCount--;
+				}
+				else
+				{
+#if UNITY_2021_3_OR_NEWER
+					recycleGo.transform.SetLocalPositionAndRotation(transform.position, transform.localRotation);
+#else
+					recycleGo.transform.localPosition = transform.position;
+					recycleGo.transform.localRotation = transform.localRotation;
+#endif
+					spawnedObjects.Enqueue(recycleGo);
+					return;
+				}
 			}
 
 			var newGo = InstantiatePrefab();
