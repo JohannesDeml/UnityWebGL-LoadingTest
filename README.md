@@ -26,8 +26,9 @@
 
 ## Live Demos ([All Builds](https://deml.io/experiments/unity-webgl/))
 
-![Built-in Render Pipeline Build Sizes](./Documentation/built-in-render-pipeline-build-sizes.png)
-![URP Build Sizes](./Documentation/urp-build-sizes.png)
+![Built-in Render Pipeline Build Sizes](./Documentation/built-in-render-pipeline-build-sizes.png) | ![URP Build Sizes](./Documentation/urp-build-sizes.png)
+:-: | :-:
+BiRP Build Size | URP Build Size
 
 ### Built-in Renderpipeline WebGL2
 
