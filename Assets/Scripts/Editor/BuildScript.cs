@@ -106,7 +106,11 @@ namespace UnityBuilderAction
 					break;
 				}
 				case BuildTarget.StandaloneOSX:
+#if UNITY_2021_3_OR_NEWER
+					PlayerSettings.SetScriptingBackend(NamedBuildTarget.Standalone, ScriptingImplementation.Mono2x);
+#else
 					PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.Mono2x);
+#endif
 					break;
 				case BuildTarget.WebGL:
 #if UNITY_2021_2_OR_NEWER
