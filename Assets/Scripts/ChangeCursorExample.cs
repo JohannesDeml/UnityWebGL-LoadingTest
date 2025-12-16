@@ -21,6 +21,11 @@ namespace Supyrb
 		private void OnMouseEnter()
 		{
 			WebToolPlugins.SetCursor(CursorEnteredName);
+			if(Input.GetMouseButton(0))
+			{
+				// Entered with the mouse already down
+				OnMouseDown();
+			}
 		}
 
 		private void OnMouseExit()
