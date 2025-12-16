@@ -44,6 +44,8 @@ namespace Supyrb
 		private static extern void _DownloadFile(string filename, string content);
 		[DllImport("__Internal")]
 		private static extern void _DownloadBlob(string filename, byte[] byteArray, int byteLength, string mimeType);
+		[DllImport("__Internal")]
+		private static extern void _SetCursor(string cursorName);
 
 #endif
 
@@ -303,6 +305,29 @@ namespace Supyrb
 				_DownloadBlob(filename, data, data.Length, mimeType);
 			#elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
 				Debug.Log($"{nameof(WebToolPlugins)}.{nameof(DownloadBinaryFile)} called with filename: {filename}");
+			#endif
+		}
+
+		/// <summary>
+		/// Sets the CSS cursor style for the Unity canvas element.
+		/// <see href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor"/>
+		/// </summary>
+		/// <param name="cursorName">The CSS cursor value (e.g., "pointer", "grab", "crosshair", "text", "default")</param>
+		/// <example>
+		/// <code>
+		/// // Example: Change cursor to pointer on hover
+		/// WebToolPlugins.SetCursor("pointer");
+		///
+		/// // Example: Reset to default cursor
+		/// WebToolPlugins.SetCursor("default");
+		/// </code>
+		/// </example>
+		public static void SetCursor(string cursorName)
+		{
+			#if UNITY_WEBGL && !UNITY_EDITOR
+				_SetCursor(cursorName);
+			#elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
+				Debug.Log($"{nameof(WebToolPlugins)}.{nameof(SetCursor)} called with cursor: {cursorName}");
 			#endif
 		}
 	}
