@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
@@ -36,6 +37,7 @@ namespace Supyrb
 		}
 #endif
 
+		[Conditional("UNITY_WEBGL")]
 		public static void AddEventListener(string eventName, Action callback)
 		{
 			instance.AddEventListenerInternal(eventName, callback);
@@ -59,7 +61,7 @@ namespace Supyrb
 				// Add event listener on javascript side
 				_AddJsEventListener(eventName);
 #elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
-			Debug.Log($"<color=#00CCCC>{nameof(WebEventListeners)}.{nameof(AddEventListenerInternal)} add callback for {eventName}</color>");
+			UnityEngine.Debug.Log($"<color=#00CCCC>{nameof(WebEventListeners)}.{nameof(AddEventListenerInternal)} add callback for {eventName}</color>");
 #endif
 			}
 		}
