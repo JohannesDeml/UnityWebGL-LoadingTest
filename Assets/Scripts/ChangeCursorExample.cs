@@ -16,6 +16,7 @@ namespace Supyrb
 	{
 		public string CursorEnteredName = "pointer";
 		public string CursorExitedName = "default";
+		public bool DestroyOnClick = true;
 
 		private void OnMouseEnter()
 		{
@@ -29,7 +30,10 @@ namespace Supyrb
 
 		private void OnMouseDown()
 		{
-			Destroy(gameObject);
+			if(DestroyOnClick)
+			{
+				Destroy(gameObject);
+			}
 		}
 	}
 }

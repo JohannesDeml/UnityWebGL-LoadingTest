@@ -310,6 +310,7 @@ namespace Supyrb
 
 		/// <summary>
 		/// Sets the CSS cursor style for the Unity canvas element.
+		/// <see href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor"/>
 		/// </summary>
 		/// <param name="cursorName">The CSS cursor value (e.g., "pointer", "grab", "crosshair", "text", "default")</param>
 		/// <example>
