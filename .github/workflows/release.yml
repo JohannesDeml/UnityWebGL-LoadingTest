@@ -5,6 +5,8 @@ on:
   push:
     tags:
       - '*'
+    branches:
+      - master
 
 jobs:
   variables:
@@ -28,7 +30,12 @@ jobs:
 
       - name: Set tag
         id: set_tag
-        run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
+        run: |
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
+          else
+            echo "VERSION=${{ steps.set_unity_version.outputs.VERSION }}-webgl2-master" >> $GITHUB_OUTPUT
+          fi
 
       - name: Set target name
         id: set_build_name
@@ -62,22 +69,32 @@ jobs:
 
   buildProject:
     name: Create Unity WebGL Build 🏗
-    # only build with additional parameters, the tag alone should only create a release draft
-    if: ${{ needs.variables.outputs.TAG != needs.variables.outputs.UNITY_VERSION }}
+    # Build if it's a master push or if the tag is not just the unity version
+    if: ${{ github.ref == 'refs/heads/master' || needs.variables.outputs.TAG != needs.variables.outputs.UNITY_VERSION }}
     needs: [ variables ]
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           lfs: true
 
+      # Avoid running into space issues for github runners - Docker images can take up quite some space
+      - name: Free Disk Space
+        run: |
+          echo "Disk space before cleanup:"
+          df -h
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          echo "Disk space after cleanup:"
+          df -h
+
       # Unity 2020 cache is not compatible with older versions
       - name: Unity Library Cache 2020 or higher
         if: ${{ !startsWith(needs.variables.outputs.UNITY_VERSION, '201') }}
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: Library
           key: Library-202x-WebGL
@@ -85,7 +102,7 @@ jobs:
 
       - name: Unity Library Cache 2019 or lower
         if: ${{ startsWith(needs.variables.outputs.UNITY_VERSION, '201') }}
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: Library
           key: Library-201x-WebGL
@@ -101,9 +118,21 @@ jobs:
           buildMethod: UnityBuilderAction.BuildScript.BuildWithCommandlineArgs
           customParameters: -tag ${{ needs.variables.outputs.TAG }}
           targetPlatform: WebGL
+          versioning: None
           buildName: ${{ needs.variables.outputs.BUILD_NAME }}
 
-      - uses: actions/upload-artifact@v3
+      - name: Check Disk Space After Build
+        run: |
+          echo "Disk space after build:"
+          df -h
+          AVAILABLE=$(df / | tail -1 | awk '{print $4}')
+          AVAILABLE_GB=$(echo $AVAILABLE | sed 's/G//')
+          echo "Available space: ${AVAILABLE_GB}GB"
+          if (( $(echo "$AVAILABLE_GB < 1" | bc -l) )); then
+            echo "::warning::Low disk space! Less than 1GB remaining."
+          fi
+
+      - uses: actions/upload-artifact@v4
         with:
           name: ${{ needs.variables.outputs.BUILD_NAME }}
           path: build/WebGL
@@ -111,12 +140,12 @@ jobs:
   createRelease:
     name: Create Github release 🐙
     # only run for the pure tag without build parameters
-    if: ${{ needs.variables.outputs.TAG == needs.variables.outputs.UNITY_VERSION }}
+    if: ${{ github.ref_type == 'tag' && needs.variables.outputs.TAG == needs.variables.outputs.UNITY_VERSION }}
     needs: [ variables ]
     runs-on: ubuntu-latest
     steps:
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           body: |
             ## Changes
@@ -140,7 +169,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: ${{ needs.variables.outputs.BUILD_NAME }}
           path: build
@@ -150,7 +179,7 @@ jobs:
         working-directory: build/${{ needs.variables.outputs.BUILD_NAME }}
 
       - name: Deploy ⤴
-        uses: SamKirkland/FTP-Deploy-Action@4.3.3
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USER }}

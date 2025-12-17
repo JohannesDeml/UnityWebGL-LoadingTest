@@ -32,10 +32,8 @@ on:
 
 jobs:
   upgrade-unity-version:
-    name: Upgrade Unity version and packages
+    name: Upgrade Unity version and packages to ${{ inputs.unityVersion }}
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
     steps:
       - name: Log input parameter
         run: |
@@ -75,6 +73,18 @@ jobs:
         env:
           GIT_USER: ${{ github.actor }}
 
+      # Avoid running into space issues for github runners - Docker images can take up quite some space
+      - name: Free Disk Space
+        run: |
+          echo "Disk space before cleanup:"
+          df -h
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          echo "Disk space after cleanup:"
+          df -h
+
       # Make sure the branch has the latest master changes in
       - name: Merge master into current branch
         if: ${{ inputs.mergeMaster }}
@@ -87,7 +97,7 @@ jobs:
       # Unity 2020 cache is not compatible with older versions
       - name: Unity Library Cache 2020 or higher
         if: ${{ !startsWith(inputs.unityVersion, '201') }}
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: Library
           key: Library-202x-WebGL
@@ -95,7 +105,7 @@ jobs:
 
       - name: Unity Library Cache 2019 or lower
         if: ${{ startsWith(inputs.unityVersion, '201') }}
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: Library
           key: Library-201x-WebGL
@@ -106,6 +116,13 @@ jobs:
         run: |
           LAST_UNITY_VERSION=$(sed -n 's/^\m_EditorVersion: //p'< ./ProjectSettings/ProjectVersion.txt)
           echo "VERSION=$LAST_UNITY_VERSION" >> $GITHUB_OUTPUT
+          BRANCH_NAME=${GITHUB_REF#refs/heads/}
+          if [[ "$BRANCH_NAME" == *"urp"* ]]
+          then
+            echo "NAME=$LAST_UNITY_VERSION-urp" >> $GITHUB_OUTPUT
+          else
+            echo "NAME=$LAST_UNITY_VERSION" >> $GITHUB_OUTPUT
+          fi
 
       - name: Set upgrade name
         id: upgrade_name
@@ -123,6 +140,7 @@ jobs:
       - name: Log variables
         run: |
           echo "last_unity_version -> ${{ steps.last_unity_version.outputs.VERSION }}"
+          echo "last_unity_name -> ${{ steps.last_unity_version.outputs.NAME }}"
           echo "upgrade_name -> ${{ steps.upgrade_name.outputs.NAME }}"
 
       - name: Build project
@@ -137,9 +155,21 @@ jobs:
           customParameters: ${{ inputs.customParameters }}
           unityVersion: ${{ inputs.unityVersion }}
           targetPlatform: WebGL
-          buildName: ${{ needs.variables.outputs.BUILD_NAME }}
+          buildName: ${{ steps.upgrade_name.outputs.NAME }}
           allowDirtyBuild: true
           manualExit: true
+
+      - name: Check Disk Space After Build
+        if: ${{ !inputs.tagsOnly }}
+        run: |
+          echo "Disk space after build:"
+          df -h
+          AVAILABLE=$(df / | tail -1 | awk '{print $4}')
+          AVAILABLE_GB=$(echo $AVAILABLE | sed 's/G//')
+          echo "Available space: ${AVAILABLE_GB}GB"
+          if (( $(echo "$AVAILABLE_GB < 1" | bc -l) )); then
+            echo "::warning::Low disk space! Less than 1GB remaining."
+          fi
 
       - name: Delete build folder with elevated rights
         if: ${{ !inputs.tagsOnly }}
@@ -148,7 +178,7 @@ jobs:
       - name: Render template
         if: ${{ !inputs.tagsOnly }}
         id: template
-        uses: chuhlomin/render-template@v1.4
+        uses: chuhlomin/render-template@v1.9
         with:
           template: .github/templates/upgrade-unity-pr-body.md
           vars: |
@@ -159,39 +189,24 @@ jobs:
         uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ secrets.PR_GITHUB_TOKEN }}
-          commit-message: "[Automated workflow] upgrade-unity from ${{steps.last_unity_version.outputs.VERSION}} to ${{ inputs.unityVersion }}"
-          branch: "ci/upgrade-unity/from-${{steps.last_unity_version.outputs.VERSION}}-to-${{ steps.upgrade_name.outputs.NAME }}"
+          commit-message: "[Automated workflow] upgrade-unity from ${{steps.last_unity_version.outputs.NAME}} to ${{ inputs.unityVersion }}"
+          branch: "ci/upgrade-unity/from-${{steps.last_unity_version.outputs.NAME}}-to-${{ steps.upgrade_name.outputs.NAME }}"
           delete-branch: true
-          title: "[Automated workflow] upgrade-unity from ${{steps.last_unity_version.outputs.VERSION}} to ${{ steps.upgrade_name.outputs.NAME }}"
+          title: "[Automated workflow] upgrade-unity from ${{steps.last_unity_version.outputs.NAME}} to ${{ steps.upgrade_name.outputs.NAME }}"
           body: ${{ steps.template.outputs.result }}
 
       - name: Add tags
         if: ${{ inputs.createTags || inputs.tagsOnly }}
         run: |
-          # Extract the first four characters of UNITY_VERSION
-          UNITY_YEAR=${UNITY_VERSION:0:4}
           BRANCH_NAME=${GITHUB_REF#refs/heads/}
 
-          TAG_PREFIX=$UNITY_VERSION
-          if [[ "$BRANCH_NAME" == *"urp"* ]]
-          then
-            TAG_PREFIX=$UNITY_VERSION-urp
+          IS_URP=false
+          if [[ "$BRANCH_NAME" == *"urp"* ]]; then
+            IS_URP=true
           fi
 
-          if [[ "$UNITY_YEAR" < "2023" ]]
-          then
-            git tag -a -f $TAG_PREFIX-minsize-webgl1 -m "[Automated workflow] Created by upgrade-unity"
-            git tag -a -f $TAG_PREFIX-webgl1 -m "[Automated workflow] Created by upgrade-unity"
-          else
-            git tag -a -f $TAG_PREFIX-minsize-webgl2 -m "[Automated workflow] Created by upgrade-unity"
-          fi
-          # Push tags in between - pushing more than 3 tags won't trigger tag workflows
-          git push origin -f --tags
-
-          git tag -a -f $TAG_PREFIX-webgl2 -m "[Automated workflow] Created by upgrade-unity"
-          git tag -a -f $TAG_PREFIX-webgl2-debug -m "[Automated workflow] Created by upgrade-unity"
-
-          git push origin -f --tags
+          # Run add tags script
+          ./.github/scripts/add-tags.sh "$UNITY_VERSION" "$IS_URP"
         env:
           UNITY_VERSION: ${{ inputs.unityVersion }}
 

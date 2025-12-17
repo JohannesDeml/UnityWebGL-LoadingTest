@@ -19,7 +19,7 @@ namespace Supyrb
 {
 	public static class WebToolPlugins
 	{
-#if UNITY_WEBGL
+#if UNITY_WEBGL && !UNITY_EDITOR
 		[DllImport("__Internal")]
 		private static extern void _SetStringVariable(string variableName, string variableValue);
 		[DllImport("__Internal")]
@@ -35,9 +35,18 @@ namespace Supyrb
 		[DllImport("__Internal")]
 		private static extern uint _GetTotalMemorySize();
 		[DllImport("__Internal")]
-		private static extern uint _GetStaticMemorySize();
+		private static extern uint _GetDeviceMemorySize();
 		[DllImport("__Internal")]
-		private static extern uint _GetDynamicMemorySize();
+		private static extern bool _CopyToClipboard(string text);
+		[DllImport("__Internal")]
+		private static extern int _IsOnline();
+		[DllImport("__Internal")]
+		private static extern void _DownloadFile(string filename, string content);
+		[DllImport("__Internal")]
+		private static extern void _DownloadBlob(string filename, byte[] byteArray, int byteLength, string mimeType);
+		[DllImport("__Internal")]
+		private static extern void _SetCursor(string cursorName);
+
 #endif
 
 		private static bool _infoPanelVisible = false;
@@ -76,7 +85,8 @@ namespace Supyrb
 #if UNITY_WEBGL && !UNITY_EDITOR
 			_AddFpsTrackingEvent(fps);
 #elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
-			Debug.Log($"{nameof(WebToolPlugins)}.{nameof(AddFpsTrackingEvent)} called with {fps:0.00}");
+			// This is called often, so it can spam the console, uncomment if needed
+			//Debug.Log($"{nameof(WebToolPlugins)}.{nameof(AddFpsTrackingEvent)} called with {fps:0.00}");
 #endif
 		}
 
@@ -155,6 +165,20 @@ namespace Supyrb
 		}
 
 		/// <summary>
+		/// Log all current memory data in MB
+		/// </summary>
+		public static void LogMemory()
+		{
+#if UNITY_WEBGL && !UNITY_EDITOR
+			var managed = GetManagedMemorySize();
+			var total = GetTotalMemorySize();
+			Debug.Log($"Memory stats:\nManaged: {managed:0.00}MB\nTotal: {total:0.00}MB");
+#elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
+			Debug.Log($"{nameof(WebToolPlugins)}.{nameof(LogMemory)} called");
+#endif
+		}
+
+		/// <summary>
 		/// Get the total memory size used by the application in MB
 		/// </summary>
 		/// <returns>Size in MB</returns>
@@ -172,64 +196,22 @@ namespace Supyrb
 		}
 
 		/// <summary>
-		/// Log all current memory data in MB
+		/// Get the device memory size in MB if supported by the browser
+		/// Uses navigator.deviceMemory which is supported by chromium based browsers
+		/// <see href="https://developer.mozilla.org/en-US/docs/Web/API/Navigator/deviceMemory"/>
 		/// </summary>
-		public static void LogMemory()
+		/// <returns>Size in MB or -1 if not supported</returns>
+		public static float GetDeviceMemory()
 		{
 #if UNITY_WEBGL && !UNITY_EDITOR
-			var managed = GetManagedMemorySize();
-			var native = GetNativeMemorySize();
-			var total = GetTotalMemorySize();
-			Debug.Log($"Memory stats:\nManaged: {managed:0.00}MB\nNative: {native:0.00}MB\nTotal: {total:0.00}MB");
-#elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
-			Debug.Log($"{nameof(WebToolPlugins)}.{nameof(LogMemory)} called");
-#endif
-		}
-
-		/// <summary>
-		/// Get the static memory size used by the application in MB
-		/// </summary>
-		/// <returns>Size in MB</returns>
-		public static float GetStaticMemorySize()
-		{
-#if UNITY_WEBGL && !UNITY_EDITOR
-			var bytes = _GetStaticMemorySize();
-			return GetMegaBytes(bytes);
-#elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
-			Debug.Log($"{nameof(WebToolPlugins)}.{nameof(GetStaticMemorySize)} called");
+			var gb = _GetDeviceMemorySize();
+			if (gb > 0)
+			{
+				return gb * 1024f; // convert to MB
+			}
 			return -1f;
-#else
-			return -1f;
-#endif
-		}
-
-		/// <summary>
-		/// Get the dynamic memory size used by the application in MB
-		/// </summary>
-		/// <returns>Size in MB</returns>
-		public static float GetDynamicMemorySize()
-		{
-#if UNITY_WEBGL && !UNITY_EDITOR
-			var bytes = _GetStaticMemorySize();
-			return GetMegaBytes(bytes);
 #elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
-			Debug.Log($"{nameof(WebToolPlugins)}.{nameof(GetDynamicMemorySize)} called");
-			return -1f;
-#else
-			return -1f;
-#endif
-		}
-
-		/// <summary>
-		/// Get the native memory size used by the application in MB (Static + Dynamic memory)
-		/// </summary>
-		/// <returns>Size in MB</returns>
-		public static float GetNativeMemorySize()
-		{
-#if UNITY_WEBGL && !UNITY_EDITOR
-			return GetDynamicMemorySize() + GetStaticMemorySize();
-#elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
-			Debug.Log($"{nameof(WebToolPlugins)}.{nameof(GetNativeMemorySize)} called");
+			Debug.Log($"{nameof(WebToolPlugins)}.{nameof(GetDeviceMemory)} called");
 			return -1f;
 #else
 			return -1f;
@@ -254,6 +236,99 @@ namespace Supyrb
 		private static float GetMegaBytes(uint bytes)
 		{
 			return (float)bytes / (1024 * 1024);
+		}
+
+		/// <summary>
+		/// Copies the specified text to the system clipboard using the browser's clipboard API.
+		/// Only works in WebGL builds and requires clipboard-write permission in modern browsers.
+		/// </summary>
+		/// <param name="text">The text to copy to the clipboard</param>
+		/// <returns>True if the copy operation was successful, false otherwise</returns>
+		public static void CopyToClipboard(string text)
+		{
+			#if UNITY_WEBGL && !UNITY_EDITOR
+				_CopyToClipboard(text);
+			#elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
+				Debug.Log($"{nameof(WebToolPlugins)}.{nameof(CopyToClipboard)} called with: {text}");
+			#endif
+		}
+
+		/// <summary>
+		/// Checks if the browser currently has an internet connection using the navigator.onLine property.
+		/// </summary>
+		/// <returns>True if the browser is online, false if it's offline</returns>
+		public static bool IsOnline()
+		{
+			#if UNITY_WEBGL && !UNITY_EDITOR
+				return _IsOnline() == 1;
+			#elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
+				Debug.Log($"{nameof(WebToolPlugins)}.{nameof(IsOnline)} called");
+				return true;
+			#else
+				return true;
+			#endif
+		}
+
+		/// <summary>
+		/// Downloads a text file through the browser with the specified filename and content.
+		/// Creates a temporary anchor element to trigger the download.
+		/// </summary>
+		/// <param name="filename">The name of the file to be downloaded</param>
+		/// <param name="content">The text content to be saved in the file</param>
+		public static void DownloadTextFile(string filename, string content)
+		{
+			#if UNITY_WEBGL && !UNITY_EDITOR
+				_DownloadFile(filename, content);
+			#elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
+				Debug.Log($"{nameof(WebToolPlugins)}.{nameof(DownloadTextFile)} called with filename: {filename}");
+			#endif
+		}
+
+		/// <summary>
+		/// Downloads a binary file through the browser with the specified filename and data.
+		/// Creates a Blob with the specified MIME type and triggers the download.
+		/// </summary>
+		/// <param name="filename">The name of the file to be downloaded</param>
+		/// <param name="data">The binary data to be saved in the file</param>
+		/// <param name="mimeType">The MIME type of the file (defaults to "application/octet-stream")</param>
+		/// <example>
+		/// <code>
+		/// // Example: Save a Texture2D as PNG
+		/// Texture2D texture;
+		/// byte[] pngData = texture.EncodeToPNG();
+		/// WebToolPlugins.DownloadBinaryFile("texture.png", pngData, "image/png");
+		/// </code>
+		/// </example>
+		public static void DownloadBinaryFile(string filename, byte[] data, string mimeType = "application/octet-stream")
+		{
+			#if UNITY_WEBGL && !UNITY_EDITOR
+				_DownloadBlob(filename, data, data.Length, mimeType);
+			#elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
+				Debug.Log($"{nameof(WebToolPlugins)}.{nameof(DownloadBinaryFile)} called with filename: {filename}");
+			#endif
+		}
+
+		/// <summary>
+		/// Sets the CSS cursor style for the Unity canvas element.
+		/// <see href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor"/>
+		/// </summary>
+		/// <param name="cursorName">The CSS cursor value (e.g., "pointer", "grab", "crosshair", "text", "default")</param>
+		/// <example>
+		/// <code>
+		/// // Example: Change cursor to pointer on hover
+		/// WebToolPlugins.SetCursor("pointer");
+		///
+		/// // Example: Reset to default cursor
+		/// WebToolPlugins.SetCursor("default");
+		/// </code>
+		/// </example>
+		public static void SetCursor(string cursorName)
+		{
+			#if UNITY_WEBGL && !UNITY_EDITOR
+				_SetCursor(cursorName);
+			#elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
+				Debug.Log($"{nameof(WebToolPlugins)}.{nameof(SetCursor)} called with cursor: {cursorName}");
+			#endif
 		}
 	}
 }
