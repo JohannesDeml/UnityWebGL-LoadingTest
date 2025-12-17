@@ -18,22 +18,27 @@ using UnityEngine.Rendering;
 
 namespace Supyrb
 {
+
 	/// <summary>
 	/// Bridge to Unity to access unity logic through the browser console
 	/// You can extend your commands by creating a partial class for WebBridge, see WebBridge.Commands as an example
 	/// </summary>
 	public class WebBridge : WebCommands
 	{
-		private const string WebBridgeGameObjectName = "WebBridge";
+		private const string GameObjectName = "WebBridge";
+		public static double InitializationUnityTime {get; private set;}
+		public static DateTime InitializationUtcTime {get; private set;}
 
-		private static GameObject bridgeInstance;
+		private static GameObject instance;
 #if UNITY_WEBGL
 		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
 		private static void OnBeforeSceneLoadRuntimeMethod()
 		{
+			InitializationUnityTime = Time.realtimeSinceStartupAsDouble;
+			InitializationUtcTime = DateTime.UtcNow;
 			SetGlobalVariables();
-			bridgeInstance = new GameObject(WebBridgeGameObjectName);
-			DontDestroyOnLoad(bridgeInstance);
+			instance = new GameObject(GameObjectName);
+			DontDestroyOnLoad(instance);
 			AddAllWebCommands();
 		}
 #endif
@@ -58,19 +63,21 @@ namespace Supyrb
 			webCommandTypes.Sort((a, b) => a.Name.CompareTo(b.Name));
 			foreach (var webCommandType in webCommandTypes)
 			{
-				bridgeInstance.AddComponent(webCommandType);
+				instance.AddComponent(webCommandType);
 			}
 		}
 
 		private static void SetGlobalVariables()
 		{
 			var graphicsDevice = SystemInfo.graphicsDeviceType;
-			string webGraphics = string.Empty;
+			string webGraphics;
 			switch (graphicsDevice)
 			{
+#if !UNITY_2023_1_OR_NEWER
 				case GraphicsDeviceType.OpenGLES2:
 					webGraphics = "WebGL 1";
 					break;
+#endif
 				case GraphicsDeviceType.OpenGLES3:
 					webGraphics = "WebGL 2";
 					break;
@@ -85,6 +92,7 @@ namespace Supyrb
 			}
 			WebToolPlugins.SetVariable("webGlVersion", webGraphics);
 			WebToolPlugins.SetVariable("unityVersion", Application.unityVersion);
+			WebToolPlugins.SetVariable("applicationVersion", Application.version);
 #if !UNITY_EDITOR && UNITY_WEBGL
 			WebToolPlugins.SetVariable("unityCaptureAllKeyboardInputDefault", WebGLInput.captureAllKeyboardInput?"true":"false");
 #endif
@@ -108,6 +116,7 @@ namespace Supyrb
 			{
 				sb.AppendLine($"<b>---{webCommand.GetType().Name}---</b>");
 				MethodInfo[] methods = webCommand.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance);
+				Array.Sort(methods, (a, b) => string.Compare(a.Name, b.Name));
 
 				for (int i = 0; i < methods.Length; i++)
 				{
@@ -122,11 +131,11 @@ namespace Supyrb
 							var parameter = parameters[j];
 							if (parameter.ParameterType == typeof(string))
 							{
-								sb.Append($", \"{parameter.ParameterType} {parameter.Name}\"");
+								sb.Append($", \"{GetFriendlyTypeName(parameter.ParameterType)} {parameter.Name}\"");
 							}
 							else
 							{
-								sb.Append($", {parameter.ParameterType} {parameter.Name}");
+								sb.Append($", {GetFriendlyTypeName(parameter.ParameterType)} {parameter.Name}");
 							}
 						}
 
@@ -138,6 +147,17 @@ namespace Supyrb
 
 			sb.AppendLine($"\nRun a command with 'runUnityCommand(\"COMMAND_NAME\",PARAMETER);'");
 			Debug.Log(sb.ToString());
+		}
+
+		private string GetFriendlyTypeName(Type type)
+		{
+			if (type == typeof(int)) return "int";
+			if (type == typeof(long)) return "long";
+			if (type == typeof(float)) return "float";
+			if (type == typeof(double)) return "double";
+			if (type == typeof(bool)) return "bool";
+			if (type == typeof(string)) return "string";
+			return type.Name;
 		}
 	}
 }

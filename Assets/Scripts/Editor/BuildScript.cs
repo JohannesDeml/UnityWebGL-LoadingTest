@@ -14,7 +14,9 @@ using System.IO;
 using System.Linq;
 using JetBrains.Annotations;
 using UnityEditor;
+using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
+using UnityEditor.Compilation;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -31,11 +33,31 @@ namespace UnityBuilderAction
 		private static readonly string Eol = Environment.NewLine;
 		private static bool LogVerboseBatchMode = true;
 		private static bool LogVerboseInEditor = false;
+		private static readonly string CodeOptimizationSpeed =
+#if UNITY_2022_1_OR_NEWER
+		CodeOptimizationWebGL.RuntimeSpeedLTO.ToString();
+#else
+		"speed";
+#endif
+		private static readonly string  CodeOptimizationSize =
+#if UNITY_2022_1_OR_NEWER
+		CodeOptimizationWebGL.DiskSizeLTO.ToString();
+#else
+		"size";
+#endif
+
+		private static readonly string  CodeOptimizationBuildTimes =
+#if UNITY_2022_1_OR_NEWER
+		CodeOptimizationWebGL.BuildTimes.ToString();
+#else
+		"size";
+#endif
 
 		private static readonly string[] Secrets =
 			{ "androidKeystorePass", "androidKeyaliasName", "androidKeyaliasPass" };
 
 		private static BuildPlayerOptions buildPlayerOptions;
+		private static List<string> errorLogMessages = new List<string>();
 
 		[UsedImplicitly]
 		public static void BuildWithCommandlineArgs()
@@ -51,10 +73,16 @@ namespace UnityBuilderAction
 			// Gather values from args
 			Dictionary<string, string> options = GetValidatedOptions(args);
 
-			// Set version for this build
-			PlayerSettings.bundleVersion = options["buildVersion"];
-			PlayerSettings.macOS.buildNumber = options["buildVersion"];
-			PlayerSettings.Android.bundleVersionCode = int.Parse(options["androidVersionCode"]);
+			// Set version for this build if provided
+			if(options.TryGetValue("buildVersion", out string buildVersion) && buildVersion != "none")
+			{
+				PlayerSettings.bundleVersion = buildVersion;
+				PlayerSettings.macOS.buildNumber = buildVersion;
+			}
+			if(options.TryGetValue("androidVersionCode", out string versionCode) && versionCode != "0")
+			{
+				PlayerSettings.Android.bundleVersionCode = int.Parse(options["androidVersionCode"]);
+			}
 
 			// Apply build target
 			var buildTarget = (BuildTarget)Enum.Parse(typeof(BuildTarget), options["buildTarget"]);
@@ -78,12 +106,17 @@ namespace UnityBuilderAction
 					break;
 				}
 				case BuildTarget.StandaloneOSX:
+#if UNITY_2021_3_OR_NEWER
+					PlayerSettings.SetScriptingBackend(NamedBuildTarget.Standalone, ScriptingImplementation.Mono2x);
+#else
 					PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.Mono2x);
+#endif
 					break;
 				case BuildTarget.WebGL:
 #if UNITY_2021_2_OR_NEWER
 					// Use ASTC texture compression, since we are also targeting mobile versions - Don't use this for desktop only targets
 					buildPlayerOptions.subtarget = (int)WebGLTextureSubtarget.ASTC;
+					var namedBuildTarget = NamedBuildTarget.WebGL;
 #endif
 
 					if (options.TryGetValue("tag", out string tagVersion) &&
@@ -93,19 +126,32 @@ namespace UnityBuilderAction
 						if (tagParameters.Contains("minsize"))
 						{
 							PlayerSettings.WebGL.template = "PROJECT:Release";
-							SetWebGlOptimization("size");
+							buildPlayerOptions.options |= BuildOptions.CompressWithLz4HC;
 							PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.None;
+							SetWebGlOptimization(CodeOptimizationSize);
+#if UNITY_2022_1_OR_NEWER
+							PlayerSettings.SetIl2CppCodeGeneration(namedBuildTarget, Il2CppCodeGeneration.OptimizeSize);
+#endif
+#if UNITY_2021_2_OR_NEWER
+							PlayerSettings.SetIl2CppCompilerConfiguration(namedBuildTarget, Il2CppCompilerConfiguration.Master);
+#else
 							PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.WebGL, Il2CppCompilerConfiguration.Master);
+#endif
 						}
 						else if (tagParameters.Contains("debug"))
 						{
 							PlayerSettings.WebGL.template = "PROJECT:Develop";
-							SetWebGlOptimization("size");
 							PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.FullWithStacktrace;
-							PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.WebGL, Il2CppCompilerConfiguration.Debug);
+							// For debug builds this setting will always be build times no matter what is set, setting this more as a documentation of the behavior
+							SetWebGlOptimization(CodeOptimizationBuildTimes);
+#if UNITY_2022_1_OR_NEWER
+							PlayerSettings.SetIl2CppCodeGeneration(namedBuildTarget, Il2CppCodeGeneration.OptimizeSize);
+#endif
 #if UNITY_2021_2_OR_NEWER
+							PlayerSettings.SetIl2CppCompilerConfiguration(namedBuildTarget, Il2CppCompilerConfiguration.Debug);
 							PlayerSettings.WebGL.debugSymbolMode = WebGLDebugSymbolMode.Embedded;
 #else
+							PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.WebGL, Il2CppCompilerConfiguration.Debug);
 							PlayerSettings.WebGL.debugSymbols = true;
 #endif
 
@@ -118,13 +164,26 @@ namespace UnityBuilderAction
 						{
 							PlayerSettings.WebGL.template = "PROJECT:Develop";
 							// By default use the speed setting
-							SetWebGlOptimization("speed");
+							SetWebGlOptimization(CodeOptimizationSpeed);
+#if UNITY_2022_1_OR_NEWER
+							PlayerSettings.SetIl2CppCodeGeneration(namedBuildTarget, Il2CppCodeGeneration.OptimizeSpeed);
+#endif
+#if UNITY_2021_2_OR_NEWER
+							PlayerSettings.SetIl2CppCompilerConfiguration(namedBuildTarget, Il2CppCompilerConfiguration.Master);
+#else
+							PlayerSettings.SetIl2CppCompilerConfiguration(BuildTargetGroup.WebGL, Il2CppCompilerConfiguration.Master);
+#endif
 						}
 
 						List<GraphicsDeviceType> graphicsAPIs = new List<GraphicsDeviceType>();
 						if (tagParameters.Contains("webgl1"))
 						{
+#if !UNITY_2023_1_OR_NEWER
 							graphicsAPIs.Add(GraphicsDeviceType.OpenGLES2);
+#else
+							LogWarning("WebGL1 not supported anymore, choosing WebGL2 instead");
+							graphicsAPIs.Add(GraphicsDeviceType.OpenGLES3);
+#endif
 						}
 						if(tagParameters.Contains("webgl2"))
 						{
@@ -134,19 +193,16 @@ namespace UnityBuilderAction
 						{
 #if UNITY_2023_2_OR_NEWER
 							graphicsAPIs.Add(GraphicsDeviceType.WebGPU);
+	#if UNITY_6000_0_OR_NEWER
+							// Enable wasm2023 for WebGPU, since if webGPU is supported everything from 2023 is supported as well
+							PlayerSettings.WebGL.wasm2023 = true;
+	#endif
 #else
 							LogError("WebGPU not supported yet");
 #endif
 						}
 
 						PlayerSettings.SetGraphicsAPIs(BuildTarget.WebGL, graphicsAPIs.ToArray());
-
-#if UNITY_2023_1_OR_NEWER
-						if (tagParameters.Contains("webgl1"))
-						{
-							Log("WebGL1 not supported anymore, choosing WebGL2 instead");
-						}
-#endif
 					}
 
 					break;
@@ -155,7 +211,7 @@ namespace UnityBuilderAction
 			// Additional options for local builds
 			if (!Application.isBatchMode)
 			{
-				if (options.TryGetValue("autorunplayer", out string autorunplayer))
+				if (options.TryGetValue("autorunplayer", out string _))
 				{
 					buildPlayerOptions.options |= BuildOptions.AutoRunPlayer;
 				}
@@ -164,11 +220,22 @@ namespace UnityBuilderAction
 				BackupLastBuild($"{projectPath}/{options["customBuildPath"]}");
 			}
 
+			errorLogMessages = new List<string>();
+			Application.logMessageReceived += OnLogMessageReceived;
+
 			// Custom build
 			Build(buildTarget, options["customBuildPath"]);
 		}
 
-		private static void BackupLastBuild(string buildPath)
+        private static void OnLogMessageReceived(string logString, string stackTrace, LogType type)
+        {
+            if(type == LogType.Error || type == LogType.Exception)
+			{
+				errorLogMessages.Add($"{logString}{Eol}{stackTrace}");
+			}
+        }
+
+        private static void BackupLastBuild(string buildPath)
 		{
 			if (Directory.Exists(buildPath))
 			{
@@ -303,6 +370,12 @@ namespace UnityBuilderAction
 				$"Size: {summary.totalSize.ToString()} bytes{Eol}" +
 				$"{Eol}";
 
+			if(errorLogMessages.Count > 0)
+			{
+				summaryText += $"### Error log messages: ###{Eol}";
+				summaryText += string.Join(Eol, errorLogMessages);
+			}
+
 			if (summary.totalErrors == 0)
 			{
 				Log(summaryText);
@@ -379,6 +452,18 @@ namespace UnityBuilderAction
 			else
 			{
 				Debug.Log(message);
+			}
+		}
+
+		private static void LogWarning(string message)
+		{
+			if(Application.isBatchMode)
+			{
+				Console.WriteLine(message);
+			}
+			else
+			{
+				Debug.LogWarning(message);
 			}
 		}
 
