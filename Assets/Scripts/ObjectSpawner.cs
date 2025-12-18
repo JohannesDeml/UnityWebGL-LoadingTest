@@ -8,8 +8,11 @@
 // </author>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
+using UnityEngine.SceneManagement;
 
 namespace Supyrb
 {
@@ -30,11 +33,16 @@ namespace Supyrb
 		[SerializeField]
 		private int maxInstances = 200;
 
+		[SerializeField]
+		[Tooltip("If set, the object will be spawned in the scene with the given name")]
+		private string spawnSceneName = string.Empty;
+
 		public float SpawnCoolDownSeconds
 		{
 			get => spawnCoolDownSeconds;
 			set
 			{
+				Assert.IsTrue(value > 0, $"Spawn cooldown needs to be greater than 0, but was set to {value}");
 				spawnTimeBase += (spawnCoolDownSeconds - value) * totalSpawnCount;
 				spawnCoolDownSeconds = value;
 			}
@@ -73,7 +81,8 @@ namespace Supyrb
 		private void Update()
 		{
 			float relativeSpawnTime = Time.time - spawnTimeBase;
-			if (Mathf.FloorToInt(relativeSpawnTime / spawnCoolDownSeconds) > totalSpawnCount)
+			int itemsToSpawn = Mathf.FloorToInt(relativeSpawnTime / spawnCoolDownSeconds) - totalSpawnCount;
+			for(int i = 0; i < itemsToSpawn; i++)
 			{
 				SpawnObject();
 			}
@@ -96,18 +105,49 @@ namespace Supyrb
 			if (spawnedObjects.Count >= maxInstances)
 			{
 				var recycleGo = spawnedObjects.Dequeue();
-				recycleGo.transform.localPosition = transform.position;
-				recycleGo.transform.localRotation = transform.localRotation;
-				spawnedObjects.Enqueue(recycleGo);
-				return;
+				if(recycleGo != null)
+				{
+#if UNITY_2021_3_OR_NEWER
+					recycleGo.transform.SetLocalPositionAndRotation(transform.position, transform.localRotation);
+#else
+					recycleGo.transform.localPosition = transform.position;
+					recycleGo.transform.localRotation = transform.localRotation;
+#endif
+					spawnedObjects.Enqueue(recycleGo);
+					totalSpawnCount++;
+					return;
+				}
 			}
 
-			var newGo = Instantiate(prefab, transform.position, transform.rotation);
+			var newGo = InstantiatePrefab();
 			spawnedObjects.Enqueue(newGo);
 			totalSpawnCount++;
 		}
 
-		#if UNITY_EDITOR
+		private GameObject InstantiatePrefab()
+		{
+			var lastActiveScene = SceneManager.GetActiveScene();
+			if(!string.IsNullOrEmpty(spawnSceneName))
+			{
+				var spawnScene = SceneManager.GetSceneByName(spawnSceneName);
+				if(!spawnScene.IsValid())
+				{
+					spawnScene = SceneManager.CreateScene(spawnSceneName);
+				}
+				SceneManager.SetActiveScene(spawnScene);
+			}
+
+			var newGo = Instantiate(prefab, transform.position, transform.rotation);
+
+			if(!string.IsNullOrEmpty(spawnSceneName))
+			{
+				SceneManager.SetActiveScene(lastActiveScene);
+			}
+
+			return newGo;
+		}
+
+#if UNITY_EDITOR
 		private void OnDrawGizmos()
 		{
 			Gizmos.DrawWireSphere(transform.position, 0.5f);

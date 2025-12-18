@@ -9,7 +9,10 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using Supyrb.Attributes;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -21,6 +24,11 @@ namespace Supyrb
 	/// </summary>
 	public class CommonCommands : WebCommands
 	{
+		/// <summary>
+		/// List that stores allocated byte arrays to prevent them from being garbage collected
+		/// </summary>
+		private List<byte[]> byteArrayMemory = new List<byte[]>();
+
 		/// <summary>
 		/// Disable capturing all keyboard input, e.g. for using native html input fields
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL","DisableCaptureAllKeyboardInput");</code>
@@ -59,6 +67,60 @@ namespace Supyrb
 		}
 
 		/// <summary>
+		/// Logs the rough device memory capped between 0.25 and 8 GB
+		/// Browser Usage: <code>unityGame.SendMessage("WebGL","LogDeviceMemory");</code>
+		/// </summary>
+		[WebCommand(Description = "Logs the device memory")]
+		[ContextMenu(nameof(LogDeviceMemory))]
+		public void LogDeviceMemory()
+		{
+			float deviceMemoryInMb = WebToolPlugins.GetDeviceMemory();
+			if (deviceMemoryInMb > 0)
+			{
+				Debug.Log($"Device Memory: {deviceMemoryInMb} GB");
+			}
+			else
+			{
+				Debug.Log("Device Memory information is not available on this device or browser.");
+			}
+		}
+
+		/// <summary>
+		/// Allocate memory to test memory usage and limits
+		/// The memory will be stored in a list to prevent it from being garbage collected
+		/// </summary>
+		/// <param name="mb">MB to allocate</param>
+		[WebCommand(Description = "Allocate memory to test memory usage and limits")]
+		public void AllocateByteArrayMemory(int mb)
+		{
+			byte[] memory = new byte[mb * 1024 * 1024];
+			byteArrayMemory.Add(memory);
+			Debug.Log($"Allocated {mb} MB of memory, total memory usage: {WebToolPlugins.GetTotalMemorySize():0.00}MB");
+		}
+
+		/// <summary>
+		/// Release all allocated byte array memory
+		/// </summary>
+		[WebCommand(Description = "Release all allocated byte array memory")]
+		[ContextMenu(nameof(ReleaseByteArrayMemory))]
+		public void ReleaseByteArrayMemory()
+		{
+			byteArrayMemory.Clear();
+			Debug.Log("Released all allocated byte array memory, it can now be garbage collected");
+		}
+
+		/// <summary>
+		/// Trigger garbage collection
+		/// </summary>
+		[WebCommand(Description = "Trigger garbage collection")]
+		[ContextMenu(nameof(TriggerGarbageCollection))]
+		public void TriggerGarbageCollection()
+		{
+			GC.Collect();
+			Debug.Log("Garbage collection triggered");
+		}
+
+		/// <summary>
 		/// Unloads all unused assets <see cref="Resources.UnloadUnusedAssets"/>
 		/// Browser Usage: <code>unityGame.SendMessage("WebGL","UnloadUnusedAssets");</code>
 		/// </summary>
@@ -67,6 +129,7 @@ namespace Supyrb
 		public void UnloadUnusedAssets()
 		{
 			Resources.UnloadUnusedAssets();
+			Debug.Log("Unloaded unused assets");
 		}
 
 		/// <summary>
@@ -79,6 +142,7 @@ namespace Supyrb
 		public void SetApplicationRunInBackground(int runInBackground)
 		{
 			Application.runInBackground = runInBackground == 1;
+			Debug.Log($"Application.runInBackground: {Application.runInBackground}");
 		}
 
 		/// <summary>
@@ -90,6 +154,7 @@ namespace Supyrb
 		public void SetApplicationTargetFrameRate(int targetFrameRate)
 		{
 			Application.targetFrameRate = targetFrameRate;
+			Debug.Log($"Application.targetFrameRate: {Application.targetFrameRate}");
 		}
 
 		/// <summary>
@@ -101,6 +166,7 @@ namespace Supyrb
 		public void SetTimeFixedDeltaTime(float fixedDeltaTime)
 		{
 			Time.fixedDeltaTime = fixedDeltaTime;
+			Debug.Log($"Time.fixedDeltaTime: {Time.fixedDeltaTime}");
 		}
 
 		/// <summary>
@@ -113,6 +179,73 @@ namespace Supyrb
 		public void SetTimeTimeScale(float timeScale)
 		{
 			Time.timeScale = timeScale;
+			Debug.Log($"Time.timeScale: {Time.timeScale}");
+		}
+
+		/// <summary>
+		/// Log information about when the WebBridge was initialized
+		/// </summary>
+		[WebCommand(Description = "Log initialization time information")]
+		[ContextMenu(nameof(LogInitializationTime))]
+		public void LogInitializationTime()
+		{
+			var currentUnityTime = Time.realtimeSinceStartupAsDouble;
+			var currentUtcTime = DateTime.UtcNow;
+
+			var unityTimeSinceInit = currentUnityTime - WebBridge.InitializationUnityTime;
+			var utcTimeSinceInit = currentUtcTime - WebBridge.InitializationUtcTime;
+
+			var timeComparison = unityTimeSinceInit > utcTimeSinceInit.TotalSeconds
+				? "future"
+				: "past";
+
+			Debug.Log($"Unity Time since init: {unityTimeSinceInit:F2}s\n" +
+					  $"UTC Time since init: {utcTimeSinceInit.TotalSeconds:F2}s\n" +
+					  $"Unity time lies {Math.Abs(unityTimeSinceInit - utcTimeSinceInit.TotalSeconds):F2}s in the {timeComparison} compared to UTC");
+		}
+
+		/// <summary>
+		/// Finds GameObject(s) by name and logs the found GameObject(s) and their components
+		/// </summary>
+		/// <param name="name">The name of the GameObject to find</param>
+		[WebCommand(Description = "Find GameObject by name and log its components")]
+		public void FindGameObjectByName(string name)
+		{
+#if UNITY_6000_0_OR_NEWER
+			var gameObjects = GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None).Where(go => go.name == name).ToArray();
+#else
+			var gameObjects = GameObject.FindObjectsOfType<GameObject>().Where(go => go.name == name).ToArray();
+#endif
+			if (gameObjects.Length == 0)
+			{
+				Debug.Log($"No GameObject found with the name: {name}");
+			}
+			else
+			{
+				StringBuilder sb = new StringBuilder();
+				foreach (var go in gameObjects)
+				{
+					int pathStartIndex = 0;
+					var currentTransform = go.transform;
+					sb.Insert(pathStartIndex, currentTransform.name);
+					currentTransform = currentTransform.parent;
+					while (currentTransform != null)
+					{
+						sb.Insert(pathStartIndex, currentTransform.name + "/");
+						currentTransform = currentTransform.parent;
+					}
+
+					sb.AppendLine($", Tag: {go.tag}, Layer: {go.layer}, ActiveSelf: {go.activeSelf}, ActiveInHierarchy: {go.activeInHierarchy}");
+					sb.AppendLine("Attached Components:");
+					var components = go.GetComponents<Component>();
+					foreach (var component in components)
+					{
+						sb.AppendLine($"- {component.GetType().Name}");
+					}
+					Debug.Log(sb.ToString());
+					sb.Clear();
+				}
+			}
 		}
 
 		/// <summary>
@@ -214,6 +347,7 @@ namespace Supyrb
 		public void DeleteAllPlayerPrefs()
 		{
 			PlayerPrefs.DeleteAll();
+			Debug.Log("Deleted all player prefs");
 		}
 
 		/// <summary>
@@ -222,10 +356,100 @@ namespace Supyrb
 		/// </summary>
 		/// <param name="runInBackground">1 if it should run in background</param>
 		[WebCommand(Description = "GraphicsSettings.logWhenShaderIsCompiled")]
-		[ContextMenu(nameof(LogShaderCompilation))]
 		public void LogShaderCompilation(int enabled)
 		{
 			GraphicsSettings.logWhenShaderIsCompiled = enabled == 1;
+			Debug.Log($"GraphicsSettings.logWhenShaderIsCompiled: {GraphicsSettings.logWhenShaderIsCompiled}");
+		}
+
+		/// <summary>
+		/// Copy text to clipboard using the browser's clipboard API
+		/// </summary>
+		/// <param name="text">Text to copy to clipboard</param>
+		[WebCommand(Description = "Copy text to clipboard")]
+		public void CopyToClipboard(string text)
+		{
+			WebToolPlugins.CopyToClipboard(text);
+		}
+
+		/// <summary>
+		/// Check if the browser has an internet connection
+		/// </summary>
+		[WebCommand(Description = "Check if browser is online")]
+		public void CheckOnlineStatus()
+		{
+			bool isOnline = WebToolPlugins.IsOnline();
+			Debug.Log($"<color=#4D65A4>Online Status:</color> {(isOnline ? "<color=#3bb508>Connected</color>" : "<color=#b50808>Disconnected</color>")}");
+		}
+
+		/// <summary>
+		/// Sets the CSS cursor style for the Unity canvas element.
+		/// Browser Usage: <code>unityGame.SendMessage("WebGL", "SetCursor", "pointer");</code>
+		/// </summary>
+		/// <param name="cursorName">CSS cursor value (e.g., "default", "pointer", "grab", "crosshair", "text")</param>
+		[WebCommand(Description = "Set the CSS cursor style")]
+		public void SetCursor(string cursorName)
+		{
+			WebToolPlugins.SetCursor(cursorName);
+		}
+
+		/// <summary>
+		/// Captures the current screen and saves it as a PNG file.
+		/// </summary>
+		[WebCommand(Description = "Save current screen as PNG")]
+		public void SaveScreenshot()
+		{
+			SaveScreenshotSuperSize(1);
+		}
+
+		/// <summary>
+		/// Captures the current screen and saves it as a PNG file.
+		/// </summary>
+		/// <param name="superSize">1 for normal size, 2 for double size, 4 for quadruple size</param>
+		[WebCommand(Description = "Save current screen as PNG with variable super size")]
+		public void SaveScreenshotSuperSize(int superSize)
+		{
+			StartCoroutine(CaptureScreenshot(superSize));
+		}
+
+		private IEnumerator CaptureScreenshot(int superSize)
+		{
+			// Wait for the end of frame to ensure everything is rendered
+			yield return new WaitForEndOfFrame();
+
+			string filename = "screenshot.png";
+			try
+			{
+				// Capture the screen
+				Texture2D screenshot = ScreenCapture.CaptureScreenshotAsTexture(superSize);
+
+				try
+				{
+					// Convert to PNG
+					byte[] pngData = screenshot.EncodeToPNG();
+
+					// Download through browser
+					WebToolPlugins.DownloadBinaryFile(filename, pngData, "image/png");
+
+					Debug.Log($"Screenshot saved as {filename} ({screenshot.width}x{screenshot.height}) with size {pngData.Length} bytes");
+				}
+				finally
+				{
+					// Clean up the texture
+					if (Application.isPlaying)
+					{
+						Destroy(screenshot);
+					}
+					else
+					{
+						DestroyImmediate(screenshot);
+					}
+				}
+			}
+			catch (System.Exception e)
+			{
+				Debug.LogError($"Failed to save screenshot: {e.Message}");
+			}
 		}
 	}
 }
