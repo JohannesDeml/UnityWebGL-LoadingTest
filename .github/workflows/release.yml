@@ -73,13 +73,23 @@ jobs:
     if: ${{ github.ref == 'refs/heads/master' || needs.variables.outputs.TAG != needs.variables.outputs.UNITY_VERSION }}
     needs: [ variables ]
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           lfs: true
+
+      # Avoid running into space issues for github runners - Docker images can take up quite some space
+      - name: Free Disk Space
+        run: |
+          echo "Disk space before cleanup:"
+          df -h
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          echo "Disk space after cleanup:"
+          df -h
 
       # Unity 2020 cache is not compatible with older versions
       - name: Unity Library Cache 2020 or higher
@@ -110,6 +120,17 @@ jobs:
           targetPlatform: WebGL
           versioning: None
           buildName: ${{ needs.variables.outputs.BUILD_NAME }}
+
+      - name: Check Disk Space After Build
+        run: |
+          echo "Disk space after build:"
+          df -h
+          AVAILABLE=$(df / | tail -1 | awk '{print $4}')
+          AVAILABLE_GB=$(echo $AVAILABLE | sed 's/G//')
+          echo "Available space: ${AVAILABLE_GB}GB"
+          if (( $(echo "$AVAILABLE_GB < 1" | bc -l) )); then
+            echo "::warning::Low disk space! Less than 1GB remaining."
+          fi
 
       - uses: actions/upload-artifact@v4
         with:

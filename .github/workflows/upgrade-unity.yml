@@ -29,13 +29,16 @@ on:
         required: false
         type: string
         default: '-accept-apiupdate'
+      delayTags:
+        description: 'Delay before force pushing tags (in minutes)'
+        required: false
+        type: number
+        default: 0
 
 jobs:
   upgrade-unity-version:
     name: Upgrade Unity version and packages to ${{ inputs.unityVersion }}
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
     steps:
       - name: Log input parameter
         run: |
@@ -47,6 +50,7 @@ jobs:
           echo "Only create tags: $TAGS_ONLY"
           echo "Merge master into branch: $MERGE_MASTER"
           echo "Custom cli arguments: $CUSTOM_PARAMETERS"
+          echo "Delay tags: $DELAY_TAGS minutes"
           if [[ "$BRANCH_NAME" == *"urp"* ]]
           then
             echo "urp: true"
@@ -59,6 +63,7 @@ jobs:
           TAGS_ONLY: ${{ inputs.tagsOnly }}
           MERGE_MASTER: ${{ inputs.mergeMaster }}
           CUSTOM_PARAMETERS: ${{ inputs.customParameters }}
+          DELAY_TAGS: ${{ inputs.delayTags }}
 
       - uses: actions/checkout@v4
         with:
@@ -74,6 +79,18 @@ jobs:
           git config --global user.name "$GIT_USER"
         env:
           GIT_USER: ${{ github.actor }}
+
+      # Avoid running into space issues for github runners - Docker images can take up quite some space
+      - name: Free Disk Space
+        run: |
+          echo "Disk space before cleanup:"
+          df -h
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          echo "Disk space after cleanup:"
+          df -h
 
       # Make sure the branch has the latest master changes in
       - name: Merge master into current branch
@@ -149,6 +166,18 @@ jobs:
           allowDirtyBuild: true
           manualExit: true
 
+      - name: Check Disk Space After Build
+        if: ${{ !inputs.tagsOnly }}
+        run: |
+          echo "Disk space after build:"
+          df -h
+          AVAILABLE=$(df / | tail -1 | awk '{print $4}')
+          AVAILABLE_GB=$(echo $AVAILABLE | sed 's/G//')
+          echo "Available space: ${AVAILABLE_GB}GB"
+          if (( $(echo "$AVAILABLE_GB < 1" | bc -l) )); then
+            echo "::warning::Low disk space! Less than 1GB remaining."
+          fi
+
       - name: Delete build folder with elevated rights
         if: ${{ !inputs.tagsOnly }}
         run: sudo rm -rf ./build
@@ -172,6 +201,16 @@ jobs:
           delete-branch: true
           title: "[Automated workflow] upgrade-unity from ${{steps.last_unity_version.outputs.NAME}} to ${{ steps.upgrade_name.outputs.NAME }}"
           body: ${{ steps.template.outputs.result }}
+
+      - name: Wait before pushing tags
+        if: ${{ (inputs.createTags || inputs.tagsOnly) && inputs.delayTags > 0 }}
+        run: |
+          DELAY_SECONDS=$((DELAY_TAGS * 60))
+          echo "Waiting for $DELAY_TAGS minutes ($DELAY_SECONDS seconds) before pushing tags..."
+          sleep $DELAY_SECONDS
+          echo "Wait complete. Proceeding with tag push."
+        env:
+          DELAY_TAGS: ${{ inputs.delayTags }}
 
       - name: Add tags
         if: ${{ inputs.createTags || inputs.tagsOnly }}
