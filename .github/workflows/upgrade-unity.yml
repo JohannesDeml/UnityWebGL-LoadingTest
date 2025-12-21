@@ -29,6 +29,11 @@ on:
         required: false
         type: string
         default: '-accept-apiupdate'
+      delayTags:
+        description: 'Delay before force pushing tags (in minutes)'
+        required: false
+        type: number
+        default: 0
 
 jobs:
   upgrade-unity-version:
@@ -45,6 +50,7 @@ jobs:
           echo "Only create tags: $TAGS_ONLY"
           echo "Merge master into branch: $MERGE_MASTER"
           echo "Custom cli arguments: $CUSTOM_PARAMETERS"
+          echo "Delay tags: $DELAY_TAGS minutes"
           if [[ "$BRANCH_NAME" == *"urp"* ]]
           then
             echo "urp: true"
@@ -57,6 +63,7 @@ jobs:
           TAGS_ONLY: ${{ inputs.tagsOnly }}
           MERGE_MASTER: ${{ inputs.mergeMaster }}
           CUSTOM_PARAMETERS: ${{ inputs.customParameters }}
+          DELAY_TAGS: ${{ inputs.delayTags }}
 
       - uses: actions/checkout@v4
         with:
@@ -194,6 +201,16 @@ jobs:
           delete-branch: true
           title: "[Automated workflow] upgrade-unity from ${{steps.last_unity_version.outputs.NAME}} to ${{ steps.upgrade_name.outputs.NAME }}"
           body: ${{ steps.template.outputs.result }}
+
+      - name: Wait before pushing tags
+        if: ${{ (inputs.createTags || inputs.tagsOnly) && inputs.delayTags > 0 }}
+        run: |
+          DELAY_SECONDS=$((DELAY_TAGS * 60))
+          echo "Waiting for $DELAY_TAGS minutes ($DELAY_SECONDS seconds) before pushing tags..."
+          sleep $DELAY_SECONDS
+          echo "Wait complete. Proceeding with tag push."
+        env:
+          DELAY_TAGS: ${{ inputs.delayTags }}
 
       - name: Add tags
         if: ${{ inputs.createTags || inputs.tagsOnly }}
