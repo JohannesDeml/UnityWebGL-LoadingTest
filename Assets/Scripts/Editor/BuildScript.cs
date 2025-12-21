@@ -34,20 +34,20 @@ namespace UnityBuilderAction
 		private static bool LogVerboseBatchMode = true;
 		private static bool LogVerboseInEditor = false;
 		private static readonly string CodeOptimizationSpeed =
-#if UNITY_2021_3_OR_NEWER
+#if UNITY_2022_3_OR_NEWER
 		CodeOptimizationWebGL.RuntimeSpeedLTO.ToString();
 #else
 		"speed";
 #endif
 		private static readonly string  CodeOptimizationSize =
-#if UNITY_2021_3_OR_NEWER
+#if UNITY_2022_3_OR_NEWER
 		CodeOptimizationWebGL.DiskSizeLTO.ToString();
 #else
 		"size";
 #endif
 
 		private static readonly string  CodeOptimizationBuildTimes =
-#if UNITY_2021_3_OR_NEWER
+#if UNITY_2022_3_OR_NEWER
 		CodeOptimizationWebGL.BuildTimes.ToString();
 #else
 		"size";
@@ -106,7 +106,11 @@ namespace UnityBuilderAction
 					break;
 				}
 				case BuildTarget.StandaloneOSX:
+#if UNITY_2021_3_OR_NEWER
+					PlayerSettings.SetScriptingBackend(NamedBuildTarget.Standalone, ScriptingImplementation.Mono2x);
+#else
 					PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.Mono2x);
+#endif
 					break;
 				case BuildTarget.WebGL:
 #if UNITY_2021_2_OR_NEWER

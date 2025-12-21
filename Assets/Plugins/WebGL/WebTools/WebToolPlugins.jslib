@@ -99,6 +99,14 @@ var WebGlPlugins =
         return -1;
     },
 
+    _GetDeviceMemorySize: function()
+    {
+        if(navigator.deviceMemory) {
+            return navigator.deviceMemory;
+        }
+        return -1;
+    },
+
     _CopyToClipboard: function(text) {
         var str = UTF8ToString(text);
         navigator.clipboard.writeText(str)
@@ -146,6 +154,21 @@ var WebGlPlugins =
         element.click();
         document.body.removeChild(element);
         URL.revokeObjectURL(url);
+    },
+
+    _SetCursor: function(cursorName) {
+        var cursorStr = UTF8ToString(cursorName);
+        // Check if canvas variable exists from the Unity template
+        var canvasElement = (typeof canvas !== 'undefined') ? canvas : null;
+        if (!canvasElement) {
+            canvasElement = document.getElementById('unity-canvas');
+        }
+        if (!canvasElement) {
+            canvasElement = document.querySelector('canvas');
+        }
+        if (canvasElement) {
+            canvasElement.style.cursor = cursorStr;
+        }
     }
 };
 

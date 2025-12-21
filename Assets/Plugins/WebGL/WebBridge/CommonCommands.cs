@@ -67,6 +67,25 @@ namespace Supyrb
 		}
 
 		/// <summary>
+		/// Logs the rough device memory capped between 0.25 and 8 GB
+		/// Browser Usage: <code>unityGame.SendMessage("WebGL","LogDeviceMemory");</code>
+		/// </summary>
+		[WebCommand(Description = "Logs the device memory")]
+		[ContextMenu(nameof(LogDeviceMemory))]
+		public void LogDeviceMemory()
+		{
+			float deviceMemoryInMb = WebToolPlugins.GetDeviceMemory();
+			if (deviceMemoryInMb > 0)
+			{
+				Debug.Log($"Device Memory: {deviceMemoryInMb} GB");
+			}
+			else
+			{
+				Debug.Log("Device Memory information is not available on this device or browser.");
+			}
+		}
+
+		/// <summary>
 		/// Allocate memory to test memory usage and limits
 		/// The memory will be stored in a list to prevent it from being garbage collected
 		/// </summary>
@@ -192,7 +211,11 @@ namespace Supyrb
 		[WebCommand(Description = "Find GameObject by name and log its components")]
 		public void FindGameObjectByName(string name)
 		{
+#if UNITY_6000_0_OR_NEWER
+			var gameObjects = GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None).Where(go => go.name == name).ToArray();
+#else
 			var gameObjects = GameObject.FindObjectsOfType<GameObject>().Where(go => go.name == name).ToArray();
+#endif
 			if (gameObjects.Length == 0)
 			{
 				Debug.Log($"No GameObject found with the name: {name}");
@@ -357,6 +380,17 @@ namespace Supyrb
 		{
 			bool isOnline = WebToolPlugins.IsOnline();
 			Debug.Log($"<color=#4D65A4>Online Status:</color> {(isOnline ? "<color=#3bb508>Connected</color>" : "<color=#b50808>Disconnected</color>")}");
+		}
+
+		/// <summary>
+		/// Sets the CSS cursor style for the Unity canvas element.
+		/// Browser Usage: <code>unityGame.SendMessage("WebGL", "SetCursor", "pointer");</code>
+		/// </summary>
+		/// <param name="cursorName">CSS cursor value (e.g., "default", "pointer", "grab", "crosshair", "text")</param>
+		[WebCommand(Description = "Set the CSS cursor style")]
+		public void SetCursor(string cursorName)
+		{
+			WebToolPlugins.SetCursor(cursorName);
 		}
 
 		/// <summary>

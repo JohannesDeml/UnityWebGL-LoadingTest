@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
 
 namespace Supyrb
@@ -41,6 +42,7 @@ namespace Supyrb
 			get => spawnCoolDownSeconds;
 			set
 			{
+				Assert.IsTrue(value > 0, $"Spawn cooldown needs to be greater than 0, but was set to {value}");
 				spawnTimeBase += (spawnCoolDownSeconds - value) * totalSpawnCount;
 				spawnCoolDownSeconds = value;
 			}
@@ -79,7 +81,8 @@ namespace Supyrb
 		private void Update()
 		{
 			float relativeSpawnTime = Time.time - spawnTimeBase;
-			if (Mathf.FloorToInt(relativeSpawnTime / spawnCoolDownSeconds) > totalSpawnCount)
+			int itemsToSpawn = Mathf.FloorToInt(relativeSpawnTime / spawnCoolDownSeconds) - totalSpawnCount;
+			for(int i = 0; i < itemsToSpawn; i++)
 			{
 				SpawnObject();
 			}
@@ -102,10 +105,18 @@ namespace Supyrb
 			if (spawnedObjects.Count >= maxInstances)
 			{
 				var recycleGo = spawnedObjects.Dequeue();
-				recycleGo.transform.localPosition = transform.position;
-				recycleGo.transform.localRotation = transform.localRotation;
-				spawnedObjects.Enqueue(recycleGo);
-				return;
+				if(recycleGo != null)
+				{
+#if UNITY_2021_3_OR_NEWER
+					recycleGo.transform.SetLocalPositionAndRotation(transform.position, transform.localRotation);
+#else
+					recycleGo.transform.localPosition = transform.position;
+					recycleGo.transform.localRotation = transform.localRotation;
+#endif
+					spawnedObjects.Enqueue(recycleGo);
+					totalSpawnCount++;
+					return;
+				}
 			}
 
 			var newGo = InstantiatePrefab();

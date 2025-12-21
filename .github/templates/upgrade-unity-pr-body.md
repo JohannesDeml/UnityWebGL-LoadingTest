@@ -5,7 +5,8 @@
 ### Built version demos
 
 * https://deml.io/experiments/unity-webgl/{{ .unityversion }}-webgl2
-* https://deml.io/experiments/unity-webgl/{{ .unityversion }}-webgl1
+* https://deml.io/experiments/unity-webgl/{{ .unityversion }}-webgl2-debug
+* https://deml.io/experiments/unity-webgl/{{ .unityversion }}-minsize-webgl2
 
 ### Other links
 
