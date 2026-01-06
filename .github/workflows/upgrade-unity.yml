@@ -29,6 +29,11 @@ on:
         required: false
         type: string
         default: '-accept-apiupdate'
+      delayTags:
+        description: 'Delay between tag pushes (in seconds, minimum 1)'
+        required: false
+        type: number
+        default: 1
 
 jobs:
   upgrade-unity-version:
@@ -45,6 +50,7 @@ jobs:
           echo "Only create tags: $TAGS_ONLY"
           echo "Merge master into branch: $MERGE_MASTER"
           echo "Custom cli arguments: $CUSTOM_PARAMETERS"
+          echo "Delay tags: $DELAY_TAGS seconds"
           if [[ "$BRANCH_NAME" == *"urp"* ]]
           then
             echo "urp: true"
@@ -57,6 +63,7 @@ jobs:
           TAGS_ONLY: ${{ inputs.tagsOnly }}
           MERGE_MASTER: ${{ inputs.mergeMaster }}
           CUSTOM_PARAMETERS: ${{ inputs.customParameters }}
+          DELAY_TAGS: ${{ inputs.delayTags }}
 
       - uses: actions/checkout@v4
         with:
@@ -205,8 +212,9 @@ jobs:
             IS_URP=true
           fi
 
-          # Run add tags script
-          ./.github/scripts/add-tags.sh "$UNITY_VERSION" "$IS_URP"
+          # Run add tags script with delay parameter
+          ./.github/scripts/add-tags.sh "$UNITY_VERSION" "$IS_URP" "$DELAY_TAGS"
         env:
           UNITY_VERSION: ${{ inputs.unityVersion }}
+          DELAY_TAGS: ${{ inputs.delayTags }}
 
