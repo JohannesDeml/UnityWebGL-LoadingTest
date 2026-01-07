@@ -2,75 +2,114 @@
 
 ![Preview](./preview.png)
 
-[![](https://img.shields.io/github/release-date/JohannesDeml/UnityWebGL-LoadingTest.svg)](https://github.com/JohannesDeml/UnityWebGL-LoadingTest/releases) [![Tested up to Unity 6](https://img.shields.io/badge/tested%20up%20to%20unity-6000.0-green.svg?logo=unity&cacheSeconds=2592000)](https://unity3d.com/get-unity/download/archive)
+[![](https://img.shields.io/github/release-date/JohannesDeml/UnityWebGL-LoadingTest.svg)](https://github.com/JohannesDeml/UnityWebGL-LoadingTest/releases) [![Tested up to Unity 6.3](https://img.shields.io/badge/tested%20up%20to%20unity-6000.3-green.svg?logo=unity&cacheSeconds=2592000)](https://unity3d.com/get-unity/download/archive)
 
-*Testing Unity's WebGL size and loading time for different versions (2018.4 - 6000.0) and settings*
+*Testing Unity's WebGL size and loading time for different versions (2018.4 - 6000.3) and settings*
 
-* [Unity Forum Thread](https://forum.unity.com/threads/webgl-builds-for-mobile.545877/)
 * [Overview page of all builds](https://deml.io/experiments/unity-webgl/)
+* [Implementation in Godot](https://github.com/JohannesDeml/Godot-Web-LoadingTest)
+* [Unity Forum Thread](https://forum.unity.com/threads/webgl-builds-for-mobile.545877/)
 
 
 ## Features
 
-* Physics
-* GPU Instancing for materials
-* Shadows
-* Brotli Compression
-* Toggle-able In-DOM Debug console
-  ![Debug Console Screenshot with description of features](./Documentation/DebugConsole.png)
-* Unity Rich text styling support for browser console & debug console
-  ![Screenshot of styled unity log message in browser console](./Documentation/UnityRichTextSupport.png)
+* [Toggle-able In-DOM Debug console](./Documentation/DebugConsole.png)
+* [Unity Rich text styling support for browser console & debug console](./Documentation/UnityRichTextSupport.png)
 * Easy access to unity functions through the browser console ([Youtube](https://youtu.be/OjypxsD6XMI))
 * Handy debug functions for times and memory consumption
-* Responsive template layout for maximum mobile compatibility
+* Responsive template layout for maximum mobile compatibility and smooth transition to the game after loading finished
 * Github Actions to automatically build the project and deploy it on the server via [Game CI](https://game.ci/)
-* Works with [Unity WebGL Publisher](https://play.unity.com/discover/all-showcases) (Use  [2020.3-lts](https://github.com/JohannesDeml/UnityWebGL-LoadingTest/tree/2020-lts) or [2020.3-lts-urp](https://github.com/JohannesDeml/UnityWebGL-LoadingTest/tree/2020-lts-urp) branch)
-* Tracking multiple Unity versions starting from 2018.4
-* Build targets for webgl1, webgl2 and webgpu
+  * Action to upgrade a branch automatically to a new Unity version with automated builds and a PR
+* Tracking differnt Unity versions starting from 2018.4 (over 700 live demo builds for you to evaluate)
+* Brotli Compression
+* Build targets for webgl1, webgl2 and webgpu with BiRP and URP
 
 ## Live Demos ([All Builds](https://deml.io/experiments/unity-webgl/))
 
+![Built-in Render Pipeline Build Sizes](./Documentation/built-in-render-pipeline-build-sizes.png) | ![URP Build Sizes](./Documentation/urp-build-sizes.png)
+:-: | :-:
+BiRP Build Size | URP Build Size
+
 ### Built-in Renderpipeline WebGL2
+
 Version | Size | Link
 --- | --- | ---
-6000.0.25f1 | 3.32 MB | https://deml.io/experiments/unity-webgl/6000.0.25f1-webgl2
-2023.2.20f1 | 3.23 MB | https://deml.io/experiments/unity-webgl/2023.2.20f1-webgl2
-2023.1.20f1 | 3.14 MB | https://deml.io/experiments/unity-webgl/2023.1.20f1-webgl2
-2022.3.50f1 | 3.12 MB | https://deml.io/experiments/unity-webgl/2022.3.50f1-webgl2
-2021.3.45f1 | 2.78 MB | https://deml.io/experiments/unity-webgl/2021.3.45f1-webgl2
-2020.3.48f1 | 2.96 MB | https://deml.io/experiments/unity-webgl/2020.3.48f1-webgl2
+6000.3.1f1 | 3.45 MB | https://deml.io/experiments/unity-webgl/6000.3.1f1-webgl2
+6000.2.10f1 | 3.39 MB | https://deml.io/experiments/unity-webgl/6000.2.10f1-webgl2
+6000.1.17f1 | 3.33 MB | https://deml.io/experiments/unity-webgl/6000.1.17f1-webgl2
+6000.0.62f1 | 3.33 MB | https://deml.io/experiments/unity-webgl/6000.0.62f1-webgl2
+2023.2.20f1 | 3.27 MB | https://deml.io/experiments/unity-webgl/2023.2.20f1-webgl2
+2023.1.20f1 | 3.19 MB | https://deml.io/experiments/unity-webgl/2023.1.20f1-webgl2
+2022.3.62f3 | 3.18 MB | https://deml.io/experiments/unity-webgl/2022.3.62f3-webgl2
+2022.2.18f1 | 3.06 MB | https://deml.io/experiments/unity-webgl/2022.2.18f1-webgl2
+2022.1.24f1 | 2.82 MB | https://deml.io/experiments/unity-webgl/2022.1.24f1-webgl2
+2021.3.45f2 | 2.83 MB | https://deml.io/experiments/unity-webgl/2021.3.45f2-webgl2
+
+
+### Built-in Renderpipeline WebGL1
+
+Version | Size | Link
+--- | --- | ---
+2022.3.62f3 | 3.16 MB | https://deml.io/experiments/unity-webgl/2022.3.62f3-webgl1
+2022.2.18f1 | 3.04 MB | https://deml.io/experiments/unity-webgl/2022.2.18f1-webgl1
+2022.1.24f1 | 2.80 MB | https://deml.io/experiments/unity-webgl/2022.1.24f1-webgl1
+2021.3.45f2 | 2.81 MB | https://deml.io/experiments/unity-webgl/2021.3.45f2-webgl1
+
 
 ### Built-in Renderpipeline Minimum size
+
 Version | Size | Link
 --- | --- | ---
-6000.0.25f1 | 2.92 MB | https://deml.io/experiments/unity-webgl/6000.0.25f1-minsize-webgl2
-2023.2.20f1 | 2.85 MB | https://deml.io/experiments/unity-webgl/2023.2.20f1-minsize-webgl2
-2023.1.20f1 | 2.72 MB | https://deml.io/experiments/unity-webgl/2023.1.20f1-minsize-webgl2
-2022.3.50f1 | 2.69 MB | https://deml.io/experiments/unity-webgl/2022.3.50f1-minsize-webgl1
-2021.3.45f1 | 2.74 MB | https://deml.io/experiments/unity-webgl/2021.3.45f1-minsize-webgl1
-2020.3.48f1 | 2.48 MB | https://deml.io/experiments/unity-webgl/2020.3.48f1-minsize-webgl1
+6000.3.1f1 | 3.04 MB | https://deml.io/experiments/unity-webgl/6000.3.1f1-minsize-webgl2
+6000.2.10f1 | 2.92 MB | https://deml.io/experiments/unity-webgl/6000.2.10f1-minsize-webgl2
+6000.1.17f1 | 2.85 MB | https://deml.io/experiments/unity-webgl/6000.1.17f1-minsize-webgl2
+6000.0.62f1 | 2.93 MB | https://deml.io/experiments/unity-webgl/6000.0.62f1-minsize-webgl2
+2023.2.20f1 | 2.88 MB | https://deml.io/experiments/unity-webgl/2023.2.20f1-minsize-webgl2
+2023.1.20f1 | 2.76 MB | https://deml.io/experiments/unity-webgl/2023.1.20f1-minsize-webgl2
+2022.3.62f3 | 2.74 MB | https://deml.io/experiments/unity-webgl/2022.3.62f3-minsize-webgl1
+2022.2.18f1 | 2.69 MB | https://deml.io/experiments/unity-webgl/2022.2.18f1-minsize-webgl1
+2022.1.24f1 | 2.64 MB | https://deml.io/experiments/unity-webgl/2022.1.24f1-minsize-webgl1
+2021.3.45f2 | 2.79 MB | https://deml.io/experiments/unity-webgl/2021.3.45f2-minsize-webgl1
+
 
 ### URP WebGL2
+
 Version | Size | Link
 --- | --- | ---
-6000.0.25f1 | 7.82 MB | https://deml.io/experiments/unity-webgl/6000.0.25f1-urp-webgl2
-2023.2.20f1 | 6.87 MB | https://deml.io/experiments/unity-webgl/2023.2.20f1-urp-webgl2
-2023.1.20f1 | 6.25 MB | https://deml.io/experiments/unity-webgl/2023.1.20f1-urp-webgl2
-2022.3.50f1 | 5.92 MB | https://deml.io/experiments/unity-webgl/2022.3.50f1-urp-webgl2
-2021.3.45f1 | 6.31 MB | https://deml.io/experiments/unity-webgl/2021.3.45f1-urp-webgl2
-2020.3.48f1 | 5.60 MB | https://deml.io/experiments/unity-webgl/2020.3.48f1-urp-webgl2
+6000.3.1f1 | 8.22 MB | https://deml.io/experiments/unity-webgl/6000.3.1f1-urp-webgl2
+6000.2.10f1 | 8.13 MB | https://deml.io/experiments/unity-webgl/6000.2.10f1-urp-webgl2
+6000.1.17f1 | 7.97 MB | https://deml.io/experiments/unity-webgl/6000.1.17f1-urp-webgl2
+6000.0.62f1 | 7.94 MB | https://deml.io/experiments/unity-webgl/6000.0.62f1-urp-webgl2
+2023.2.20f1 | 6.88 MB | https://deml.io/experiments/unity-webgl/2023.2.20f1-urp-webgl2
+2023.1.20f1 | 6.26 MB | https://deml.io/experiments/unity-webgl/2023.1.20f1-urp-webgl2
+2022.3.62f3 | 5.98 MB | https://deml.io/experiments/unity-webgl/2022.3.62f3-urp-webgl2
+2022.2.18f1 | 7.22 MB | https://deml.io/experiments/unity-webgl/2022.2.18f1-urp-webgl2
+2022.1.24f1 | 6.47 MB | https://deml.io/experiments/unity-webgl/2022.1.24f1-urp-webgl2
+2021.3.45f2 | 6.36 MB | https://deml.io/experiments/unity-webgl/2021.3.45f2-urp-webgl2
+
+
+### URP WebGL1
+
+Version | Size | Link
+--- | --- | ---
+2022.3.62f3 | 5.93 MB | https://deml.io/experiments/unity-webgl/2022.3.62f3-urp-webgl1
+2022.2.18f1 | 7.08 MB | https://deml.io/experiments/unity-webgl/2022.2.18f1-urp-webgl1
+2022.1.24f1 | 6.33 MB | https://deml.io/experiments/unity-webgl/2022.1.24f1-urp-webgl1
+2021.3.45f2 | 6.18 MB | https://deml.io/experiments/unity-webgl/2021.3.45f2-urp-webgl1
+
 
 ### URP Minimum Size
+
 Version | Size | Link
 --- | --- | ---
-6000.0.25f1 | 6.05 MB | https://deml.io/experiments/unity-webgl/6000.0.25f1-urp-minsize-webgl2
-2023.2.20f1 | 5.30 MB | https://deml.io/experiments/unity-webgl/2023.2.20f1-urp-minsize-webgl2
-2023.1.20f1 | 5.71 MB | https://deml.io/experiments/unity-webgl/2023.1.20f1-urp-minsize-webgl2
-2022.3.50f1 | 4.65 MB | https://deml.io/experiments/unity-webgl/2022.3.50f1-urp-minsize-webgl1
-2021.3.45f1 | 6.11 MB | https://deml.io/experiments/unity-webgl/2021.3.45f1-urp-minsize-webgl1
-2020.3.48f1 | 4.86 MB | https://deml.io/experiments/unity-webgl/2020.3.48f1-urp-minsize-webgl1
-
-
+6000.3.1f1 | 6.30 MB | https://deml.io/experiments/unity-webgl/6000.3.1f1-urp-minsize-webgl2
+6000.1.17f1 | 5.64 MB | https://deml.io/experiments/unity-webgl/6000.1.17f1-urp-minsize-webgl2
+6000.0.62f1 | 6.10 MB | https://deml.io/experiments/unity-webgl/6000.0.62f1-urp-minsize-webgl2
+2023.2.20f1 | 5.33 MB | https://deml.io/experiments/unity-webgl/2023.2.20f1-urp-minsize-webgl2
+2023.1.20f1 | 4.88 MB | https://deml.io/experiments/unity-webgl/2023.1.20f1-urp-minsize-webgl2
+2022.3.62f3 | 4.69 MB | https://deml.io/experiments/unity-webgl/2022.3.62f3-urp-minsize-webgl1
+2022.1.24f1 | 6.06 MB | https://deml.io/experiments/unity-webgl/2022.1.24f1-urp-minsize-webgl1
+2021.3.45f2 | 6.16 MB | https://deml.io/experiments/unity-webgl/2021.3.45f2-urp-minsize-webgl1
 
 
 ## Platform Compatibility
@@ -119,10 +158,7 @@ Version | Size | Link
   Compiling Vertex program with DISABLE_TEXTURE2D_X_ARRAY
   Platform defines: SHADER_API_DESKTOP UNITY_COLORSPACE_GAMMA UNITY_ENABLE_DETAIL_NORMALMAP UNITY_LIGHTMAP_RGBM_ENCODING UNITY_PBS_USE_BRDF1 UNITY_SPECCUBE_BLENDING UNITY_SPECCUBE_BOX_PROJECTION UNITY_USE_DITHER_MASK_FOR_ALPHABLENDED_SHADOWS
   Disabled keywords: BLIT_SINGLE_SLICE SHADER_API_GLES30 UNITY_ASTC_NORMALMAP_ENCODING UNITY_ENABLE_NATIVE_SHADOW_LOOKUPS UNITY_ENABLE_REFLECTION_BUFFERS UNITY_FRAMEBUFFER_FETCH_AVAILABLE UNITY_HALF_PRECISION_FRAGMENT_SHADER_REGISTERS UNITY_HARDWARE_TIER1 UNITY_HARDWARE_TIER2 UNITY_HARDWARE_TIER3 UNITY_LIGHTMAP_DLDR_ENCODING UNITY_LIGHTMAP_FULL_HDR UNITY_LIGHT_PROBE_PROXY_VOLUME UNITY_METAL_SHADOWS_USE_POINT_FILTERING UNITY_NO_DXT5nm UNITY_NO_FULL_STANDARD_SHADER UNITY_NO_SCREENSPACE_SHADOWS UNITY_PBS_USE_BRDF2 UNITY_PBS_USE_BRDF3 UNITY_PRETRANSFORM_TO_DISPLAY_ORIENTATION UNITY_UNIFIED_SHADER_PRECISION_MODEL UNITY_VIRTUAL_TEXTURING
-
-
   Shader error in 'Hidden/kMotion/CameraMotionVectors': SV_VertexID semantic is not supported on GLES 2.0 at line 11 (on gles)
-
   Compiling Subshader: 0, Pass: , Vertex program with <no keywords>
   Platform defines: SHADER_API_DESKTOP UNITY_COLORSPACE_GAMMA UNITY_ENABLE_DETAIL_NORMALMAP UNITY_LIGHTMAP_RGBM_ENCODING UNITY_PBS_USE_BRDF1 UNITY_SPECCUBE_BLENDING UNITY_SPECCUBE_BOX_PROJECTION UNITY_USE_DITHER_MASK_FOR_ALPHABLENDED_SHADOWS
   Disabled keywords: SHADER_API_GLES30 UNITY_ASTC_NORMALMAP_ENCODING UNITY_ENABLE_NATIVE_SHADOW_LOOKUPS UNITY_ENABLE_REFLECTION_BUFFERS UNITY_FRAMEBUFFER_FETCH_AVAILABLE UNITY_HALF_PRECISION_FRAGMENT_SHADER_REGISTERS UNITY_HARDWARE_TIER1 UNITY_HARDWARE_TIER2 UNITY_HARDWARE_TIER3 UNITY_LIGHTMAP_DLDR_ENCODING UNITY_LIGHTMAP_FULL_HDR UNITY_LIGHT_PROBE_PROXY_VOLUME UNITY_METAL_SHADOWS_USE_POINT_FILTERING UNITY_NO_DXT5nm UNITY_NO_FULL_STANDARD_SHADER UNITY_NO_SCREENSPACE_SHADOWS UNITY_PBS_USE_BRDF2 UNITY_PBS_USE_BRDF3 UNITY_PRETRANSFORM_TO_DISPLAY_ORIENTATION UNITY_UNIFIED_SHADER_PRECISION_MODEL UNITY_VIRTUAL_TEXTURING
@@ -131,11 +167,11 @@ Version | Size | Link
 * Unity 2022.1 has problems building for URP with WebGL1 (also on desktop), error:
   ```
   Texture creation failed. 'ShadowAuto' is not supported for Render usage on this platform. Use 'SystemInfo.IsFormatSupported' C# API to check format support.
-
   NullReferenceException: Object reference not set to an instance of an object.
   ```
 
 ### Min Size builds
+
 * Built with `Tools/Build WebGL/minsize`
 * Built with Code Optimization: `Size`
 * Enable Exceptions: `None`
@@ -150,6 +186,7 @@ The script `WebGlBridge` adds an easy to access gameobject that can be called fr
 Currently the following commands are available:
 
 ### CommonCommands
+
 ```javascript
 runUnityCommand("AllocateByteArrayMemory", int mb); -> Allocate memory to test memory usage and limits
 runUnityCommand("CheckOnlineStatus"); -> Check if browser is online
@@ -157,7 +194,9 @@ runUnityCommand("CopyToClipboard", "string text"); -> Copy text to clipboard
 runUnityCommand("DeleteAllPlayerPrefs"); -> PlayerPrefs.DeleteAll
 runUnityCommand("DisableCaptureAllKeyboardInput"); -> Disable unity from consuming all keyboard input
 runUnityCommand("EnableCaptureAllKeyboardInput"); -> Enable unity from consuming all keyboard input
+runUnityCommand("FindGameObjectByName", "string name"); -> Find GameObject by name and log its components
 runUnityCommand("LogExampleMessages"); -> Log example messages for Log, warning and error
+runUnityCommand("LogInitializationTime"); -> Log initialization time information
 runUnityCommand("LogMemory"); -> Logs the current memory
 runUnityCommand("LogMessage", "string message"); -> Log a custom message
 runUnityCommand("LogShaderCompilation", int enabled); -> GraphicsSettings.logWhenShaderIsCompiled
@@ -174,20 +213,22 @@ runUnityCommand("ThrowDictionaryException"); -> Throw a dictionary key not found
 runUnityCommand("ToggleInfoPanel"); -> Toggle develop ui visibility of InfoPanel
 runUnityCommand("TriggerGarbageCollection"); -> Trigger garbage collection
 runUnityCommand("UnloadUnusedAssets"); -> Resources.UnloadUnusedAssets
-  ```
+```
 
 ### ObjectSpawnerCommands
+
 ```javascript
 runUnityCommand("AddSpawner"); -> Add a spawner
 runUnityCommand("PauseSpawning"); -> Pause spawning of cubes
 runUnityCommand("RemoveSpawner"); -> Remove a spawner
 runUnityCommand("ResumeSpawning"); -> Resume spawning of cubes
-  ```
+```
 
 ### WebBridge
+
 ```javascript
 runUnityCommand("Help"); -> Log all available commands
-  ```
+```
 
 
 ## Github Build Actions
@@ -195,7 +236,8 @@ runUnityCommand("Help"); -> Log all available commands
 This repository supports continuous Integration through [game.ci](https://game.ci/). There are scripts for creating a unity license, building the project and upgrading the project.
 
 ### Automatic builds
-The main github actions workflow is [release.yml](./.github/workflows/release.yml). On Unity side a custom build script on the basis of [game.ci's BuildScript](https://github.com/game-ci/documentation/blob/main/example/BuildScript.cs) is used: [BuildScript.cs](./Assets/Scripts/Editor/BuildScript.cs). This script supports defining different build logic through git tags through the following syntax: `UNITY_VERSION`-`TAG1`-`TAG2`... Example: `2022.2.0f1-urp-webgl2`
+
+The main github actions workflow is [release.yml](./.github/workflows/release.yml). On Unity side a custom build script on the basis of [game.ci's BuildScript](https://github.com/game-ci/documentation/blob/main/example/BuildScript.cs) is used: [BuildScript.cs](./Assets/Scripts/Editor/BuildScript.cs). This script supports defining different build logic through git tags through the following syntax: `UNITY_VERSION`-`TAG1`-`TAG2`... Example: `6000.0.0f1-urp-webgl2`
 
 The following tags are supported:
 
@@ -203,6 +245,7 @@ The following tags are supported:
 * `debug`: Build a development build with embedded debug symbols and full stack trace
 * `webgl1`: Build for WebGL1
 * `webgl2`: Build for WebGL2
+* `webgpu`: Build for WebGPU
 
 ### Upgrade Unity CI
 
