@@ -400,14 +400,7 @@ namespace UnityBuilderAction
 					return;
 				}
 
-				string buildDirectory = Path.GetDirectoryName(buildOutputPath);
-				if (string.IsNullOrEmpty(buildDirectory))
-				{
-					buildDirectory = ".";
-				}
-
-
-				string destinationFolder = Path.Combine(buildDirectory, "metadata");
+				string destinationFolder = Path.Combine(buildOutputPath, "metadata");
 				Directory.CreateDirectory(destinationFolder);
 				string destinationPath = Path.Combine(destinationFolder, "LastBuild.buildreport");
 				File.Copy(buildReportPath, destinationPath, true);
