@@ -34,57 +34,57 @@ BiRP Build Size | URP Build Size
 
 Version | Size | Link
 --- | --- | ---
-6000.3.1f1 | 3.45 MB | https://deml.io/experiments/unity-webgl/6000.3.1f1-webgl2
-6000.2.10f1 | 3.39 MB | https://deml.io/experiments/unity-webgl/6000.2.10f1-webgl2
-6000.1.17f1 | 3.33 MB | https://deml.io/experiments/unity-webgl/6000.1.17f1-webgl2
-6000.0.62f1 | 3.33 MB | https://deml.io/experiments/unity-webgl/6000.0.62f1-webgl2
-2023.2.20f1 | 3.27 MB | https://deml.io/experiments/unity-webgl/2023.2.20f1-webgl2
-2023.1.20f1 | 3.19 MB | https://deml.io/experiments/unity-webgl/2023.1.20f1-webgl2
-2022.3.62f3 | 3.18 MB | https://deml.io/experiments/unity-webgl/2022.3.62f3-webgl2
-2022.2.18f1 | 3.06 MB | https://deml.io/experiments/unity-webgl/2022.2.18f1-webgl2
-2022.1.24f1 | 2.82 MB | https://deml.io/experiments/unity-webgl/2022.1.24f1-webgl2
-2021.3.45f2 | 2.83 MB | https://deml.io/experiments/unity-webgl/2021.3.45f2-webgl2
+6000.3.2f1 | 3.46 MB | https://deml.io/experiments/unity-webgl/6000.3.2f1-webgl2
+6000.2.15f1 | 3.40 MB | https://deml.io/experiments/unity-webgl/6000.2.15f1-webgl2
+6000.1.17f1 | 3.34 MB | https://deml.io/experiments/unity-webgl/6000.1.17f1-webgl2
+6000.0.64f1 | 3.34 MB | https://deml.io/experiments/unity-webgl/6000.0.64f1-webgl2
+2023.2.20f1 | 3.28 MB | https://deml.io/experiments/unity-webgl/2023.2.20f1-webgl2
+2023.1.20f1 | 3.20 MB | https://deml.io/experiments/unity-webgl/2023.1.20f1-webgl2
+2022.3.62f3 | 3.19 MB | https://deml.io/experiments/unity-webgl/2022.3.62f3-webgl2
+2022.2.18f1 | 3.11 MB | https://deml.io/experiments/unity-webgl/2022.2.18f1-webgl2
+2022.1.24f1 | 2.88 MB | https://deml.io/experiments/unity-webgl/2022.1.24f1-webgl2
+2021.3.45f2 | 2.84 MB | https://deml.io/experiments/unity-webgl/2021.3.45f2-webgl2
 
 
 ### Built-in Renderpipeline WebGL1
 
 Version | Size | Link
 --- | --- | ---
-2022.3.62f3 | 3.16 MB | https://deml.io/experiments/unity-webgl/2022.3.62f3-webgl1
-2022.2.18f1 | 3.04 MB | https://deml.io/experiments/unity-webgl/2022.2.18f1-webgl1
-2022.1.24f1 | 2.80 MB | https://deml.io/experiments/unity-webgl/2022.1.24f1-webgl1
-2021.3.45f2 | 2.81 MB | https://deml.io/experiments/unity-webgl/2021.3.45f2-webgl1
+2022.3.62f3 | 3.17 MB | https://deml.io/experiments/unity-webgl/2022.3.62f3-webgl1
+2022.2.18f1 | 3.09 MB | https://deml.io/experiments/unity-webgl/2022.2.18f1-webgl1
+2022.1.24f1 | 2.86 MB | https://deml.io/experiments/unity-webgl/2022.1.24f1-webgl1
+2021.3.45f2 | 2.82 MB | https://deml.io/experiments/unity-webgl/2021.3.45f2-webgl1
 
 
 ### Built-in Renderpipeline Minimum size
 
 Version | Size | Link
 --- | --- | ---
-6000.3.1f1 | 3.04 MB | https://deml.io/experiments/unity-webgl/6000.3.1f1-minsize-webgl2
-6000.2.10f1 | 2.92 MB | https://deml.io/experiments/unity-webgl/6000.2.10f1-minsize-webgl2
-6000.1.17f1 | 2.85 MB | https://deml.io/experiments/unity-webgl/6000.1.17f1-minsize-webgl2
-6000.0.62f1 | 2.93 MB | https://deml.io/experiments/unity-webgl/6000.0.62f1-minsize-webgl2
-2023.2.20f1 | 2.88 MB | https://deml.io/experiments/unity-webgl/2023.2.20f1-minsize-webgl2
-2023.1.20f1 | 2.76 MB | https://deml.io/experiments/unity-webgl/2023.1.20f1-minsize-webgl2
+6000.3.2f1 | 3.05 MB | https://deml.io/experiments/unity-webgl/6000.3.2f1-minsize-webgl2
+6000.2.15f1 | 2.92 MB | https://deml.io/experiments/unity-webgl/6000.2.15f1-minsize-webgl2
+6000.1.17f1 | 2.86 MB | https://deml.io/experiments/unity-webgl/6000.1.17f1-minsize-webgl2
+6000.0.64f1 | 2.94 MB | https://deml.io/experiments/unity-webgl/6000.0.64f1-minsize-webgl2
+2023.2.20f1 | 2.89 MB | https://deml.io/experiments/unity-webgl/2023.2.20f1-minsize-webgl2
+2023.1.20f1 | 2.77 MB | https://deml.io/experiments/unity-webgl/2023.1.20f1-minsize-webgl2
 2022.3.62f3 | 2.74 MB | https://deml.io/experiments/unity-webgl/2022.3.62f3-minsize-webgl1
-2022.2.18f1 | 2.69 MB | https://deml.io/experiments/unity-webgl/2022.2.18f1-minsize-webgl1
+2022.2.18f1 | 2.68 MB | https://deml.io/experiments/unity-webgl/2022.2.18f1-minsize-webgl1
 2022.1.24f1 | 2.64 MB | https://deml.io/experiments/unity-webgl/2022.1.24f1-minsize-webgl1
-2021.3.45f2 | 2.79 MB | https://deml.io/experiments/unity-webgl/2021.3.45f2-minsize-webgl1
+2021.3.45f2 | 2.66 MB | https://deml.io/experiments/unity-webgl/2021.3.45f2-minsize-webgl1
 
 
 ### URP WebGL2
 
 Version | Size | Link
 --- | --- | ---
-6000.3.1f1 | 8.22 MB | https://deml.io/experiments/unity-webgl/6000.3.1f1-urp-webgl2
-6000.2.10f1 | 8.13 MB | https://deml.io/experiments/unity-webgl/6000.2.10f1-urp-webgl2
+6000.3.2f1 | 8.23 MB | https://deml.io/experiments/unity-webgl/6000.3.2f1-urp-webgl2
+6000.2.15f1 | 8.13 MB | https://deml.io/experiments/unity-webgl/6000.2.15f1-urp-webgl2
 6000.1.17f1 | 7.97 MB | https://deml.io/experiments/unity-webgl/6000.1.17f1-urp-webgl2
-6000.0.62f1 | 7.94 MB | https://deml.io/experiments/unity-webgl/6000.0.62f1-urp-webgl2
+6000.0.64f1 | 7.94 MB | https://deml.io/experiments/unity-webgl/6000.0.64f1-urp-webgl2
 2023.2.20f1 | 6.88 MB | https://deml.io/experiments/unity-webgl/2023.2.20f1-urp-webgl2
-2023.1.20f1 | 6.26 MB | https://deml.io/experiments/unity-webgl/2023.1.20f1-urp-webgl2
-2022.3.62f3 | 5.98 MB | https://deml.io/experiments/unity-webgl/2022.3.62f3-urp-webgl2
-2022.2.18f1 | 7.22 MB | https://deml.io/experiments/unity-webgl/2022.2.18f1-urp-webgl2
-2022.1.24f1 | 6.47 MB | https://deml.io/experiments/unity-webgl/2022.1.24f1-urp-webgl2
+2023.1.20f1 | 6.29 MB | https://deml.io/experiments/unity-webgl/2023.1.20f1-urp-webgl2
+2022.3.62f3 | 5.99 MB | https://deml.io/experiments/unity-webgl/2022.3.62f3-urp-webgl2
+2022.2.18f1 | 7.27 MB | https://deml.io/experiments/unity-webgl/2022.2.18f1-urp-webgl2
+2022.1.24f1 | 6.51 MB | https://deml.io/experiments/unity-webgl/2022.1.24f1-urp-webgl2
 2021.3.45f2 | 6.36 MB | https://deml.io/experiments/unity-webgl/2021.3.45f2-urp-webgl2
 
 
@@ -93,23 +93,25 @@ Version | Size | Link
 Version | Size | Link
 --- | --- | ---
 2022.3.62f3 | 5.93 MB | https://deml.io/experiments/unity-webgl/2022.3.62f3-urp-webgl1
-2022.2.18f1 | 7.08 MB | https://deml.io/experiments/unity-webgl/2022.2.18f1-urp-webgl1
-2022.1.24f1 | 6.33 MB | https://deml.io/experiments/unity-webgl/2022.1.24f1-urp-webgl1
-2021.3.45f2 | 6.18 MB | https://deml.io/experiments/unity-webgl/2021.3.45f2-urp-webgl1
+2022.2.18f1 | 7.13 MB | https://deml.io/experiments/unity-webgl/2022.2.18f1-urp-webgl1
+2022.1.24f1 | 6.38 MB | https://deml.io/experiments/unity-webgl/2022.1.24f1-urp-webgl1
+2021.3.45f2 | 6.17 MB | https://deml.io/experiments/unity-webgl/2021.3.45f2-urp-webgl1
 
 
 ### URP Minimum Size
 
 Version | Size | Link
 --- | --- | ---
-6000.3.1f1 | 6.30 MB | https://deml.io/experiments/unity-webgl/6000.3.1f1-urp-minsize-webgl2
+6000.3.2f1 | 6.30 MB | https://deml.io/experiments/unity-webgl/6000.3.2f1-urp-minsize-webgl2
+6000.2.15f1 | 6.24 MB | https://deml.io/experiments/unity-webgl/6000.2.15f1-urp-minsize-webgl2
 6000.1.17f1 | 5.64 MB | https://deml.io/experiments/unity-webgl/6000.1.17f1-urp-minsize-webgl2
-6000.0.62f1 | 6.10 MB | https://deml.io/experiments/unity-webgl/6000.0.62f1-urp-minsize-webgl2
+6000.0.64f1 | 6.11 MB | https://deml.io/experiments/unity-webgl/6000.0.64f1-urp-minsize-webgl2
 2023.2.20f1 | 5.33 MB | https://deml.io/experiments/unity-webgl/2023.2.20f1-urp-minsize-webgl2
 2023.1.20f1 | 4.88 MB | https://deml.io/experiments/unity-webgl/2023.1.20f1-urp-minsize-webgl2
 2022.3.62f3 | 4.69 MB | https://deml.io/experiments/unity-webgl/2022.3.62f3-urp-minsize-webgl1
-2022.1.24f1 | 6.06 MB | https://deml.io/experiments/unity-webgl/2022.1.24f1-urp-minsize-webgl1
-2021.3.45f2 | 6.16 MB | https://deml.io/experiments/unity-webgl/2021.3.45f2-urp-minsize-webgl1
+2022.2.18f1 | 5.92 MB | https://deml.io/experiments/unity-webgl/2022.2.18f1-urp-minsize-webgl1
+2022.1.24f1 | 5.71 MB | https://deml.io/experiments/unity-webgl/2022.1.24f1-urp-minsize-webgl1
+2021.3.45f2 | 5.93 MB | https://deml.io/experiments/unity-webgl/2021.3.45f2-urp-minsize-webgl1
 
 
 ## Platform Compatibility
