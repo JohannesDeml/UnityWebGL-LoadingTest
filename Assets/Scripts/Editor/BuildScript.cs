@@ -34,20 +34,20 @@ namespace UnityBuilderAction
 		private static bool LogVerboseBatchMode = true;
 		private static bool LogVerboseInEditor = false;
 		private static readonly string CodeOptimizationSpeed =
-#if UNITY_2022_1_OR_NEWER
+#if UNITY_2022_3_OR_NEWER
 		CodeOptimizationWebGL.RuntimeSpeedLTO.ToString();
 #else
 		"speed";
 #endif
 		private static readonly string  CodeOptimizationSize =
-#if UNITY_2022_1_OR_NEWER
+#if UNITY_2022_3_OR_NEWER
 		CodeOptimizationWebGL.DiskSizeLTO.ToString();
 #else
 		"size";
 #endif
 
 		private static readonly string  CodeOptimizationBuildTimes =
-#if UNITY_2022_1_OR_NEWER
+#if UNITY_2022_3_OR_NEWER
 		CodeOptimizationWebGL.BuildTimes.ToString();
 #else
 		"size";
@@ -383,6 +383,32 @@ namespace UnityBuilderAction
 			else
 			{
 				LogError(summaryText);
+			}
+
+			// Archive the build report to metadata folder
+			ArchiveBuildReport(summary.outputPath);
+		}
+
+		private static void ArchiveBuildReport(string buildOutputPath)
+		{
+			try
+			{
+				string buildReportPath = "Library/LastBuild.buildreport";
+				if (!File.Exists(buildReportPath))
+				{
+					LogWarning($"Build report not found at {buildReportPath}");
+					return;
+				}
+
+				string destinationFolder = Path.Combine(buildOutputPath, "metadata");
+				Directory.CreateDirectory(destinationFolder);
+				string destinationPath = Path.Combine(destinationFolder, "LastBuild.buildreport");
+				File.Copy(buildReportPath, destinationPath, true);
+				Log($"Build report archived to: {destinationPath}");
+			}
+			catch (Exception ex)
+			{
+				LogWarning($"Failed to archive build report: {ex.Message}");
 			}
 		}
 
