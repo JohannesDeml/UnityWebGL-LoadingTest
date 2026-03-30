@@ -19,8 +19,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-          lfs: true
+          sparse-checkout: |
+            ProjectSettings/ProjectVersion.txt
 
       - name: Set unity version
         id: set_unity_version
@@ -76,7 +76,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
           lfs: true
 
       # Avoid running into space issues for github runners - Docker images can take up quite some space
@@ -166,9 +165,6 @@ jobs:
     if: ${{ github.repository_owner == 'JohannesDeml' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
       - uses: actions/download-artifact@v4
         with:
           name: ${{ needs.variables.outputs.BUILD_NAME }}
