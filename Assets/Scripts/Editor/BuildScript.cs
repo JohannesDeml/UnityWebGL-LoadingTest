@@ -384,6 +384,32 @@ namespace UnityBuilderAction
 			{
 				LogError(summaryText);
 			}
+
+			// Archive the build report to metadata folder
+			ArchiveBuildReport(summary.outputPath);
+		}
+
+		private static void ArchiveBuildReport(string buildOutputPath)
+		{
+			try
+			{
+				string buildReportPath = "Library/LastBuild.buildreport";
+				if (!File.Exists(buildReportPath))
+				{
+					LogWarning($"Build report not found at {buildReportPath}");
+					return;
+				}
+
+				string destinationFolder = Path.Combine(buildOutputPath, "metadata");
+				Directory.CreateDirectory(destinationFolder);
+				string destinationPath = Path.Combine(destinationFolder, "LastBuild.buildreport");
+				File.Copy(buildReportPath, destinationPath, true);
+				Log($"Build report archived to: {destinationPath}");
+			}
+			catch (Exception ex)
+			{
+				LogWarning($"Failed to archive build report: {ex.Message}");
+			}
 		}
 
 		private static void ExitWithResult(BuildResult result)
