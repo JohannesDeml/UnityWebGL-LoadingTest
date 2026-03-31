@@ -265,3 +265,7 @@ You can find a list of all live builds with their sizes over here: https://deml.
 ## License
 
 * MIT (c) Johannes Deml - see [LICENSE](./LICENSE.md)
+
+
+Hosted on
+[<img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/codeberg.svg" alt="drawing" width="16"/> Codeberg](https://codeberg.org/jd/unity-web-comparison) and [<img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/github.svg" alt="drawing" width="16"/> GitHub](https://github.com/JohannesDeml/UnityWebGL-LoadingTest)
