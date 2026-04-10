@@ -169,6 +169,26 @@ var WebGlPlugins =
         if (canvasElement) {
             canvasElement.style.cursor = cursorStr;
         }
+    },
+
+    _Vibrate: function(durationInMs) {
+        if (!navigator.vibrate) {
+            console.warn("Vibration API is not supported in this browser.");
+            return;
+        }
+        navigator.vibrate(durationInMs);
+    },
+
+    _VibratePattern: function(durationsInMs, length) {
+        if (!navigator.vibrate) {
+            console.warn("Vibration API is not supported in this browser.");
+            return;
+        }
+        var pattern = [];
+        for (var i = 0; i < length; i++) {
+            pattern.push(HEAP32[(durationsInMs >> 2) + i]);
+        }
+        navigator.vibrate(pattern);
     }
 };
 

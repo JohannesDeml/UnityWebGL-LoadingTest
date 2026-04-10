@@ -46,6 +46,10 @@ namespace Supyrb
 		private static extern void _DownloadBlob(string filename, byte[] byteArray, int byteLength, string mimeType);
 		[DllImport("__Internal")]
 		private static extern void _SetCursor(string cursorName);
+		[DllImport("__Internal")]
+		private static extern void _Vibrate(int durationInMs);
+		[DllImport("__Internal")]
+		private static extern void _VibratePattern(int[] durationsInMs, int length);
 
 #endif
 
@@ -328,6 +332,48 @@ namespace Supyrb
 				_SetCursor(cursorName);
 			#elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
 				Debug.Log($"{nameof(WebToolPlugins)}.{nameof(SetCursor)} called with cursor: {cursorName}");
+			#endif
+		}
+
+		/// <summary>
+		/// Triggers a vibration on devices that support it using the Vibration API.
+		/// <see href="https://developer.mozilla.org/en-US/docs/Web/API/Navigator/vibrate"/>
+		/// </summary>
+		/// <param name="durationInMs">Duration of the vibration in milliseconds</param>
+		public static void Vibrate(int durationInMs)
+		{
+			#if UNITY_WEBGL && !UNITY_EDITOR
+				_Vibrate(durationInMs);
+			#elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
+				Debug.Log($"{nameof(WebToolPlugins)}.{nameof(Vibrate)} called with duration: {durationInMs}ms");
+			#endif
+		}
+
+		/// <summary>
+		/// Triggers a vibration with 0ms on devices that support it using the Vibration API.
+		/// <see href="https://developer.mozilla.org/en-US/docs/Web/API/Navigator/vibrate"/>
+		/// </summary>
+		public static void StopCurrentVibration()
+		{
+			#if UNITY_WEBGL && !UNITY_EDITOR
+				_Vibrate(0);
+			#elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
+				Debug.Log($"{nameof(WebToolPlugins)}.{nameof(StopCurrentVibration)} called");
+			#endif
+		}
+
+		/// <summary>
+		/// Triggers a vibration pattern on devices that support it using the Vibration API.
+		/// Alternating values represent vibration and pause durations.
+		/// <see href="https://developer.mozilla.org/en-US/docs/Web/API/Navigator/vibrate"/>
+		/// </summary>
+		/// <param name="durationsInMs">Alternating vibration/pause durations in milliseconds</param>
+		public static void Vibrate(int[] durationsInMs)
+		{
+			#if UNITY_WEBGL && !UNITY_EDITOR
+				_VibratePattern(durationsInMs, durationsInMs.Length);
+			#elif UNITY_EDITOR && WEBTOOLS_LOG_CALLS
+				Debug.Log($"{nameof(WebToolPlugins)}.{nameof(Vibrate)} called with pattern: [{string.Join(", ", durationsInMs)}]ms");
 			#endif
 		}
 	}
