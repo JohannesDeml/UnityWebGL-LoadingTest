@@ -394,6 +394,38 @@ namespace Supyrb
 		}
 
 		/// <summary>
+		/// Triggers a vibration on devices that support it.
+		/// Browser Usage: <code>unityGame.SendMessage("WebGL", "Vibrate", 200);</code>
+		/// </summary>
+		/// <param name="durationInMs">Duration of the vibration in milliseconds</param>
+		[WebCommand(Description = "Vibrate for a given duration in ms")]
+		public void Vibrate(int durationInMs)
+		{
+			WebToolPlugins.Vibrate(durationInMs);
+		}
+
+		/// <summary>
+		/// Stops any ongoing vibration.
+		/// Browser Usage: <code>unityGame.SendMessage("WebGL", "StopCurrentVibration");</code>
+		/// </summary>
+		[WebCommand(Description = "Stop any ongoing vibration")]
+		public void StopCurrentVibration()
+		{
+			WebToolPlugins.StopCurrentVibration();
+		}
+
+		/// <summary>
+		/// Triggers a vibration SOS pattern (... --- ...) on devices that support it.
+		/// Browser Usage: <code>unityGame.SendMessage("WebGL", "VibrateSosPattern");</code>
+		/// </summary>
+		[WebCommand(Description = "Vibrate SOS pattern (... --- ...)")]
+		[ContextMenu(nameof(VibrateSosPattern))]
+		public void VibrateSosPattern()
+		{
+			WebToolPlugins.Vibrate(new int[] { 100, 30, 100, 30, 100, 30, 200, 30, 200, 30, 200, 30, 100, 30, 100, 30, 100 });
+		}
+
+		/// <summary>
 		/// Captures the current screen and saves it as a PNG file.
 		/// </summary>
 		[WebCommand(Description = "Save current screen as PNG")]
