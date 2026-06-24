@@ -132,8 +132,6 @@ namespace UnityBuilderAction
 							// Off by default, but just to be sure, see https://docs.unity3d.com/Manual/webgl-embeddedresources.html
 							PlayerSettings.WebGL.useEmbeddedResources = false;
 							PlayerSettings.WebGL.threadsSupport = false;
-							// ASTC has the smallest texture sizes
-							EditorUserBuildSettings.webGLBuildSubtarget = WebGLTextureSubtarget.ASTC;
 
 #if UNITY_2022_1_OR_NEWER
 							PlayerSettings.SetIl2CppCodeGeneration(namedBuildTarget, Il2CppCodeGeneration.OptimizeSize);
