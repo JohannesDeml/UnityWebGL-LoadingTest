@@ -108,6 +108,9 @@ jobs:
           restore-keys: Library-201x-
 
       - name: Build project
+        id: buildStep
+        # Exit code 101 is recoverable and handled by the retry step below, so don't fail the job yet
+        continue-on-error: true
         uses: game-ci/unity-builder@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -119,6 +122,30 @@ jobs:
           targetPlatform: WebGL
           versioning: None
           buildName: ${{ needs.variables.outputs.BUILD_NAME }}
+
+      # Unity's Bee backend caps buildprogram planning runs at 6, but a cold WebGL minsize build
+      # needs 7, so the first attempt dies one node short of finishing (BuildScript exits with 101).
+      # Library/Bee is warm afterwards, which collapses the run chain, so a second build succeeds.
+      - name: Retry build after Bee buildprogram run limit
+        if: steps.buildStep.outputs.engineExitCode == '101'
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          buildMethod: UnityBuilderAction.BuildScript.BuildWithCommandlineArgs
+          customParameters: -tag ${{ needs.variables.outputs.TAG }}
+          targetPlatform: WebGL
+          versioning: None
+          buildName: ${{ needs.variables.outputs.BUILD_NAME }}
+
+      # Any other failure is not worth a second 15 minute build, so fail the job here
+      - name: Fail on unrecoverable build error
+        if: steps.buildStep.outcome == 'failure' && steps.buildStep.outputs.engineExitCode != '101'
+        run: |
+          echo "::error::Build failed with engineExitCode '${{ steps.buildStep.outputs.engineExitCode }}' - not retrying"
+          exit 1
 
       - name: Check Disk Space After Build
         run: |
