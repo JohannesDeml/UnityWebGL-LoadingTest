@@ -431,17 +431,25 @@ namespace UnityBuilderAction
 					EndBuild(0);
 					break;
 				case BuildResult.Failed:
-					LogError("Build failed!");
-					EndBuild(101);
+					if(errorLogMessages.Exists(message => message.Contains("requested a buildprogram run 6 times", StringComparison.Ordinal)))
+					{
+						LogError("Build failed due to too many retries of the build program!");
+						EndBuild(101);
+					}
+					else
+					{
+						LogError("Build failed!");
+						EndBuild(100);
+					}
 					break;
 				case BuildResult.Cancelled:
 					LogError("Build cancelled!");
-					EndBuild(102);
+					EndBuild(200);
 					break;
 				case BuildResult.Unknown:
 				default:
 					LogError("Build result is unknown!");
-					EndBuild(103);
+					EndBuild(300);
 					break;
 			}
 		}
