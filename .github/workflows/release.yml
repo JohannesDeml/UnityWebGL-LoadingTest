@@ -17,7 +17,7 @@ jobs:
       TAG: ${{ steps.set_tag.outputs.VERSION }}
       BUILD_NAME: ${{ steps.set_build_name.outputs.VERSION }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           sparse-checkout: |
             ProjectSettings/ProjectVersion.txt
@@ -74,7 +74,7 @@ jobs:
     needs: [ variables ]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           lfs: true
 
@@ -93,7 +93,7 @@ jobs:
       # Unity 2020 cache is not compatible with older versions
       - name: Unity Library Cache 2020 or higher
         if: ${{ !startsWith(needs.variables.outputs.UNITY_VERSION, '201') }}
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: Library
           key: Library-202x-WebGL
@@ -101,7 +101,7 @@ jobs:
 
       - name: Unity Library Cache 2019 or lower
         if: ${{ startsWith(needs.variables.outputs.UNITY_VERSION, '201') }}
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: Library
           key: Library-201x-WebGL
@@ -111,7 +111,7 @@ jobs:
         id: buildStep
         # Exit code 101 is recoverable and handled by the retry step below, so don't fail the job yet
         continue-on-error: true
-        uses: game-ci/unity-builder@v4
+        uses: game-ci/unity-builder@v5
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
@@ -128,7 +128,7 @@ jobs:
       # Library/Bee is warm afterwards, which collapses the run chain, so a second build succeeds.
       - name: Retry build after Bee buildprogram run limit
         if: steps.buildStep.outputs.engineExitCode == '101'
-        uses: game-ci/unity-builder@v4
+        uses: game-ci/unity-builder@v5
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
@@ -158,7 +158,7 @@ jobs:
             echo "::warning::Low disk space! Less than 1GB remaining."
           fi
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: ${{ needs.variables.outputs.BUILD_NAME }}
           path: build/WebGL
@@ -171,7 +171,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           body: |
             ## Changes
@@ -192,7 +192,7 @@ jobs:
     if: ${{ github.repository_owner == 'JohannesDeml' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: ${{ needs.variables.outputs.BUILD_NAME }}
           path: build
@@ -202,7 +202,7 @@ jobs:
         working-directory: build/${{ needs.variables.outputs.BUILD_NAME }}
 
       - name: Deploy ⤴
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USER }}
