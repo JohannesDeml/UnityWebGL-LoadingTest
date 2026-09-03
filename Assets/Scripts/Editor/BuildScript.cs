@@ -129,8 +129,18 @@ namespace UnityBuilderAction
 							buildPlayerOptions.options |= BuildOptions.CompressWithLz4HC;
 							PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.None;
 							SetWebGlOptimization(CodeOptimizationSize);
+							// Off by default, but just to be sure, see https://docs.unity3d.com/Manual/webgl-embeddedresources.html
+							PlayerSettings.WebGL.useEmbeddedResources = false;
+							PlayerSettings.WebGL.threadsSupport = false;
+							// ASTC has the smallest texture sizes
+							EditorUserBuildSettings.webGLBuildSubtarget = WebGLTextureSubtarget.ASTC;
+
 #if UNITY_2022_1_OR_NEWER
 							PlayerSettings.SetIl2CppCodeGeneration(namedBuildTarget, Il2CppCodeGeneration.OptimizeSize);
+#endif
+#if UNITY_6000_0_OR_NEWER
+							// Reduces build size and is widely supported
+							PlayerSettings.WebGL.wasm2023 = true;
 #endif
 #if UNITY_2021_2_OR_NEWER
 							PlayerSettings.SetIl2CppCompilerConfiguration(namedBuildTarget, Il2CppCompilerConfiguration.Master);
@@ -421,17 +431,25 @@ namespace UnityBuilderAction
 					EndBuild(0);
 					break;
 				case BuildResult.Failed:
-					LogError("Build failed!");
-					EndBuild(101);
+					if(errorLogMessages.Exists(message => message.Contains("requested a buildprogram run 6 times", StringComparison.Ordinal)))
+					{
+						LogError("Build failed due to too many retries of the build program!");
+						EndBuild(101);
+					}
+					else
+					{
+						LogError("Build failed!");
+						EndBuild(100);
+					}
 					break;
 				case BuildResult.Cancelled:
 					LogError("Build cancelled!");
-					EndBuild(102);
+					EndBuild(200);
 					break;
 				case BuildResult.Unknown:
 				default:
 					LogError("Build result is unknown!");
-					EndBuild(103);
+					EndBuild(300);
 					break;
 			}
 		}
