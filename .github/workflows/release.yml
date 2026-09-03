@@ -57,7 +57,7 @@ jobs:
         run: echo "Github tag '${{ needs.variables.outputs.TAG }}' has to start with unity version '${{ needs.variables.outputs.UNITY_VERSION }}'"
 
       - name: Version match ✔
-        if: startsWith(${{ needs.variables.outputs.TAG }}, {{ needs.variables.outputs.UNITY_VERSION }}
+        if: ${{ startsWith(needs.variables.outputs.TAG, needs.variables.outputs.UNITY_VERSION) }}
         run: echo "Versions are matching 🥳"
 
       - name: Version missmatch ❌
